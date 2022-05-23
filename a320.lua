@@ -1,54 +1,86 @@
+-- local debug = true
+
 --------------------------------------------------------------------------------------
 -- Create viewports
 --------------------------------------------------------------------------------------
-local display = 1
-local ratio = 0.949652777777778
-local scale = 0.5
-local compensate = (4/3) / (16/9)
+local vratio_menu = 0.0503472222222222     -- 58px
+local vratio_display = 0.666666666666667   -- 768px
+local vratio_panel = 0.282986111111111     -- 326px
 
--- local display = 2
--- local ratio = 0.949652777777778
--- local scale = 1
--- local compensate = 1
+local display = 2
+local scale = 1
+local compensate = 1
+if debug then
+    display = 1
+    scale = 0.5
+    compensate = (4/3) / (16/9)
+end
+
+local viewport_fcu = mapper.viewport{
+    name = "A320 FCU Viewport",
+    displayno = display,
+    x = 0, y = 0,
+    width = 0.5 * scale * compensate, height = vratio_panel * scale,
+}
 
 local viewport_left = mapper.viewport{
     name = "A320 left Viewport",
     displayno = display,
-    x = 0, y = 0,
-    width = 0.5 * scale * compensate, height = ratio * scale,
+    x = 0, y = vratio_panel * scale,
+    width = 0.5 * scale * compensate, height = vratio_display * scale,
 }
 
 local viewport_right = mapper.viewport{
     name = "A320 right Viewport",
     displayno = display,
     x = 0.5 * scale * compensate, y = 0,
-    width = 0.5 * scale * compensate, height = ratio * scale,
+    width = 0.5 * scale * compensate, height = (vratio_display + vratio_panel) * scale,
 }
 
 local viewport_menu = mapper.viewport{
     name = "A320 menu Viewport",
     displayno = display,
-    x = 0, y = ratio * scale,
-    width = scale * compensate, height = (1 - ratio) * scale,
+    x = 0, y = (vratio_display + vratio_panel) * scale,
+    width = scale * compensate, height = vratio_menu * scale,
 }
 
 --------------------------------------------------------------------------------------
 -- Register views to right & left viewports
 --------------------------------------------------------------------------------------
+local captured_window = {
+    fcu = mapper.view_elements.captured_window{name="A320 FCU"},
+    pfd = mapper.view_elements.captured_window{name="A320 PFD"},
+    nd = mapper.view_elements.captured_window{name="A320 ND"},
+    uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM"},
+    lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM"},
+}
+
 local viewdef_dummy = {
     name = "dummy",
     elements = {{object = mapper.view_elements.operable_area{event_tap = 0}}},
     background = graphics.color(0, 64, 0),
 }
 
-local viewdef_left_pfd = viewdef_dummy
-local viewdef_left_nd = viewdef_dummy
-local viewdef_left_uecam = viewdef_dummy
-local viewdef_left_lecam = viewdef_dummy
-local viewdef_right_pfd = viewdef_dummy
-local viewdef_right_nd = viewdef_dummy
-local viewdef_right_uecam = viewdef_dummy
-local viewdef_right_lecam = viewdef_dummy
+local function captured_window_view(name, window)
+    return {
+        name = name,
+        elements = {{object = window}},
+    }
+end
+
+local view_with_fcu_panel = require("lib/a320_fcu")
+local view_with_ecam_panel = require("lib/a320_ecam")
+
+viewport_fcu:register_view(view_with_fcu_panel("fcu", captured_window.fcu))
+
+local viewdef_left_pfd = captured_window_view("pfd", captured_window.pfd)
+local viewdef_left_nd = captured_window_view("nd", captured_window.nd)
+local viewdef_left_uecam = captured_window_view("uecam", captured_window.uecam)
+local viewdef_left_lecam = captured_window_view("lecam", captured_window.lecam)
+local viewdef_right_pfd = view_with_ecam_panel("r-pfd", captured_window.pfd)
+local viewdef_right_nd = view_with_ecam_panel("r-nd", captured_window.nd)
+local viewdef_right_uecam = view_with_ecam_panel("r-uecam", captured_window.uecam)
+local viewdef_right_lecam = view_with_ecam_panel("r-lecam", captured_window.lecam)
 local viewdef_right_mcdu = require("lib/a320_cdu")
 
 local view_left_nd = viewport_left:register_view(viewdef_left_nd)
@@ -64,7 +96,8 @@ local view_right_mcdu = viewport_right:register_view(viewdef_right_mcdu)
 --------------------------------------------------------------------------------------
 -- Register menu view
 --------------------------------------------------------------------------------------
-local img_menu = graphics.bitmap("assets/a320_menu.png")
+local assets = require("lib/a320_assets")
+local img_menu = assets.menu
 local img_width = 128
 local img_height = 58
 local function make_label_image(x, y)
@@ -291,6 +324,7 @@ local simvar_evt = {
     ap_hdg = mapper.register_event("A320_AP_HEADING"),
     ap_fd = mapper.register_event("A320_AP_FD"),
     ap_fd2 = mapper.register_event("simvar:A320_AP_FD"),
+    ecam_page = mapper.register_event("A320_ECAM_PAGE_NUMBER"),
 }
 
 fs2020.mfwasm.clear_observed_data()
@@ -299,6 +333,7 @@ fs2020.mfwasm.add_observed_data{
     {rpn="(L:A32NX_AUTOPILOT_1_ACTIVE)", event=simvar_evt.ap1, epsilon=0.1},
     {rpn="(L:A32NX_AUTOPILOT_HEADING_SELECTED)", event=simvar_evt.ap_hdg, epsilon=0.1},
     {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool)", event=simvar_evt.ap_fd, epsilon=0.1},
+    {rpn="(L:XMLVAR_ECAM_CURRENT_PAGE)", event=simvar_evt.ecam_page},
 }
 
 fs2020.add_observed_simvars{

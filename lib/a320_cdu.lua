@@ -1,3 +1,6 @@
+local view_width = 1084
+local view_height = 1541
+
 --------------------------------------------------------------------------------------
 -- Register events which occurrs when cdu buttons displayed on the view are tapped.
 --------------------------------------------------------------------------------------
@@ -158,12 +161,15 @@ local rratio_side = 0.1
 local rratio_func = 0.1
 local rratio_num = 0.5
 local rratio_alphabet = 0.1
+local assets = require("lib/a320_assets")
+local scale_factor = assets.cdu.width /view_width
+local bg_image = assets.cdu:create_partial_bitmap(0, 0, view_width * scale_factor, view_height * scale_factor)
 
 local view_definition = {
     name = "MCDU",
-    background = graphics.bitmap("assets/a320_cdu.png"),
-    logical_width = 1084,
-    logical_height = 1550,
+    background = bg_image,
+    logical_width = view_width,
+    logical_height = view_height,
     horizontal_alignment = "center",
     vertical_alignment = "top",
     mappings = maps,
