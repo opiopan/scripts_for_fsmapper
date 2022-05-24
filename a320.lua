@@ -1,4 +1,4 @@
--- local debug = true
+local debug = true
 
 --------------------------------------------------------------------------------------
 -- Create viewports
@@ -9,39 +9,44 @@ local vratio_panel = 0.282986111111111     -- 326px
 
 local display = 2
 local scale = 1
-local compensate = 1
 if debug then
     display = 1
     scale = 0.5
-    compensate = (4/3) / (16/9)
 end
 
 local viewport_fcu = mapper.viewport{
     name = "A320 FCU Viewport",
     displayno = display,
     x = 0, y = 0,
-    width = 0.5 * scale * compensate, height = vratio_panel * scale,
+    width = 0.5 * scale, height = vratio_panel * scale,
+    aspect_ratio = 2 / 3 / vratio_panel,
+    horizontal_alignment = "right",
 }
 
 local viewport_left = mapper.viewport{
     name = "A320 left Viewport",
     displayno = display,
     x = 0, y = vratio_panel * scale,
-    width = 0.5 * scale * compensate, height = vratio_display * scale,
+    width = 0.5 * scale, height = vratio_display * scale,
+    aspect_ratio = 2 / 3 / vratio_display,
+    horizontal_alignment = "right",
 }
 
 local viewport_right = mapper.viewport{
     name = "A320 right Viewport",
     displayno = display,
-    x = 0.5 * scale * compensate, y = 0,
-    width = 0.5 * scale * compensate, height = (vratio_display + vratio_panel) * scale,
+    x = 0.5 * scale, y = 0,
+    width = 0.5 * scale, height = (vratio_display + vratio_panel) * scale,
+    aspect_ratio = 2 / 3 / (vratio_panel + vratio_display),
+    horizontal_alignment = "left",
 }
 
 local viewport_menu = mapper.viewport{
     name = "A320 menu Viewport",
     displayno = display,
     x = 0, y = (vratio_display + vratio_panel) * scale,
-    width = scale * compensate, height = vratio_menu * scale,
+    width = scale, height = vratio_menu * scale,
+    aspect_ratio = 4 / 3 / vratio_menu,
 }
 
 --------------------------------------------------------------------------------------
@@ -68,27 +73,31 @@ local function captured_window_view(name, window)
     }
 end
 
-local view_with_fcu_panel = require("lib/a320_fcu")
-local view_with_ecam_panel = require("lib/a320_ecam")
+local fcu_panel = require("lib/a320_fcu")
+fs2020.mfwasm.add_observed_data(fcu_panel.observed_data)
+mapper.add_secondary_mappings(fcu_panel.mappings)
+local ecam_panel = require("lib/a320_ecam")
+fs2020.mfwasm.add_observed_data(ecam_panel.observed_data)
+mapper.add_secondary_mappings(ecam_panel.mappings)
 
-viewport_fcu:register_view(view_with_fcu_panel("fcu", captured_window.fcu))
+viewport_fcu:register_view(fcu_panel.viewdef("fcu", captured_window.fcu))
 
 local viewdef_left_pfd = captured_window_view("pfd", captured_window.pfd)
 local viewdef_left_nd = captured_window_view("nd", captured_window.nd)
 local viewdef_left_uecam = captured_window_view("uecam", captured_window.uecam)
 local viewdef_left_lecam = captured_window_view("lecam", captured_window.lecam)
-local viewdef_right_pfd = view_with_ecam_panel("r-pfd", captured_window.pfd)
-local viewdef_right_nd = view_with_ecam_panel("r-nd", captured_window.nd)
-local viewdef_right_uecam = view_with_ecam_panel("r-uecam", captured_window.uecam)
-local viewdef_right_lecam = view_with_ecam_panel("r-lecam", captured_window.lecam)
+local viewdef_right_pfd = ecam_panel.viewdef("r-pfd", captured_window.pfd)
+local viewdef_right_nd = ecam_panel.viewdef("r-nd", captured_window.nd)
+local viewdef_right_uecam = ecam_panel.viewdef("r-uecam", captured_window.uecam)
+local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_window.lecam)
 local viewdef_right_mcdu = require("lib/a320_cdu")
 
-local view_left_nd = viewport_left:register_view(viewdef_left_nd)
 local view_left_pfd = viewport_left:register_view(viewdef_left_pfd)
+local view_left_nd = viewport_left:register_view(viewdef_left_nd)
 local view_left_uecam = viewport_left:register_view(viewdef_left_uecam)
 local view_left_lecam = viewport_left:register_view(viewdef_left_lecam)
-local view_right_pfd = viewport_right:register_view(viewdef_right_pfd)
 local view_right_nd = viewport_right:register_view(viewdef_right_nd)
+local view_right_pfd = viewport_right:register_view(viewdef_right_pfd)
 local view_right_uecam = viewport_right:register_view(viewdef_right_uecam)
 local view_right_lecam = viewport_right:register_view(viewdef_right_lecam)
 local view_right_mcdu = viewport_right:register_view(viewdef_right_mcdu)
@@ -317,31 +326,17 @@ mapper.start_viewports()
 --------------------------------------------------------------------------------------
 -- Register Simvar observation event
 --------------------------------------------------------------------------------------
-local simvar_evt = {
-    alt = mapper.register_event("altitude"),
-    alt2 = mapper.register_event("simvar:altitude"),
-    ap1 = mapper.register_event("A320_AP1"),
-    ap_hdg = mapper.register_event("A320_AP_HEADING"),
-    ap_fd = mapper.register_event("A320_AP_FD"),
-    ap_fd2 = mapper.register_event("simvar:A320_AP_FD"),
-    ecam_page = mapper.register_event("A320_ECAM_PAGE_NUMBER"),
-}
+-- local simvar_evt = {
+--     alt2 = mapper.register_event("simvar:altitude"),
+--     ap_fd2 = mapper.register_event("simvar:A320_AP_FD"),
+-- }
 
-fs2020.mfwasm.clear_observed_data()
-fs2020.mfwasm.add_observed_data{
-    {rpn="(A:PLANE ALTITUDE,Feet)", event=simvar_evt.alt, epsilon=0.1},
-    {rpn="(L:A32NX_AUTOPILOT_1_ACTIVE)", event=simvar_evt.ap1, epsilon=0.1},
-    {rpn="(L:A32NX_AUTOPILOT_HEADING_SELECTED)", event=simvar_evt.ap_hdg, epsilon=0.1},
-    {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool)", event=simvar_evt.ap_fd, epsilon=0.1},
-    {rpn="(L:XMLVAR_ECAM_CURRENT_PAGE)", event=simvar_evt.ecam_page},
-}
+-- fs2020.add_observed_simvars{
+--     {name="PLANE ALTITUDE", unit="Feet", event=simvar_evt.alt2, epsilon=0.1},
+--     {name="AUTOPILOT FLIGHT DIRECTOR ACTIVE:1", unit="Bool", event=simvar_evt.ap_fd2, epsilon=0.1},
+-- }
 
-fs2020.add_observed_simvars{
-    {name="PLANE ALTITUDE", unit="Feet", event=simvar_evt.alt2, epsilon=0.1},
-    {name="AUTOPILOT FLIGHT DIRECTOR ACTIVE:1", unit="Bool", event=simvar_evt.ap_fd2, epsilon=0.1},
-}
-
-mapper.set_primery_mappings{
-    {event=g1000.AUX2D.down, action=fs2020.mfwasm.rpn_executer("(>K:TOGGLE_FLIGHT_DIRECTOR)")},
-    {event=g1000.AUX2U.down, action=fs2020.mfwasm.rpn_executer("1 (>L:XMLVAR_Baro_Selector_HPA_1)")},
-}
+-- mapper.set_primery_mappings{
+--     {event=g1000.AUX2D.down, action=fs2020.mfwasm.rpn_executer("(>K:TOGGLE_FLIGHT_DIRECTOR)")},
+--     {event=g1000.AUX2U.down, action=fs2020.mfwasm.rpn_executer("1 (>L:XMLVAR_Baro_Selector_HPA_1)")},
+-- }

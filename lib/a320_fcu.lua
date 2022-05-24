@@ -30,4 +30,4 @@ local function create_view_def(name, window)
     }
 end
 
-return create_view_def
+return {viewdef=create_view_def}

@@ -7,52 +7,33 @@ local view_height = 1541
 local events = {
     toconfig_push = mapper.register_event("ECAM:T.O_CONFIG:push"),
     eng_push = mapper.register_event("ECAM:END:push"),
-    eng_change = mapper.register_event("ECAM:END:change"),
     bleed_push = mapper.register_event("ECAM:BLEED:push"),
-    bleed_change = mapper.register_event("ECAM:BLEED:change"),
     press_push = mapper.register_event("ECAM:PRESS:push"),
-    press_change = mapper.register_event("ECAM:PRESS:change"),
     elec_push = mapper.register_event("ECAM:ELEC:push"),
-    elec_change = mapper.register_event("ECAM:ELEC:change"),
     hyd_push = mapper.register_event("ECAM:HYD:push"),
-    hyd_change = mapper.register_event("ECAM:HYD:change"),
     fuel_push = mapper.register_event("ECAM:FUEL:push"),
-    fuel_change = mapper.register_event("ECAM:FUEL:change"),
     apu_push = mapper.register_event("ECAM:APU:push"),
-    apu_change = mapper.register_event("ECAM:APU:change"),
     cond_push = mapper.register_event("ECAM:COND:push"),
-    cond_change = mapper.register_event("ECAM:COND:change"),
     door_push = mapper.register_event("ECAM:DOOR:push"),
-    door_change = mapper.register_event("ECAM:DOOR:change"),
     wheel_push = mapper.register_event("ECAM:WHEEL:push"),
-    wheel_change = mapper.register_event("ECAM:WHEEL:change"),
     fctl_push = mapper.register_event("ECAM:F_CTL:push"),
-    fctl_change = mapper.register_event("ECAM:F_CTL:change"),
     all_push = mapper.register_event("ECAM:ALL:push"),
     lclr_push = mapper.register_event("ECAM:L-CLR:push"),
     lclr_change = mapper.register_event("ECAM:L-CLR:change"),
     sts_push = mapper.register_event("ECAM:STS:push"),
-    sts_change = mapper.register_event("ECAM:STS:change"),
     rcl_push = mapper.register_event("ECAM:RCL:push"),
     rclr_push = mapper.register_event("ECAM:R_CLR:push"),
     rclr_change = mapper.register_event("ECAM:R_CLR:change"),
+
+    page_change = mapper.register_event("ECAM:current page changed"),
+    page_change_asobo = mapper.register_event("ECAM:current page changed (ASOBO)"),
 }
 
-fs2020.mfwasm.add_observed_data{
-    {rpn="()", event=events.eng_change},
-    {rpn="()", event=events.bleed_change},
-    {rpn="()", event=events.press_change},
-    {rpn="()", event=events.elec_change},
-    {rpn="()", event=events.hyd_change},
-    {rpn="()", event=events.fuel_change},
-    {rpn="()", event=events.apu_change},
-    {rpn="()", event=events.cond_change},
-    {rpn="()", event=events.door_change},
-    {rpn="()", event=events.wheel_change},
-    {rpn="()", event=events.fctl_change},
+local observed_data = {
     {rpn="()", event=events.lclr_change},
-    {rpn="()", event=events.sts_change},
     {rpn="()", event=events.rclr_change},
+    {rpn="(L:A32NX_ECAM_SD_CURRENT_PAGE_INDEX)", event=events.page_change},
+    {rpn="(L:XMLVAR_ECAM_CURRENT_PAGE)", event=events.page_change_asobo},
 }
 
 --------------------------------------------------------------------------------------
@@ -90,22 +71,22 @@ btn_imgs = {
 -- button definitions
 --------------------------------------------------------------------------------------
 local buttons = {
-    {x=0, y=0, key="eng"},
-    {x=1, y=0, key="bleed"},
-    {x=2, y=0, key="press"},
-    {x=3, y=0, key="elec"},
-    {x=4, y=0, key="hyd"},
-    {x=5, y=0, key="fuel"},
-    {x=0, y=1, key="apu"},
-    {x=1, y=1, key="cond"},
-    {x=2, y=1, key="door"},
-    {x=3, y=1, key="wheel"},
-    {x=4, y=1, key="fctl"},
-    {x=5, y=1, key="all"},
-    {x=0, y=2, key="lclr"},
-    {x=2, y=2, key="sts"},
-    {x=3, y=2, key="rcl"},
-    {x=5, y=2, key="rclr"},
+    eng =   {x=0, y=0, led=true, page=0},
+    bleed = {x=1, y=0, led=true, page=1},
+    press = {x=2, y=0, led=true, page=2},
+    elec =  {x=3, y=0, led=true, page=3},
+    hyd =   {x=4, y=0, led=true, page=4},
+    fuel =  {x=5, y=0, led=true, page=5},
+    apu =   {x=0, y=1, led=true, page=6},
+    cond =  {x=1, y=1, led=true, page=7},
+    door =  {x=2, y=1, led=true, page=8},
+    wheel = {x=3, y=1, led=true, page=9},
+    fctl =  {x=4, y=1, led=true, page=10},
+    all =   {x=5, y=1},
+    lclr =  {x=0, y=2, led=true},
+    sts =   {x=2, y=2, led=true, page=11},
+    rcl =   {x=3, y=2},
+    rclr =  {x=5, y=2, led=true},
 }
 
 local grid_h_num = 6
@@ -118,12 +99,12 @@ local grid_y = view_height - grid_height - grid_bottom_gap - view_width
 local grid_h_space = (grid_width - button_width) / (grid_h_num - 1)
 local grid_v_space = (grid_height - button_height) / (grid_v_num - 1)
 
-for i, button in ipairs(buttons) do
-    buttons[i].x = buttons[i].x * grid_h_space + grid_x
-    buttons[i].y = buttons[i].y * grid_v_space + grid_y
+for key, button in pairs(buttons) do
+    buttons[key].x = buttons[key].x * grid_h_space + grid_x
+    buttons[key].y = buttons[key].y * grid_v_space + grid_y
 end
 
-buttons[#buttons + 1] = {x=buttons[2].x, y=50, key="toconfig"}
+buttons["toconfig"] = {x=buttons.bleed.x, y=50}
 
 --------------------------------------------------------------------------------------
 -- create background image
@@ -135,23 +116,32 @@ ctx:fill_rectangle(0, 0, view_width, view_height - view_width)
 ctx:set_brush(graphics.color(40, 52, 61))
 ctx:fill_rectangle(0, 0, 1.5, view_height)
 
-for i, button in ipairs(buttons) do
-    ctx:draw_bitmap(btn_imgs[button.key], button.x, button.y)
+for key, button in pairs(buttons) do
+    ctx:draw_bitmap(btn_imgs[key], button.x, button.y)
 end
 
 ctx:finish_rendering()
 
 --------------------------------------------------------------------------------------
--- view element definition
+-- reflecting button status to view image
 --------------------------------------------------------------------------------------
-local function button_renderer(ctx, value)
-    if value > 0.8 then
-        ctx:draw_bitmap(btn_imgs.on, 0, 0)
-    else
-        ctx:draw_bitmap(btn_imgs.off, 0, 0)
+local button_status_elements = {} -- will be build later
+local current_page = -1
+local function reflect_page_change(eventid, page)
+    local current = button_status_elements[current_page]
+    if current then
+        current:set_value(0)
+    end
+    current_page = page
+    current = button_status_elements[current_page]
+    if current then
+        current:set_value(1)
     end
 end
 
+--------------------------------------------------------------------------------------
+-- event-action mappings
+--------------------------------------------------------------------------------------
 local view_mappings = {
     {event=events.toconfig_push, action=fs2020.event_sender("MobiFlight.A32NX_ECAM_BTN_TOCONFIG_Push")},
     {event=events.eng_push, action=fs2020.event_sender("MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_ENG")},
@@ -174,18 +164,32 @@ local view_mappings = {
     -- {event=events.rclr_push, action=},
 }
 
+local global_mappings = {
+    {event=events.page_change, action=reflect_page_change},
+}
+
+--------------------------------------------------------------------------------------
+-- view element definition
+--------------------------------------------------------------------------------------
+local function button_renderer(ctx, value)
+    if value > 0.8 then
+        ctx:draw_bitmap(btn_imgs.on, 0, 0)
+    else
+        ctx:draw_bitmap(btn_imgs.off, 0, 0)
+    end
+end
+
 local view_elements = {}
-for i, button in ipairs(buttons) do
+for key, button in pairs(buttons) do
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.operable_area{
             round_ratio = 0.1,
-            event_tap = events[button.key .. "_push"],
+            event_tap = events[key .. "_push"],
         },
         x = button.x, y = button.y,
         width = button_width, height = button_height,
     }
-    local change_event = events[button.key .. "_change"]
-    if change_event then
+    if button.led then
         local canvas = mapper.view_elements.canvas{
             logical_width = button_width,
             logical_height = button_height,
@@ -197,10 +201,15 @@ for i, button in ipairs(buttons) do
             x = button.x, y = button.y,
             width = button_width, height = button_height,
         }
-        view_mappings[#view_mappings + 1] = {
-            event = change_event,
-            action = canvas:value_setter()
-        }
+        local change_event = events[key .. "_change"]
+        if change_event then
+            global_mappings[#global_mappings + 1] = {
+                event = change_event,
+                action = canvas:value_setter()
+            }
+        else
+            button_status_elements[button.page] = canvas;
+        end
     end
 end
 
@@ -225,4 +234,4 @@ local function create_view_def(name, window)
     }
 end
 
-return create_view_def
+return {viewdef=create_view_def, observed_data=observed_data, mappings=global_mappings}
