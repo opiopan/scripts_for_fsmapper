@@ -14,22 +14,14 @@ if debug then
     scale = 0.5
 end
 
-local viewport_fcu = mapper.viewport{
-    name = "A320 FCU Viewport",
-    displayno = display,
-    x = 0, y = 0,
-    width = 0.5 * scale, height = vratio_panel * scale,
-    aspect_ratio = 2 / 3 / vratio_panel,
-    horizontal_alignment = "right",
-}
-
 local viewport_left = mapper.viewport{
     name = "A320 left Viewport",
     displayno = display,
-    x = 0, y = vratio_panel * scale,
-    width = 0.5 * scale, height = vratio_display * scale,
-    aspect_ratio = 2 / 3 / vratio_display,
+    x = 0, y = 0,
+    width = 0.5 * scale, height = (vratio_display + vratio_panel) * scale,
+    aspect_ratio = 2 / 3 / (vratio_panel + vratio_display),
     horizontal_alignment = "right",
+    vertical_alignment = "bottom",
 }
 
 local viewport_right = mapper.viewport{
@@ -39,6 +31,7 @@ local viewport_right = mapper.viewport{
     width = 0.5 * scale, height = (vratio_display + vratio_panel) * scale,
     aspect_ratio = 2 / 3 / (vratio_panel + vratio_display),
     horizontal_alignment = "left",
+    vertical_alignment = "bottom",
 }
 
 local viewport_menu = mapper.viewport{
@@ -47,6 +40,7 @@ local viewport_menu = mapper.viewport{
     x = 0, y = (vratio_display + vratio_panel) * scale,
     width = scale, height = vratio_menu * scale,
     aspect_ratio = 4 / 3 / vratio_menu,
+    vertical_alignment = "top",
 }
 
 --------------------------------------------------------------------------------------
@@ -58,12 +52,6 @@ local captured_window = {
     nd = mapper.view_elements.captured_window{name="A320 ND"},
     uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM"},
     lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM"},
-}
-
-local viewdef_dummy = {
-    name = "dummy",
-    elements = {{object = mapper.view_elements.operable_area{event_tap = 0}}},
-    background = graphics.color(0, 64, 0),
 }
 
 local function captured_window_view(name, window)
@@ -79,23 +67,30 @@ mapper.add_secondary_mappings(fcu_panel.mappings)
 local ecam_panel = require("lib/a320_ecam")
 fs2020.mfwasm.add_observed_data(ecam_panel.observed_data)
 mapper.add_secondary_mappings(ecam_panel.mappings)
+local efis_panel = require("lib/a320_efis")
+fs2020.mfwasm.add_observed_data(efis_panel.observed_data)
+mapper.add_secondary_mappings(efis_panel.mappings)
+local engine_panel = require("lib/a320_engine")
+fs2020.mfwasm.add_observed_data(engine_panel.observed_data)
+mapper.add_secondary_mappings(engine_panel.mappings)
+local mcdu_panel = require("lib/a320_cdu")
 
-viewport_fcu:register_view(fcu_panel.viewdef("fcu", captured_window.fcu))
-
-local viewdef_left_pfd = captured_window_view("pfd", captured_window.pfd)
-local viewdef_left_nd = captured_window_view("nd", captured_window.nd)
-local viewdef_left_uecam = captured_window_view("uecam", captured_window.uecam)
-local viewdef_left_lecam = captured_window_view("lecam", captured_window.lecam)
-local viewdef_right_pfd = ecam_panel.viewdef("r-pfd", captured_window.pfd)
-local viewdef_right_nd = ecam_panel.viewdef("r-nd", captured_window.nd)
-local viewdef_right_uecam = ecam_panel.viewdef("r-uecam", captured_window.uecam)
+local viewdef_left_pfd = fcu_panel.viewdef("l-pfd", captured_window.fcu, captured_window.pfd)
+local viewdef_left_nd = efis_panel.viewdef("l-nd", captured_window.nd)
+local viewdef_left_uecam = engine_panel.viewdef("l-uecam", captured_window.uecam)
+local viewdef_left_lecam = ecam_panel.viewdef("l-uecam", captured_window.lecam)
+local viewdef_left_mcdu = mcdu_panel
+local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_window.fcu, captured_window.pfd)
+local viewdef_right_nd = efis_panel.viewdef("r-nd", captured_window.nd)
+local viewdef_right_uecam = engine_panel.viewdef("r-uecam", captured_window.uecam)
 local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_window.lecam)
-local viewdef_right_mcdu = require("lib/a320_cdu")
+local viewdef_right_mcdu = mcdu_panel
 
 local view_left_pfd = viewport_left:register_view(viewdef_left_pfd)
 local view_left_nd = viewport_left:register_view(viewdef_left_nd)
 local view_left_uecam = viewport_left:register_view(viewdef_left_uecam)
 local view_left_lecam = viewport_left:register_view(viewdef_left_lecam)
+local view_left_mcdu = viewport_left:register_view(viewdef_left_mcdu)
 local view_right_nd = viewport_right:register_view(viewdef_right_nd)
 local view_right_pfd = viewport_right:register_view(viewdef_right_pfd)
 local view_right_uecam = viewport_right:register_view(viewdef_right_uecam)
@@ -137,7 +132,7 @@ local rule_left = {
         unselected = img_pfd_unselected,
         disabled = img_pfd_disabled,
         next = "nd", 
-        prev = "lecam",
+        prev = "mcdu",
         mutex = {pfd = true},
     },
     nd = {
@@ -166,9 +161,19 @@ local rule_left = {
         selected = img_lecam_selected,
         unselected = img_lecam_unselected,
         disabled = img_lecam_disabled,
-        next = "pfd",
+        next = "mcdu",
         prev = "uecam",
         mutex = {lecam = true},
+    },
+    mcdu = {
+        pos = 4, 
+        view = view_left_mcdu,
+        selected = img_mcdu_selected,
+        unselected = img_mcdu_unselected,
+        disabled = img_mcdu_disabled,
+        next = "pfd",
+        prev = "lecam",
+        mutex = {mcdu = true},
     },
 }
 
@@ -221,7 +226,7 @@ local rule_right = {
         disabled = img_mcdu_disabled,
         next = "pfd",
         prev = "lecam",
-        mutex = {},
+        mutex = {mcdu = true},
     },
 }
 
@@ -292,10 +297,6 @@ g1000_dev = mapper.device{
     modifiers = {
         {class = "binary", modtype = "button"},
         {class = "relative", modtype = "incdec"},
-        {name = "EC8U", modtype = "button", modparam={repeat_interval = 80}},
-        {name = "EC8D", modtype = "button", modparam={repeat_interval = 80}},
-        {name = "EC8R", modtype = "button", modparam={repeat_interval = 80}},
-        {name = "EC8L", modtype = "button", modparam={repeat_interval = 80}},
     },
 }
 local g1000 = g1000_dev.events
@@ -305,11 +306,41 @@ local mappings = {
     {event=g1000.SW15.down, action=function () change_view("left", "nd", "right") end},
     {event=g1000.SW16.down, action=function () change_view("left", "uecam", "right") end},
     {event=g1000.SW17.down, action=function () change_view("left", "lecam", "right") end},
+    {event=g1000.SW18.down, action=function () change_view("left", "mcdu", "right") end},
     {event=g1000.SW21.down, action=function () change_view("right", "pfd", "left") end},
     {event=g1000.SW22.down, action=function () change_view("right", "nd", "left") end},
     {event=g1000.SW23.down, action=function () change_view("right", "uecam", "left") end},
     {event=g1000.SW24.down, action=function () change_view("right", "lecam", "left") end},
     {event=g1000.SW25.down, action=function () change_view("right", "mcdu", "left") end},
+
+    {event=g1000.EC1.increment, action=fs2020.event_sender("MobiFlight.SPD_Increase")},
+    {event=g1000.EC1.decrement, action=fs2020.event_sender("MobiFlight.SPD_Decrease")},
+    {event=g1000.EC1P.down, action=fs2020.event_sender("MobiFlight.SPD_Push")},
+    {event=g1000.SW12.down, action=fs2020.event_sender("MobiFlight.SPD_Pull")},
+    {event=g1000.EC3.increment, action=fs2020.event_sender("MobiFlight.HDG_Increase")},
+    {event=g1000.EC3.decrement, action=fs2020.event_sender("MobiFlight.HDG_Decrease")},
+    {event=g1000.EC3P.down, action=fs2020.event_sender("MobiFlight.HDG_Push")},
+    {event=g1000.SW4.down, action=fs2020.event_sender("MobiFlight.HDG_Pull")},
+    {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:A32NX.FCU_ALT_INC)")},
+    {event=g1000.EC4X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:A32NX.FCU_ALT_DEC)")},
+    {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:A32NX.FCU_ALT_INC)")},
+    {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:A32NX.FCU_ALT_DEC)")},
+    {event=g1000.EC4P.down, action=fs2020.event_sender("MobiFlight.A32NX_FCU_ALT_PUSH")},
+    {event=g1000.SW5.down, action=fs2020.event_sender("MobiFlight.A32NX_FCU_ALT_PULL")},
+    {event=g1000.EC5.increment, action=fs2020.event_sender("MobiFlight.A32NX_FCU_VS_INC")},
+    {event=g1000.EC5.decrement, action=fs2020.event_sender("MobiFlight.A32NX_FCU_VS_DEC")},
+    {event=g1000.EC5P.down, action=fs2020.event_sender("MobiFlight.A32NX_FCU_VS_PUSH")},
+    {event=g1000.SW10.down, action=fs2020.event_sender("MobiFlight.A32NX_FCU_VS_PULL")},
+    {event=g1000.SW2.down, action=fs2020.event_sender("MobiFlight.Autopilot_1_Push")},
+    {event=g1000.SW3.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_FD_PUSH")},
+    {event=g1000.SW8.down, action=fs2020.event_sender("MobiFlight.A320NX_APPR")},
+
+    {event=g1000.EC8.increment, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_RANGE_INC")},
+    {event=g1000.EC8.decrement, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_RANGE_DEC")},
+    {event=g1000.EC8L.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_DEC")},
+    {event=g1000.EC8U.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_DEC")},
+    {event=g1000.EC8R.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_INC")},
+    {event=g1000.EC8D.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_INC")},
 }
 
 viewport_menu:register_view{
@@ -322,21 +353,3 @@ viewport_menu:register_view{
 }
 
 mapper.start_viewports()
-
---------------------------------------------------------------------------------------
--- Register Simvar observation event
---------------------------------------------------------------------------------------
--- local simvar_evt = {
---     alt2 = mapper.register_event("simvar:altitude"),
---     ap_fd2 = mapper.register_event("simvar:A320_AP_FD"),
--- }
-
--- fs2020.add_observed_simvars{
---     {name="PLANE ALTITUDE", unit="Feet", event=simvar_evt.alt2, epsilon=0.1},
---     {name="AUTOPILOT FLIGHT DIRECTOR ACTIVE:1", unit="Bool", event=simvar_evt.ap_fd2, epsilon=0.1},
--- }
-
--- mapper.set_primery_mappings{
---     {event=g1000.AUX2D.down, action=fs2020.mfwasm.rpn_executer("(>K:TOGGLE_FLIGHT_DIRECTOR)")},
---     {event=g1000.AUX2U.down, action=fs2020.mfwasm.rpn_executer("1 (>L:XMLVAR_Baro_Selector_HPA_1)")},
--- }

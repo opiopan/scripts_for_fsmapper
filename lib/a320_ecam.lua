@@ -2,7 +2,7 @@ local view_width = 1084
 local view_height = 1541
 
 --------------------------------------------------------------------------------------
--- register events & observed data
+-- register events
 --------------------------------------------------------------------------------------
 local events = {
     toconfig_push = mapper.register_event("ECAM:T.O_CONFIG:push"),
@@ -26,14 +26,15 @@ local events = {
     rclr_change = mapper.register_event("ECAM:R_CLR:change"),
 
     page_change = mapper.register_event("ECAM:current page changed"),
-    page_change_asobo = mapper.register_event("ECAM:current page changed (ASOBO)"),
 }
 
+--------------------------------------------------------------------------------------
+-- observed data definitions
+--------------------------------------------------------------------------------------
 local observed_data = {
     {rpn="()", event=events.lclr_change},
     {rpn="()", event=events.rclr_change},
     {rpn="(L:A32NX_ECAM_SD_CURRENT_PAGE_INDEX)", event=events.page_change},
-    {rpn="(L:XMLVAR_ECAM_CURRENT_PAGE)", event=events.page_change_asobo},
 }
 
 --------------------------------------------------------------------------------------
@@ -93,7 +94,7 @@ local grid_h_num = 6
 local grid_v_num = 3
 local grid_width = view_width - 200
 local grid_height = view_height - view_width - 210
-local grid_bottom_gap = 50
+local grid_bottom_gap = 40
 local grid_x = (view_width - grid_width) / 2
 local grid_y = view_height - grid_height - grid_bottom_gap - view_width
 local grid_h_space = (grid_width - button_width) / (grid_h_num - 1)
@@ -104,7 +105,7 @@ for key, button in pairs(buttons) do
     buttons[key].y = buttons[key].y * grid_v_space + grid_y
 end
 
-buttons["toconfig"] = {x=buttons.bleed.x, y=50}
+buttons["toconfig"] = {x=buttons.bleed.x, y=grid_bottom_gap}
 
 --------------------------------------------------------------------------------------
 -- create background image
@@ -115,6 +116,7 @@ ctx:set_brush(graphics.color(80, 105, 123))
 ctx:fill_rectangle(0, 0, view_width, view_height - view_width)
 ctx:set_brush(graphics.color(40, 52, 61))
 ctx:fill_rectangle(0, 0, 1.5, view_height)
+ctx:fill_rectangle(view_width - 1.5, 0, 1.5, view_height)
 
 for key, button in pairs(buttons) do
     ctx:draw_bitmap(btn_imgs[key], button.x, button.y)
