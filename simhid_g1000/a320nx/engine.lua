@@ -1,7 +1,7 @@
 local view_width = 1084
 local view_height = 1541
 
-local assets = require("lib/a320_assets")
+local assets = require("a320nx/assets")
 
 --------------------------------------------------------------------------------------
 -- create background image
@@ -18,6 +18,7 @@ ctx:fill_rectangle(view_width - 1.5, 0, 1.5, view_height)
 -- view element definitions
 --------------------------------------------------------------------------------------
 local view_elements = {}
+local global_mappings = {}
 
 --------------------------------------------------------------------------------------
 -- view definition generator

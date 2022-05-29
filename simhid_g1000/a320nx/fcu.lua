@@ -1,7 +1,7 @@
 local view_width = 1084
 local view_height = 1541
 
-local assets = require("lib/a320_assets")
+local assets = require("a320nx/assets")
 
 --------------------------------------------------------------------------------------
 -- register events
