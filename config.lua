@@ -19,7 +19,6 @@ mapper.set_primery_mappings(context.hotas.mappings)
 
 local function change_aircraft(host, aircraft)
     if context.controller then
-        mapper.print("clean previous environment")
         context.simhid_g1000.stop()
         context.hotas.stop()
         mapper.reset_viewports()

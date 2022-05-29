@@ -53,6 +53,7 @@ local function start(config)
         nd = mapper.view_elements.captured_window{name="A320 ND"},
         uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM"},
         lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM"},
+        mcdu = mapper.view_elements.captured_window{name = "A320 MCDU"},
     }
 
     local function captured_window_view(name, window)
@@ -82,12 +83,12 @@ local function start(config)
     local viewdef_left_nd = efis_panel.viewdef("l-nd", captured_window.nd)
     local viewdef_left_uecam = engine_panel.viewdef("l-uecam", captured_window.uecam)
     local viewdef_left_lecam = ecam_panel.viewdef("l-uecam", captured_window.lecam)
-    local viewdef_left_mcdu = mcdu_panel
+    local viewdef_left_mcdu = mcdu_panel("l-mcdu", captured_window.mcdu)
     local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_window.fcu, captured_window.pfd)
     local viewdef_right_nd = efis_panel.viewdef("r-nd", captured_window.nd)
     local viewdef_right_uecam = engine_panel.viewdef("r-uecam", captured_window.uecam)
     local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_window.lecam)
-    local viewdef_right_mcdu = mcdu_panel
+    local viewdef_right_mcdu = mcdu_panel("r-mcdu", captured_window.mcdu)
 
     local view_left_pfd = viewport_left:register_view(viewdef_left_pfd)
     local view_left_nd = viewport_left:register_view(viewdef_left_nd)
@@ -366,6 +367,7 @@ end
 local function stop()
     a320_context.device:close()
     a320_context.device = nil
+    fs2020.mfwasm.clear_observed_data()
 end
 
 return {

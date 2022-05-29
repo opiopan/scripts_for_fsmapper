@@ -165,651 +165,662 @@ local assets = require("a320nx/assets")
 local scale_factor = assets.cdu.width /view_width
 local bg_image = assets.cdu:create_partial_bitmap(0, 0, view_width * scale_factor, view_height * scale_factor)
 
-local view_definition = {
-    name = "MCDU",
-    background = bg_image,
-    logical_width = view_width,
-    logical_height = view_height,
-    horizontal_alignment = "center",
-    vertical_alignment = "top",
-    mappings = maps,
-    elements = {
-        {
-            object = mapper.view_elements.captured_window({name = "A320 MCDU"}),
-            x = 168, y = 0,
-            width = 726, height = 670
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l1,
-            }),
-            x = 20, y = 95,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l2,
-            }),
-            x = 20, y = 177,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l3,
-            }),
-            x = 20, y = 266,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l4,
-            }),
-            x = 20, y = 354,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l5,
-            }),
-            x = 20, y = 440,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.l6,
-            }),
-            x = 20, y = 534,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r1,
-            }),
-            x = 988, y = 98,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r2,
-            }),
-            x = 988, y = 180,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r3,
-            }),
-            x = 988, y = 269,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r4,
-            }),
-            x = 988, y = 357,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r5,
-            }),
-            x = 988, y = 443,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_side,
-                event_tap = cdu.r6,
-            }),
-            x = 988, y = 537,
-            width = 73, height = 58,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.dir,
-            }),
-            x = 120, y = 711,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.prog,
-            }),
-            x = 247, y = 712,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.perf,
-            }),
-            x = 374, y = 712,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.init,
-            }),
-            x = 501, y = 712,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.data,
-            }),
-            x = 627, y = 712,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.fpln,
-            }),
-            x = 120, y = 799,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.rad,
-            }),
-            x = 247, y = 799,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.fuel,
-            }),
-            x = 374, y = 799,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.sec,
-            }),
-            x = 501, y = 799,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.atc,
-            }),
-            x = 627, y = 800,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.menu,
-            }),
-            x = 754, y = 800,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.airport,
-            }),
-            x = 120, y = 883,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.prev,
-            }),
-            x = 120, y = 973,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.up,
-            }),
-            x = 247, y = 973,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.next,
-            }),
-            x = 120, y = 1057,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_func,
-                event_tap = cdu.down,
-            }),
-            x = 247, y = 1057,
-            width = 119, height = 63,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num1,
-            }),
-            x = 135, y = 1163,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num2,
-            }),
-            x = 239, y = 1163,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num3,
-            }),
-            x = 344, y = 1163,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num4,
-            }),
-            x = 135, y = 1256,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num5,
-            }),
-            x = 239, y = 1256,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num6,
-            }),
-            x = 344, y = 1256,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num7,
-            }),
-            x = 136, y = 1350,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num8,
-            }),
-            x = 240, y = 1350,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num9,
-            }),
-            x = 345, y = 1350,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.dot,
-            }),
-            x = 136, y = 1440,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.num0,
-            }),
-            x = 240, y = 1440,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_num,
-                event_tap = cdu.plusminus,
-            }),
-            x = 345, y = 1440,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.a,
-            }),
-            x = 453, y = 921,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.b,
-            }),
-            x = 558, y = 923,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.c,
-            }),
-            x = 666, y = 921,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.d,
-            }),
-            x = 767.5, y = 923,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.e,
-            }),
-            x = 874, y = 923,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.f,
-            }),
-            x = 453, y = 1018,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.g,
-            }),
-            x = 558, y = 1020,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.h,
-            }),
-            x = 666, y = 1018,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.i,
-            }),
-            x = 767.5, y = 1020,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.j,
-            }),
-            x = 874, y = 1020,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.k,
-            }),
-            x = 453, y = 1126,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.l,
-            }),
-            x = 558, y = 1128,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.m,
-            }),
-            x = 666, y = 1126,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.n,
-            }),
-            x = 767.5, y = 1128,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.o,
-            }),
-            x = 874, y = 1128,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.p,
-            }),
-            x = 453, y = 1233,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.q,
-            }),
-            x = 558, y = 1235,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.r,
-            }),
-            x = 666, y = 1233,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.s,
-            }),
-            x = 767.5, y = 1235,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.t,
-            }),
-            x = 874, y = 1235,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.u,
-            }),
-            x = 453, y = 1339,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.v,
-            }),
-            x = 558, y = 1341,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.w,
-            }),
-            x = 666, y = 1339,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.x,
-            }),
-            x = 767.5, y = 1341,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.y,
-            }),
-            x = 874, y = 1341,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.z,
-            }),
-            x = 455.5, y = 1443,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.div,
-            }),
-            x = 560.5, y = 1445,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.sp,
-            }),
-            x = 668.5, y = 1443,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.ovfy,
-            }),
-            x = 770, y = 1445,
-            width = 80, height = 80,
-        },
-        {
-            object = mapper.view_elements.operable_area({
-                reaction_color = rcolor,
-                round_ratio = rratio_alphabet,
-                event_tap = cdu.clr,
-            }),
-            x = 876.5, y = 1445,
-            width = 80, height = 80,
-        },
-    }
+local view_elements = {
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l1,
+        }),
+        x = 20, y = 95,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l2,
+        }),
+        x = 20, y = 177,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l3,
+        }),
+        x = 20, y = 266,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l4,
+        }),
+        x = 20, y = 354,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l5,
+        }),
+        x = 20, y = 440,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.l6,
+        }),
+        x = 20, y = 534,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r1,
+        }),
+        x = 988, y = 98,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r2,
+        }),
+        x = 988, y = 180,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r3,
+        }),
+        x = 988, y = 269,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r4,
+        }),
+        x = 988, y = 357,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r5,
+        }),
+        x = 988, y = 443,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_side,
+            event_tap = cdu.r6,
+        }),
+        x = 988, y = 537,
+        width = 73, height = 58,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.dir,
+        }),
+        x = 120, y = 711,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.prog,
+        }),
+        x = 247, y = 712,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.perf,
+        }),
+        x = 374, y = 712,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.init,
+        }),
+        x = 501, y = 712,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.data,
+        }),
+        x = 627, y = 712,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.fpln,
+        }),
+        x = 120, y = 799,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.rad,
+        }),
+        x = 247, y = 799,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.fuel,
+        }),
+        x = 374, y = 799,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.sec,
+        }),
+        x = 501, y = 799,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.atc,
+        }),
+        x = 627, y = 800,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.menu,
+        }),
+        x = 754, y = 800,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.airport,
+        }),
+        x = 120, y = 883,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.prev,
+        }),
+        x = 120, y = 973,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.up,
+        }),
+        x = 247, y = 973,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.next,
+        }),
+        x = 120, y = 1057,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_func,
+            event_tap = cdu.down,
+        }),
+        x = 247, y = 1057,
+        width = 119, height = 63,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num1,
+        }),
+        x = 135, y = 1163,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num2,
+        }),
+        x = 239, y = 1163,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num3,
+        }),
+        x = 344, y = 1163,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num4,
+        }),
+        x = 135, y = 1256,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num5,
+        }),
+        x = 239, y = 1256,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num6,
+        }),
+        x = 344, y = 1256,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num7,
+        }),
+        x = 136, y = 1350,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num8,
+        }),
+        x = 240, y = 1350,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num9,
+        }),
+        x = 345, y = 1350,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.dot,
+        }),
+        x = 136, y = 1440,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.num0,
+        }),
+        x = 240, y = 1440,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_num,
+            event_tap = cdu.plusminus,
+        }),
+        x = 345, y = 1440,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.a,
+        }),
+        x = 453, y = 921,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.b,
+        }),
+        x = 558, y = 923,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.c,
+        }),
+        x = 666, y = 921,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.d,
+        }),
+        x = 767.5, y = 923,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.e,
+        }),
+        x = 874, y = 923,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.f,
+        }),
+        x = 453, y = 1018,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.g,
+        }),
+        x = 558, y = 1020,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.h,
+        }),
+        x = 666, y = 1018,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.i,
+        }),
+        x = 767.5, y = 1020,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.j,
+        }),
+        x = 874, y = 1020,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.k,
+        }),
+        x = 453, y = 1126,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.l,
+        }),
+        x = 558, y = 1128,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.m,
+        }),
+        x = 666, y = 1126,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.n,
+        }),
+        x = 767.5, y = 1128,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.o,
+        }),
+        x = 874, y = 1128,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.p,
+        }),
+        x = 453, y = 1233,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.q,
+        }),
+        x = 558, y = 1235,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.r,
+        }),
+        x = 666, y = 1233,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.s,
+        }),
+        x = 767.5, y = 1235,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.t,
+        }),
+        x = 874, y = 1235,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.u,
+        }),
+        x = 453, y = 1339,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.v,
+        }),
+        x = 558, y = 1341,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.w,
+        }),
+        x = 666, y = 1339,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.x,
+        }),
+        x = 767.5, y = 1341,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.y,
+        }),
+        x = 874, y = 1341,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.z,
+        }),
+        x = 455.5, y = 1443,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.div,
+        }),
+        x = 560.5, y = 1445,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.sp,
+        }),
+        x = 668.5, y = 1443,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.ovfy,
+        }),
+        x = 770, y = 1445,
+        width = 80, height = 80,
+    },
+    {
+        object = mapper.view_elements.operable_area({
+            reaction_color = rcolor,
+            round_ratio = rratio_alphabet,
+            event_tap = cdu.clr,
+        }),
+        x = 876.5, y = 1445,
+        width = 80, height = 80,
+    },
 }
 
-return view_definition
+local function create_view_def(name, window)
+    local elements = {
+        object =window,
+        x = 168, y = 0,
+        width = 726, height = 670
+    }
+
+    for i, element in ipairs(view_elements) do
+        elements[#elements + 1] = element
+    end
+
+    local view_definition = {
+        name = name,
+        elements = elements,
+        background = bg_image,
+        logical_width = view_width,
+        logical_height = view_height,
+        horizontal_alignment = "center",
+        vertical_alignment = "top",
+        mappings = maps,
+    }
+
+    return view_definition
+end
+
+return create_view_def
