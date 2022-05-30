@@ -800,9 +800,11 @@ local view_elements = {
 
 local function create_view_def(name, window)
     local elements = {
-        object =window,
-        x = 168, y = 0,
-        width = 726, height = 670
+        {
+            object =window,
+            x = 168, y = 0,
+            width = 726, height = 670
+        }
     }
 
     for i, element in ipairs(view_elements) do

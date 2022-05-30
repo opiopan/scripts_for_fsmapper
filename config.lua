@@ -13,29 +13,30 @@ package.path = package.path .. ";" .. mapper.script_dir .. "\\x56\\?.lua"
 local context = {
     simhid_g1000 = require("simhid_g1000"),
     hotas = require("x56"),
-    controller = nil,
 }
-mapper.set_primery_mappings(context.hotas.mappings)
+
+mapper.set_primery_mappings(context.simhid_g1000.init(config))
+mapper.set_primery_mappings(context.hotas.init(config))
 
 local function change_aircraft(host, aircraft)
-    if context.controller then
-        context.simhid_g1000.stop()
-        context.hotas.stop()
-        mapper.reset_viewports()
-        mapper.set_secondary_mappings({})
-    end
+    mapper.reset_viewports()
+    mapper.set_secondary_mappings({})
     
-    context.controller = context.simhid_g1000.start(config, host, aircraft)
-    context.hotas.start(host, aircraft, context.controller)
-    if context.controller.need_to_start_viewports then
+    local controller = context.simhid_g1000.change(host, aircraft)
+    context.hotas.change(host, aircraft, controller)
+    if controller.need_to_start_viewports then
         mapper.start_viewports()
     end
 end
-
-change_aircraft("", "")
 
 mapper.add_primery_mappings({
     {event=mapper.events.change_aircraft, action=function (event, value)
         change_aircraft(value.host, value.aircraft)
     end},
 })
+
+if config.debug then
+    change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
+else
+    change_aircraft("", "")
+end

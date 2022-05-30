@@ -435,7 +435,7 @@ local function create_view_def(name, window)
         elements[#elements + 1] = element
     end
     elements[#elements + 1] = {
-        object=window, x= 0, y=view_height - view_width, width=view_width, height=view_width
+        object=window, x= 0, y=view_height - view_width, width=view_width, height=view_width + 2
     }
 
     return {

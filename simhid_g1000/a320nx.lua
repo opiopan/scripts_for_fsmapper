@@ -234,6 +234,7 @@ local function start(config)
         },
     }
 
+
     local menu_context = {
         left = {current = "pfd", rule = rule_left, viewport = viewport_left},
         right = {current = "nd", rule = rule_right, viewport = viewport_right},
