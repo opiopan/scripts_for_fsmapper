@@ -38,7 +38,7 @@ local observed_data = {
     {rpn="(L:A32NX_AUTOTHRUST_STATUS)", event=events.athr_change},
     {rpn="(L:A32NX_FMA_EXPEDITE_MODE)", event=events.exped_change},
     {rpn="(L:A32NX_FCU_APPR_MODE_ACTIVE)", event=events.appr_change},
-    {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool)", event=events.fd_change},
+    {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool) (L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or and", event=events.fd_change},
     {rpn="(L:BTN_LS_1_FILTER_ACTIVE)", event=events.ls_change},
 }
 
