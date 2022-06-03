@@ -4,4 +4,5 @@ return {
     cdu = graphics.bitmap("assets/a320_cdu.png"),
     fcu = graphics.bitmap("assets/a320_fcu.png"),
     efis = graphics.bitmap("assets/a320_efis.png"),
+    engine = graphics.bitmap("assets/a320_engine.png"),
 }

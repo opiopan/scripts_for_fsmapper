@@ -28,6 +28,7 @@ local events = {
     brkdecel_change = mapper.register_event("EFIS:AUTO BRK DECEL:change"),
     terronnd_push = mapper.register_event("TERR ON ND:push"),
     terronnd_change = mapper.register_event("TERR ON ND:change"),
+    chrono_push = mapper.register_event("EFIS:CHRONO:push")
 }
 
 --------------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ local view_mappings = {
         filter.delay(200, fs2020.event_sender("MobiFlight.Autobrake_Max_Toggle"))
     )},
     {event=events.terronnd_push, action=fs2020.event_sender("MobiFlight.A320_Neo_MFD_BTN_TERRONND_1")},
+    {event=events.chrono_push, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_CHRONO_PUSH")},
 }
 
 local global_mappings = {
@@ -77,12 +79,14 @@ local global_mappings = {
 local view_elements={}
 
 local button_size = {width = 96, height = 66, rratio = 0.1}
+local rbutton_size = {width = 76, height = 76, rratio = 0.5}
 local buttons = {
-    cstr = {x=34, y=32, ix=1},
-    wpt = {x=147, y=32, ix=3},
-    vord = {x=260, y=32, ix=2},
-    ndb = {x=373, y=32, ix=4},
-    aprt = {x=486, y=32, ix=5},
+    cstr = {x=34, y=32, ix=1, size=button_size},
+    wpt = {x=147, y=32, ix=3, size=button_size},
+    vord = {x=260, y=32, ix=2, size=button_size},
+    ndb = {x=373, y=32, ix=4, size=button_size},
+    aprt = {x=486, y=32, ix=5, size=button_size},
+    chrono = {x=932, y=332, size=rbutton_size},
 }
 
 local img_off = assets.buttons:create_partial_bitmap(0, 0, button_size.width, button_size.height / 2)
@@ -119,24 +123,26 @@ end
 for key, button in pairs(buttons) do
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.operable_area{
-            round_ratio = button_size.rratio,
+            round_ratio = button.size.rratio,
             event_tap = events[key .. "_push"]
         },
         x = button.x, y= button.y,
-        width = button_size.width, height = button_size.height,
+        width = button.size.width, height = button.size.height,
     }
-    local canvas = mapper.view_elements.canvas{
-        logical_width = button_size.width,
-        logical_height = button_size.height,
-        value = 0,
-        renderer = render_button,
-    }
-    view_elements[#view_elements + 1] = {
-        object = canvas,
-        x = button.x, y = button.y,
-        width = button_size.width, height = button_size.height,
-    }
-    nd_filter_buttons[button.ix] = canvas
+    if button.ix then
+        local canvas = mapper.view_elements.canvas{
+            logical_width = button.size.width,
+            logical_height = button.size.height,
+            value = 0,
+            renderer = render_button,
+        }
+        view_elements[#view_elements + 1] = {
+            object = canvas,
+            x = button.x, y = button.y,
+            width = button.size.width, height = button.size.height,
+        }
+        nd_filter_buttons[button.ix] = canvas
+    end
 end
 
 --------------------------------------------------------------------------------------
@@ -149,7 +155,10 @@ local knobs = {
 }
 
 local function create_knob_image(ix)
-    return assets.buttons:create_partial_bitmap(knob_size.width * ix, 66, knob_size.width, knob_size.height)
+    local y_gap = 2
+    local bitmap = assets.buttons:create_partial_bitmap(knob_size.width * ix, 66 + y_gap, knob_size.width, knob_size.height - y_gap)
+    bitmap:set_origin{x=0, y=-y_gap}
+    return bitmap
 end
 local knob_images = {
     create_knob_image(0),
@@ -381,7 +390,7 @@ end
 --------------------------------------------------------------------------------------
 -- create view element definitions for terrain on ND button
 --------------------------------------------------------------------------------------
-local terr_button = {x=801, y=320}
+local terr_button = {x=694, y=320}
 
 view_elements[#view_elements + 1] = {
     object = mapper.view_elements.operable_area{
