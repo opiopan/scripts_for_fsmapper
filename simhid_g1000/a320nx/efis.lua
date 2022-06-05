@@ -148,7 +148,7 @@ end
 --------------------------------------------------------------------------------------
 -- create view element definitions for ND mode knob and Range knob
 --------------------------------------------------------------------------------------
-local knob_size = {width = 140, height = 140}
+local knob_size = {width = assets.knob.width, height = assets.knob.height}
 local knobs = {
     ndmode = {x = 93, y = 157},
     ndrange = {x = 383, y = 157},
@@ -156,7 +156,12 @@ local knobs = {
 
 local function create_knob_image(ix)
     local y_gap = 2
-    local bitmap = assets.buttons:create_partial_bitmap(knob_size.width * ix, 66 + y_gap, knob_size.width, knob_size.height - y_gap)
+    local bitmap = assets.buttons:create_partial_bitmap(
+        assets.knob.x + knob_size.width * ix,
+        assets.knob.y + y_gap,
+        knob_size.width,
+        knob_size.height - y_gap
+    )
     bitmap:set_origin{x=0, y=-y_gap}
     return bitmap
 end
@@ -199,14 +204,18 @@ end
 --------------------------------------------------------------------------------------
 -- create view element definitions for the toggle switches to select VOR or ADF
 --------------------------------------------------------------------------------------
-local switch_size = {width = 190, height = 84, rratio = 0.2}
+local switch_size = {width = assets.htoggle.width, height = assets.htoggle.height, rratio = 0.2}
 local switches = {
     adfvor1 = {x = 68, y = 338, ix = 1},
     adfvor2 = {x = 358, y = 338, ix = 2},
 }
 
 local function create_switch_image(ix)
-    return assets.buttons:create_partial_bitmap(switch_size.width * ix + 840, 67, switch_size.width, switch_size.height)
+    return assets.buttons:create_partial_bitmap(
+        switch_size.width * ix + assets.htoggle.x,
+        assets.htoggle.y,
+        switch_size.width,
+        switch_size.height)
 end
 local switch_images = {
     create_switch_image(0),
@@ -288,7 +297,11 @@ end
 --------------------------------------------------------------------------------------
 -- create view element definitions for Auto Brake Mode buttons
 --------------------------------------------------------------------------------------
-local sbutton_size = {width = 102, height = 102, rratio = 0.05}
+local sbutton_size = {
+    width = assets.sbutton_indicator.width,
+    height = assets.sbutton_indicator.height * 2,
+    rratio = 0.05
+}
 local brk_buttons = {
     brklo = {x=675, y=113, ix=1},
     brkmed = {x=791, y=113, ix=2},
@@ -296,7 +309,11 @@ local brk_buttons = {
 }
 
 local function create_indicator_image(ix)
-    return assets.buttons:create_partial_bitmap(sbutton_size.width * ix + 840, 152, sbutton_size.width, sbutton_size.height / 2)
+    return assets.buttons:create_partial_bitmap(
+        sbutton_size.width * ix + assets.sbutton_indicator.x,
+        assets.sbutton_indicator.y,
+        sbutton_size.width,
+        sbutton_size.height / 2)
 end
 local img_sbutton_inop = create_indicator_image(0)
 local img_sbutton_on_gray = create_indicator_image(1)

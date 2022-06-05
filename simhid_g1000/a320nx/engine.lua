@@ -87,9 +87,13 @@ local global_mappings = {
 --------------------------------------------------------------------------------------
 local view_elements = {}
 
-local eswitch_size = {width=144, height=243, rratio=0.1}
+local eswitch_size = {width=assets.engsw.width, height=assets.engsw.height, rratio=0.1}
 local function create_eswitch_bitmap(ix)
-    return assets.buttons:create_partial_bitmap(1634 + eswitch_size.width * ix, 0, eswitch_size.width, eswitch_size.height)
+    return assets.buttons:create_partial_bitmap(
+        assets.engsw.x + eswitch_size.width * ix,
+        assets.engsw.y,
+        eswitch_size.width,
+        eswitch_size.height)
 end
 local eswitches = {
     master1 = {x=68, y=20, size=eswitch_size, off=create_eswitch_bitmap(0), on=create_eswitch_bitmap(1)},
@@ -132,10 +136,14 @@ end
 --------------------------------------------------------------------------------------
 -- create view element definitions for Engine Mode Knob
 --------------------------------------------------------------------------------------
-local knob_size = {width=140, height=140, rratio=0.5}
+local knob_size = {width=assets.knob.width, height=assets.knob.height, rratio=0.5}
 local function create_knob_image(ix)
     local y_gap = 2
-    local bitmap = assets.buttons:create_partial_bitmap(knob_size.width * ix, 66 + y_gap, knob_size.width, knob_size.height - y_gap)
+    local bitmap = assets.buttons:create_partial_bitmap(
+        knob_size.width * ix + assets.knob.x,
+        assets.knob.y + y_gap,
+        knob_size.width, 
+        knob_size.height - y_gap)
     bitmap:set_origin{x=0, y=-y_gap}
     return bitmap
 end
@@ -198,11 +206,14 @@ global_mappings[#global_mappings + 1] = {event=events.mode_change, action=set_em
 --------------------------------------------------------------------------------------
 -- create view element definitions for 2 zone indicator buttons
 --------------------------------------------------------------------------------------
-local dibutton_size = {width=102, height=102, rratio=0.05}
+local dibutton_size = {
+    width=assets.sbutton_indicator.width,
+    height=assets.sbutton_indicator.height * 2,
+    rratio=0.05}
 local function create_indicator_image(x, y)
     return assets.buttons:create_partial_bitmap(
-        dibutton_size.width * x + 840,
-        dibutton_size.height / 2 * y + 152,
+        dibutton_size.width * x + assets.sbutton_indicator.x,
+        dibutton_size.height / 2 * y + assets.sbutton_indicator.y,
         dibutton_size.width, dibutton_size.height / 2
     )
 end

@@ -26,6 +26,11 @@ local events = {
     fd_change = mapper.register_event("FCU:fd:change"),
     ls_push = mapper.register_event("FCU:LS:push"),
     ls_change = mapper.register_event("FCU:LS:push"),
+    hghpa_push = mapper.register_event("FCU:inHg_hPa:push"),
+    baro_mode_change = mapper.register_event("FCU:BARO Mode:change"),
+    baro_unit_change = mapper.register_event("FCU:BARO Unit:change"),
+    baro_inhg_change = mapper.register_event("FCU:BARO InHg:change"),
+    baro_hpa_change = mapper.register_event("FCU:BARO hPa:change"),
 }
 
 --------------------------------------------------------------------------------------
@@ -40,6 +45,10 @@ local observed_data = {
     {rpn="(L:A32NX_FCU_APPR_MODE_ACTIVE)", event=events.appr_change},
     {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool) (L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or and", event=events.fd_change},
     {rpn="(L:BTN_LS_1_FILTER_ACTIVE)", event=events.ls_change},
+    {rpn="(L:XMLVAR_Baro1_Mode)", event=events.baro_mode_change},
+    {rpn="(L:XMLVAR_BARO_SELECTOR_HPA_1)", event=events.baro_unit_change},
+    {rpn="(A:KOHLSMAN SETTING HG:1,Inches of Mercury)", event=events.baro_inhg_change},
+    {rpn="(A:KOHLSMAN SETTING MB:1,Millibars)", event=events.baro_hpa_change},
 }
 
 --------------------------------------------------------------------------------------
@@ -57,6 +66,7 @@ local view_mappings = {
     {event=events.appr_push, action=fs2020.event_sender("MobiFlight.A320NX_APPR")},
     {event=events.fd_push, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_FD_PUSH")},
     {event=events.ls_push, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_LS_1_PUSH")},
+    {event=events.hghpa_push, action=fs2020.mfwasm.rpn_executer("(L:XMLVAR_BARO_SELECTOR_HPA_1) 0 == if{ 1 (>L:XMLVAR_BARO_SELECTOR_HPA_1) } els{ 0 (>L:XMLVAR_BARO_SELECTOR_HPA_1) }")},
 }
 
 local global_mappings = {
@@ -80,10 +90,11 @@ local buttons = {
     appr = {x=968, y=174, size=rbutton_size},
     fd = {x=56, y=330, size=rbutton_size},
     ls = {x=216, y=330, size=rbutton_size},
+    hghpa = {x=952, y=322, size=cbutton_size}
 }
 
 --------------------------------------------------------------------------------------
--- create view element definition
+-- create view element definition for buttons
 --------------------------------------------------------------------------------------
 local img_off = assets.buttons:create_partial_bitmap(0, 0, rbutton_size.width, rbutton_size.height / 2)
 local img_on = assets.buttons:create_partial_bitmap(0, rbutton_size.height / 2, rbutton_size.width, rbutton_size.height / 2)
@@ -125,6 +136,110 @@ for key, button in pairs(buttons) do
         }
     end
 end
+
+--------------------------------------------------------------------------------------
+-- create view element definition for baro display
+--------------------------------------------------------------------------------------
+local function create_mode_bitmap(ix)
+    return assets.buttons:create_partial_bitmap(
+        assets.baro_mode.x + assets.baro_mode.width * ix, assets.baro_mode.y,
+        assets.baro_mode.width, assets.baro_mode.height
+    )
+end
+local mode_bitmaps = {
+    create_mode_bitmap(0),
+    create_mode_bitmap(1),
+}
+local baro_context = {
+    inhg = 29.92,
+    hpa = 1013.2,
+    mode = 1,
+    unit = 0,
+}
+
+local canvas_digits = mapper.view_elements.canvas{
+    logical_width = 4 * assets.sseg.width,
+    logical_height = assets.sseg.height,
+    value = 0,
+    renderer = function (ctx, value)
+        ctx:set_font(assets.sseg_font)
+        if baro_context.mode == 2 then
+            ctx:draw_string("std")
+        else
+            if baro_context.unit == 0 then
+                ctx:draw_number{
+                    value = baro_context.inhg,
+                    precision = 4,
+                    fraction_precision = 2,
+                    leading_zero = true,
+                }
+            else
+                ctx:draw_number{
+                    value = baro_context.hpa,
+                    precision = 4,
+                    fraction_precision = 0,
+                    leading_zero = true,
+                }
+            end
+        end
+    end
+}
+
+local canvas_mode = mapper.view_elements.canvas{
+    logical_width = 2 * assets.baro_mode.width,
+    logical_height = assets.baro_mode.height,
+    value = 0,
+    renderer = function (ctx, value)
+        local bitmap = mode_bitmaps[baro_context.mode + 1]
+        if bitmap then
+            ctx:draw_bitmap(bitmap)
+        end
+    end
+}
+
+view_elements[#view_elements + 1] = {
+    object = canvas_digits,
+    x = 760, y = 354,
+    width = 120, height = 39.474
+}
+view_elements[#view_elements + 1] = {
+    object = canvas_mode,
+    x = 768, y = 324,
+    width = assets.baro_mode.width * 2, height = assets.baro_mode.height
+}
+
+view_mappings[#view_mappings + 1] = {
+    event=events.baro_inhg_change, action=function (evid, value)
+        baro_context.inhg = value
+        if baro_context.unit == 0 and baro_context.mode ~= 2 then
+            canvas_digits:set_value(baro_context)
+            canvas_mode:set_value(baro_context)
+        end
+    end
+}
+view_mappings[#view_mappings + 1] = {
+    event=events.baro_hpa_change, action=function (evid, value)
+        baro_context.hpa = value
+        if baro_context.unit == 1 and baro_context.mode ~= 2 then
+            canvas_digits:set_value(baro_context)
+            canvas_mode:set_value(baro_context)
+        end
+    end
+}
+view_mappings[#view_mappings + 1] = {
+    event=events.baro_mode_change, action=function (evid, value)
+        baro_context.mode = value
+        canvas_digits:set_value(baro_context)
+        canvas_mode:set_value(baro_context)
+    end
+}
+view_mappings[#view_mappings + 1] = {
+    event=events.baro_unit_change, action=function (evid, value)
+        baro_context.unit = value
+        canvas_mode:set_value(baro_context)
+        canvas_digits:set_value(baro_context)
+    end
+}
 
 --------------------------------------------------------------------------------------
 -- view definition generator

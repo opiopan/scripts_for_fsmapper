@@ -240,6 +240,12 @@ local function start(config)
         right = {current = "nd", rule = rule_right, viewport = viewport_right},
     }
 
+    local typical_views = {
+        {left="pfd", right="nd"},
+        {left="uecam", right="lecam"},
+        {left="nd", right="mcdu"},
+    }
+
     local function make_renderer_value()
         value = {}
         for k, v in pairs(menu_context.left.rule) do
@@ -295,6 +301,49 @@ local function start(config)
         end
     end
 
+    local function change_typical_view(direction)
+        local left = menu_context.left.current
+        local right = menu_context.right.current
+        local ix = nil
+        for i, set in ipairs(typical_views) do
+            if left == set.left and right == set.right then
+                ix = i
+                break
+            end
+        end
+        if ix then
+            if direction > 0 then
+                ix = ix + 1
+                if ix > #typical_views then
+                    ix = 1
+                end
+            else
+                ix = ix - 1
+                if ix < 1 then
+                    ix = #typical_views
+                end
+            end
+        else
+            if direction > 0 then
+                ix = 1
+            else
+                ix = #typical_views
+            end
+        end
+        local set = typical_views[ix]
+        menu_context.left.current = set.left
+        menu_context.right.current = set.right
+        if direction > 0 then
+            menu_context.left.viewport:change_view(menu_context.left.rule[set.left].view)
+            menu_context.right.viewport:change_view(menu_context.right.rule[set.right].view)
+        else
+            menu_context.right.viewport:change_view(menu_context.right.rule[set.right].view)
+            menu_context.left.viewport:change_view(menu_context.left.rule[set.left].view)
+        end
+
+        menu_bar:set_value(make_renderer_value())
+    end
+
     a320_context.device = mapper.device{
         name = "SimHID G1000",
         type = "simhid",
@@ -346,6 +395,21 @@ local function start(config)
         {event=g1000.EC8U.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_DEC")},
         {event=g1000.EC8R.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_INC")},
         {event=g1000.EC8D.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_MODE_INC")},
+
+        {event=g1000.EC6X.increment, action=fs2020.event_sender("MobiFlight.A32NX_RMP_L_INNER_KNOB_TURNED_CLOCKWISE")},
+        {event=g1000.EC6X.decrement, action=fs2020.event_sender("MobiFlight.A32NX_RMP_L_INNER_KNOB_TURNED_ANTICLOCKWISE")},
+        {event=g1000.EC6Y.increment, action=fs2020.event_sender("MobiFlight.A32NX_RMP_L_OUTER_KNOB_TURNED_CLOCKWISE")},
+        {event=g1000.EC6Y.decrement, action=fs2020.event_sender("MobiFlight.A32NX_RMP_L_OUTER_KNOB_TURNED_ANTICLOCKWISE")},
+        {event=g1000.SW26.down, action=fs2020.event_sender("MobiFlight.A32NX_RMP_L_TRANSFER_BUTTON_PRESSED")},
+
+        {event=g1000.EC7Y.increment, action=fs2020.event_sender("Mobiflight.Baro_increase")},
+        {event=g1000.EC7Y.decrement, action=fs2020.event_sender("Mobiflight.Baro_decrease")},
+        {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(L:XMLVAR_Baro1_Mode) 2 == if{ 1 (>L:XMLVAR_Baro1_Mode) } els{ 2 (>L:XMLVAR_Baro1_Mode) }")},
+
+        {event=g1000.AUX1D.down, action=function() change_typical_view(1) end},
+        {event=g1000.AUX1U.down, action=function() change_typical_view(-1) end},
+        {event=g1000.AUX2D.down, action=function() change_typical_view(1) end},
+        {event=g1000.AUX2U.down, action=function() change_typical_view(-1) end},
     }
 
     viewport_menu:register_view{
@@ -358,8 +422,8 @@ local function start(config)
     }
 
     return {
-        move_next_view = function () end,
-        move_previous_view = function () end,
+        move_next_view = function () change_typical_view(1) end,
+        move_previous_view = function () change_typical_view(-1) end,
         global_mappings = global_mappings,
         need_to_start_viewports = true,
     }
