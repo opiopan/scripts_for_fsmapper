@@ -230,7 +230,7 @@ local function change(host, aircraft, simhid_g1000)
 
     x56_context.joymap.others = simhid_g1000.global_mappings
     x56_context.joymap.move_next_view = simhid_g1000.move_next_view
-    x56_context.joymap.move_previous_view = simhid_g1000.move_next_view
+    x56_context.joymap.move_previous_view = simhid_g1000.move_previous_view
     
     if host ~= "fs2020" then
         x56_context.joymap.base = x56_context.joymap_dcs

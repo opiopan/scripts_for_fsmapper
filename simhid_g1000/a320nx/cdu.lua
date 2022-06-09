@@ -1,6 +1,8 @@
 local view_width = 1084
 local view_height = 1541
 
+local mod_context = {}
+
 --------------------------------------------------------------------------------------
 -- Register events which occurrs when cdu buttons displayed on the view are tapped.
 --------------------------------------------------------------------------------------
@@ -825,4 +827,6 @@ local function create_view_def(name, window)
     return view_definition
 end
 
-return create_view_def
+mod_context.viewdef = create_view_def
+
+return mod_context

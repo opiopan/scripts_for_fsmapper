@@ -38,6 +38,8 @@ local events = {
     extpwr_push = mapper.register_event("ELEC:EXT_POWER:push"),
     extpwru_change = mapper.register_event("ELEC:EXT_POWER_UPPER:change"),
     extpwrl_change = mapper.register_event("ELEC:EXT_POWER_LOWER:change"),
+    bat1v_change = mapper.register_event("ELEC:BAT1 Potential:change"),
+    bat2v_change = mapper.register_event("ELEC:BAT2 Potential:change"),
 }
 
 --------------------------------------------------------------------------------------
@@ -61,6 +63,8 @@ local observed_data = {
     {rpn="(L:A32NX_OVHD_ELEC_BAT_2_PB_HAS_FAULT)", event=events.bat2u_change},
     {rpn="(A:EXTERNAL POWER ON, Bool)", event=events.extpwrl_change},
     {rpn="(A:EXTERNAL POWER AVAILABLE, Bool) (A:EXTERNAL POWER ON, Bool) ! and", event=events.extpwru_change},
+    {rpn="(L:A32NX_ELEC_BAT_1_POTENTIAL)", event=events.bat1v_change, epsilon=0.05},
+    {rpn="(L:A32NX_ELEC_BAT_2_POTENTIAL)", event=events.bat2v_change, epsilon=0.05},
 }
 
 --------------------------------------------------------------------------------------
@@ -234,9 +238,9 @@ local dibuttons = {
     apubleed = {x=587, y=32, size=dibutton_size, l_off=indicators.on_gray, l_on=indicators.on_skyblue, u_on=indicators.fault},
     apumaster = {x=587, y=218, size=dibutton_size, l_off=indicators.on_gray, l_on=indicators.on_skyblue, u_on=indicators.fault},
     apustart = {x=587, y=348, size=dibutton_size, l_off=indicators.on_gray, l_on=indicators.on_skyblue, u_on=indicators.avail},
-    bat1 = {x=808, y=117, size=dibutton_size, l_off=indicators.off_gray, l_on=indicators.off_white, u_on=indicators.fault},
-    bat2 = {x=918, y=117, size=dibutton_size, l_off=indicators.off_gray, l_on=indicators.off_white, u_on=indicators.fault},
-    extpwr = {x=863, y=324, size=dibutton_size, l_off=indicators.on_gray, l_on=indicators.on_skyblue, u_on=indicators.avail},
+    bat1 = {x=806, y=196, size=dibutton_size, l_off=indicators.off_gray, l_on=indicators.off_white, u_on=indicators.fault},
+    bat2 = {x=916, y=196, size=dibutton_size, l_off=indicators.off_gray, l_on=indicators.off_white, u_on=indicators.fault},
+    extpwr = {x=861, y=346, size=dibutton_size, l_off=indicators.on_gray, l_on=indicators.on_skyblue, u_on=indicators.avail},
 }
 
 for key, def in pairs(dibuttons) do
@@ -286,6 +290,38 @@ for key, def in pairs(dibuttons) do
     }
     global_mappings[#global_mappings + 1] = {event=events[key .. "l_change"], action=lcanvas:value_setter()}
     global_mappings[#global_mappings + 1] = {event=events[key .. "u_change"], action=ucanvas:value_setter()}
+end
+
+--------------------------------------------------------------------------------------
+-- create view element definitions for battery voltage meter
+--------------------------------------------------------------------------------------
+local vmeter_size = {width=90, height=39.474}
+local vmeters ={
+    bat1v = {x=783, y=97, size=vmeter_size},
+    bat2v = {x=941, y=97, size=vmeter_size},
+}
+
+for key, def in pairs(vmeters) do
+    local canvas = mapper.view_elements.canvas{
+        logical_width = assets.sseg.width * 3,
+        logical_height = assets.sseg.height,
+        value = 0,
+        renderer = function (ctx, value)
+            ctx:set_font(assets.sseg_font)
+            ctx:draw_number{
+                value = value,
+                precision = 3,
+                fraction_precision = 1,
+                leading_zero = false,
+            }
+        end
+    }
+    view_elements[#view_elements + 1] = {
+        object = canvas,
+        x = def.x, y = def.y,
+        width = def.size.width, height = def.size.height,
+    }
+    global_mappings[#global_mappings + 1] = {event=events[key .. "_change"], action=canvas:value_setter()}
 end
 
 --------------------------------------------------------------------------------------

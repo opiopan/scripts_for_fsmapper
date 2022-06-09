@@ -13,8 +13,8 @@ local assets = {
     sbutton_indicator = {x=840, y=151, width=102, height=51},
     engsw = {x=0, y=208, width=144, height=243},
     sseg = {x=578, y=256, width=76, height=100},
-    sseg_dot = {x=1346, y=256, width=14, height=100},
-    sseg_std = {x=1404, y=256, width=228, height=100},
+    sseg_td = {x=1338, y=256, width=228, height=100},
+    sseg_dot = {x=1490, y=256, width=14, height=100},
     baro_mode = {x=1420, y=76, width=100, height=30},
 
     sseg_font = graphics.bitmap_font(),
@@ -38,10 +38,10 @@ local glyph_space = assets.buttons:create_partial_bitmap(
     assets.sseg.width, assets.sseg.height
 )
 assets.sseg_font:add_glyph(" ", glyph_space)
-for i, code in ipairs{"s", "t", "d"} do
+for i, code in ipairs{"t", "d"} do
     local glyph = assets.buttons:create_partial_bitmap(
-        assets.sseg_std.x + (i - 1) * assets.sseg_std.width, assets.sseg_std.y,
-        assets.sseg_std.width, assets.sseg_std.height
+        assets.sseg_td.x + (i - 1) * assets.sseg_td.width, assets.sseg_td.y,
+        assets.sseg_td.width, assets.sseg_td.height
     )
     assets.sseg_font:add_glyph(code, glyph)
 end

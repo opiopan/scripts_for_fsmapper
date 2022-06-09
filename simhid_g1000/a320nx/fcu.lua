@@ -3,6 +3,8 @@ local view_height = 1541
 
 local assets = require("a320nx/assets")
 
+local mod_context = {}
+
 --------------------------------------------------------------------------------------
 -- register events
 --------------------------------------------------------------------------------------
@@ -45,7 +47,8 @@ local observed_data = {
     {rpn="(L:A32NX_FCU_APPR_MODE_ACTIVE)", event=events.appr_change},
     {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool) (L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or and", event=events.fd_change},
     {rpn="(L:BTN_LS_1_FILTER_ACTIVE)", event=events.ls_change},
-    {rpn="(L:XMLVAR_Baro1_Mode)", event=events.baro_mode_change},
+    {rpn="(L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or not -5 * (L:XMLVAR_Baro1_Mode) +", event=events.baro_mode_change},
+    -- {rpn="(L:XMLVAR_Baro1_Mode)", event=events.baro_mode_change},
     {rpn="(L:XMLVAR_BARO_SELECTOR_HPA_1)", event=events.baro_unit_change},
     {rpn="(A:KOHLSMAN SETTING HG:1,Inches of Mercury)", event=events.baro_inhg_change},
     {rpn="(A:KOHLSMAN SETTING MB:1,Millibars)", event=events.baro_hpa_change},
@@ -153,7 +156,7 @@ local mode_bitmaps = {
 local baro_context = {
     inhg = 29.92,
     hpa = 1013.2,
-    mode = 1,
+    mode = -1,
     unit = 0,
 }
 
@@ -164,8 +167,8 @@ local canvas_digits = mapper.view_elements.canvas{
     renderer = function (ctx, value)
         ctx:set_font(assets.sseg_font)
         if baro_context.mode == 2 then
-            ctx:draw_string("std")
-        else
+            ctx:draw_string("5td")
+        elseif baro_context.mode >= 0 then
             if baro_context.unit == 0 then
                 ctx:draw_number{
                     value = baro_context.inhg,
@@ -208,7 +211,7 @@ view_elements[#view_elements + 1] = {
     width = assets.baro_mode.width * 2, height = assets.baro_mode.height
 }
 
-view_mappings[#view_mappings + 1] = {
+global_mappings[#global_mappings + 1] = {
     event=events.baro_inhg_change, action=function (evid, value)
         baro_context.inhg = value
         if baro_context.unit == 0 and baro_context.mode ~= 2 then
@@ -217,7 +220,7 @@ view_mappings[#view_mappings + 1] = {
         end
     end
 }
-view_mappings[#view_mappings + 1] = {
+global_mappings[#global_mappings + 1] = {
     event=events.baro_hpa_change, action=function (evid, value)
         baro_context.hpa = value
         if baro_context.unit == 1 and baro_context.mode ~= 2 then
@@ -226,14 +229,14 @@ view_mappings[#view_mappings + 1] = {
         end
     end
 }
-view_mappings[#view_mappings + 1] = {
+global_mappings[#global_mappings + 1] = {
     event=events.baro_mode_change, action=function (evid, value)
         baro_context.mode = value
         canvas_digits:set_value(baro_context)
         canvas_mode:set_value(baro_context)
     end
 }
-view_mappings[#view_mappings + 1] = {
+global_mappings[#global_mappings + 1] = {
     event=events.baro_unit_change, action=function (evid, value)
         baro_context.unit = value
         canvas_mode:set_value(baro_context)
@@ -266,4 +269,8 @@ local function create_view_def(name, fcu_window, main_window)
     }
 end
 
-return {viewdef=create_view_def, observed_data=observed_data, mappings = global_mappings}
+mod_context.viewdef = create_view_def
+mod_context.observed_data = observed_data
+mod_context.mappings = global_mappings
+
+return mod_context
