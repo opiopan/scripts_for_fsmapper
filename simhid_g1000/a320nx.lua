@@ -392,7 +392,7 @@ local function start(config)
         {event=g1000.SW10.down, action=fs2020.event_sender("MobiFlight.A32NX_FCU_VS_PULL")},
         {event=g1000.SW2.down, action=fs2020.event_sender("MobiFlight.Autopilot_1_Push")},
         {event=g1000.SW3.down, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_FD_PUSH")},
-        {event=g1000.SW8.down, action=fs2020.event_sender("MobiFlight.A320NX_APPR")},
+        {event=g1000.SW8.down, action=fs2020.mfwasm.rpn_executer("(>K:A32NX.FCU_APPR_PUSH)")},
 
         {event=g1000.EC8.increment, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_RANGE_INC")},
         {event=g1000.EC8.decrement, action=fs2020.event_sender("MobiFlight.A32NX_EFIS_L_ND_RANGE_DEC")},
