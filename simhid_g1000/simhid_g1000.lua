@@ -9,6 +9,7 @@ fs2020_map["Cessna Skyhawk G1000 Floaters Asobo"] = require("g1000")
 fs2020_map["Cessna Skyhawk G1000 Skis Asobo"] = require("g1000")
 fs2020_map["Cessna 208B Grand Caravan EX"] = require("g1000")
 fs2020_map["Airbus A320 Neo FlyByWire"] = require("a320nx")
+fs2020_map["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = require("a320nx")
 
 local fallback={
     start = function ()

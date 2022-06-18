@@ -27,6 +27,8 @@ local function init(config)
     local airbrake_close = vjoy:get_button(2)
     local ab1 = vjoy:get_button(3)
     local ab2 = vjoy:get_button(4)
+    local reverse1 = vjoy:get_button(31)
+    local reverse2 = vjoy:get_button(32)
 
     local marm_on = vjoy:get_button(5)
     local marm_off = vjoy:get_button(6)
@@ -137,11 +139,12 @@ local function init(config)
     x56_context.joymap_full = {
         {event=x56throttle.x.change, action=throttle1:value_setter()},
         {event=x56throttle.y.change, action=throttle2:value_setter()},
-        {event=x56throttle.button33.up, action=airbrake_open:value_setter(true)},
-        {event=x56throttle.button33.down, action=filter.duplicator(
-            airbrake_open:value_setter(false), airbrake_close:value_setter(true)
+        {event=x56throttle.button33.up, action=filter.duplicator(
+            reverse1:value_setter(true), reverse2:value_setter(true)
         )},
-        {event=x56throttle.button33.following_down, action=airbrake_close:value_setter(false)},
+        {event=x56throttle.button33.down, action=filter.duplicator(
+            reverse1:value_setter(false), reverse2:value_setter(false)
+        )},
     }
 
     x56_context.joymap_preflight = {
@@ -222,8 +225,13 @@ local function init(config)
         end},
     }
 
+    x56_context.fs2020_maps = {}
+    x56_context.fs2020_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_full
+    x56_context.fs2020_maps["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = x56_context.joymap_full
+
     return static_mappings
 end
+
 
 local function change(host, aircraft, simhid_g1000)
     mapper.set_secondary_mappings({})
@@ -234,10 +242,13 @@ local function change(host, aircraft, simhid_g1000)
     
     if host ~= "fs2020" then
         x56_context.joymap.base = x56_context.joymap_dcs
-    elseif aircraft == "Airbus A320 Neo FlyByWire" then
-        x56_context.joymap.base = x56_context.joymap_full
     else
-        x56_context.joymap.base = x56_context.joymap_noab
+        local map = x56_context.fs2020_maps[aircraft]
+        if map then
+            x56_context.joymap.base = map
+        else
+            x56_context.joymap.base = x56_context.joymap_noab
+        end
     end
     x56_context.update_secondary_mappings()
 end

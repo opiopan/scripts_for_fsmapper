@@ -15,8 +15,8 @@ local context = {
     hotas = require("x56"),
 }
 
-mapper.add_primery_mappings(context.simhid_g1000.init(config))
-mapper.add_primery_mappings(context.hotas.init(config))
+mapper.add_primary_mappings(context.simhid_g1000.init(config))
+mapper.add_primary_mappings(context.hotas.init(config))
 
 local function change_aircraft(host, aircraft)
     mapper.reset_viewports()
@@ -29,7 +29,7 @@ local function change_aircraft(host, aircraft)
     end
 end
 
-mapper.add_primery_mappings({
+mapper.add_primary_mappings({
     {event=mapper.events.change_aircraft, action=function (event, value)
         change_aircraft(value.host, value.aircraft)
     end},
