@@ -228,6 +228,7 @@ local function init(config)
     x56_context.fs2020_maps = {}
     x56_context.fs2020_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_full
     x56_context.fs2020_maps["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = x56_context.joymap_full
+    x56_context.fs2020_maps["Airbus A320 Neo Bhutan Airlines (A32NX Converted)"] = x56_context.joymap_full
 
     return static_mappings
 end
