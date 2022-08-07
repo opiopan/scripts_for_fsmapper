@@ -7,6 +7,11 @@ local a320_context = {}
 
 local events = {
     dc_bus_change = mapper.register_event("A32NX:DC_BUS:change"),
+    nd_brightness = mapper.register_event("A32NX:ND_BRT:change"),
+}
+
+local observed_data = {
+    -- {rpn="(A:LIGHT POTENTIOMETER:89,Percent Over 100)", event=events.nd_brightness},
 }
 
 local function start(config)
@@ -70,6 +75,7 @@ local function start(config)
 
     local global_mappings = {}
 
+    fs2020.mfwasm.add_observed_data(observed_data)
     local fcu_panel = require("a320nx/fcu")
     fs2020.mfwasm.add_observed_data(fcu_panel.observed_data)
     global_mappings[#global_mappings + 1] = fcu_panel.mappings
@@ -410,6 +416,11 @@ local function start(config)
         {event=g1000.EC7Y.increment, action=fs2020.event_sender("Mobiflight.Baro_increase")},
         {event=g1000.EC7Y.decrement, action=fs2020.event_sender("Mobiflight.Baro_decrease")},
         {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(L:XMLVAR_Baro1_Mode) 2 == if{ 1 (>L:XMLVAR_Baro1_Mode) } els{ 2 (>L:XMLVAR_Baro1_Mode) }")},
+
+        {event=g1000.EC2Y.increment, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:94,percent) 5 + 100 min 94 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC2Y.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:94,percent) 5 - 0 max 94 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC2X.increment, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:89,percent) 5 + 100 min d d d d d 89 (>K:2:LIGHT_POTENTIOMETER_SET) 88 (>K:2:LIGHT_POTENTIOMETER_SET) 90 (>K:2:LIGHT_POTENTIOMETER_SET) 91 (>K:2:LIGHT_POTENTIOMETER_SET) 92 (>K:2:LIGHT_POTENTIOMETER_SET) 93 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC2X.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:89,percent) 5 - 0 max d d d d d 89 (>K:2:LIGHT_POTENTIOMETER_SET) 88 (>K:2:LIGHT_POTENTIOMETER_SET) 90 (>K:2:LIGHT_POTENTIOMETER_SET) 91 (>K:2:LIGHT_POTENTIOMETER_SET) 92 (>K:2:LIGHT_POTENTIOMETER_SET) 93 (>K:2:LIGHT_POTENTIOMETER_SET)")},
 
         {event=g1000.AUX1D.down, action=function() change_typical_view(1) end},
         {event=g1000.AUX1U.down, action=function() change_typical_view(-1) end},
