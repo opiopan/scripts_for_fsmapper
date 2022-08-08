@@ -421,6 +421,10 @@ local function start(config)
         {event=g1000.EC2Y.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:94,percent) 5 - 0 max 94 (>K:2:LIGHT_POTENTIOMETER_SET)")},
         {event=g1000.EC2X.increment, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:89,percent) 5 + 100 min d d d d d 89 (>K:2:LIGHT_POTENTIOMETER_SET) 88 (>K:2:LIGHT_POTENTIOMETER_SET) 90 (>K:2:LIGHT_POTENTIOMETER_SET) 91 (>K:2:LIGHT_POTENTIOMETER_SET) 92 (>K:2:LIGHT_POTENTIOMETER_SET) 93 (>K:2:LIGHT_POTENTIOMETER_SET)")},
         {event=g1000.EC2X.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:89,percent) 5 - 0 max d d d d d 89 (>K:2:LIGHT_POTENTIOMETER_SET) 88 (>K:2:LIGHT_POTENTIOMETER_SET) 90 (>K:2:LIGHT_POTENTIOMETER_SET) 91 (>K:2:LIGHT_POTENTIOMETER_SET) 92 (>K:2:LIGHT_POTENTIOMETER_SET) 93 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC9Y.increment, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:84,percent) 5 + 100 min d d 84 (>K:2:LIGHT_POTENTIOMETER_SET) 85 (>K:2:LIGHT_POTENTIOMETER_SET) 86 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC9Y.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:84,percent) 5 - 0 max d d 84 (>K:2:LIGHT_POTENTIOMETER_SET) 85 (>K:2:LIGHT_POTENTIOMETER_SET) 86 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC9X.increment, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:87,percent) 5 + 100 min 87 (>K:2:LIGHT_POTENTIOMETER_SET)")},
+        {event=g1000.EC9X.decrement, action=fs2020.mfwasm.rpn_executer("(A:LIGHT POTENTIOMETER:87,percent) 5 - 0 max 87 (>K:2:LIGHT_POTENTIOMETER_SET)")},
 
         {event=g1000.AUX1D.down, action=function() change_typical_view(1) end},
         {event=g1000.AUX1U.down, action=function() change_typical_view(-1) end},
