@@ -1,7 +1,7 @@
 local x56_context ={}
 
 local function init(config)
-    x56_context.throttle = mapper.device({
+    x56_context.throttle = mapper.device{
         name = "X-56 Throttle",
         type = "dinput",
         identifier = config.x56_throttle_identifier,
@@ -14,8 +14,19 @@ local function init(config)
             {name = "button28", modtype = "button"},
             {name = "button29", modtype = "button"},
         },
-    })
+    }
     local x56throttle = x56_context.throttle.events
+
+    x56_context.stick = mapper.device{
+        name = "X-56 Stick",
+        type = "dinput",
+        identifier = config.x56_stick_identifier,
+        options = {
+            allowlist = {"rx", "ry"},
+            vpovs = {{name = "vpov1", xaxis = "rx", yaxis = "ry", resolution = 4, disable_source = true}},
+        },
+    }
+    local x56stick = x56_context.stick.events
 
     x56_context.vjoy = mapper.virtual_joystick(1)
     local vjoy = x56_context.vjoy
@@ -63,6 +74,11 @@ local function init(config)
     local arm_aux3 = vjoy:get_button(29)
     local arm_aux4 = vjoy:get_button(30)
 
+    local cms_fwd = vjoy:get_button(51)
+    local cms_aft = vjoy:get_button(52)
+    local cms_right = vjoy:get_button(53)
+    local cms_left = vjoy:get_button(54)
+    
     x56_context.joymap ={
         base = nill,
         modal = {},
@@ -125,6 +141,22 @@ local function init(config)
     end
     x56_context.toggle_zoom = toggle_zoom
 
+    local cms_dict = {}
+    cms_dict[0] = cms_fwd
+    cms_dict[9000] = cms_right
+    cms_dict[18000] = cms_aft
+    cms_dict[27000] = cms_left
+    local cms_pos = -1
+    local function reflect_cms(evid, value)
+        if cms_pos >= 0 then
+            cms_dict[cms_pos]:set_value(0)
+        end
+        cms_pos = value
+        if cms_pos >= 0 then
+            cms_dict[cms_pos]:set_value(1)
+        end
+    end
+
     x56_context.joymap_dcs = {
         {event=x56throttle.x.change, action=filter.duplicator(
             filter.lerp(throttle1a:value_setter(),{
@@ -167,6 +199,7 @@ local function init(config)
         )},
         {event=x56throttle.button33.following_down, action=airbrake_close:value_setter(false)},
         {event=x56throttle.slider2.change, action=set_zoom_level},
+        {event=x56stick.vpov1.change, action=reflect_cms},
     }
 
     x56_context.joymap_noab = {
