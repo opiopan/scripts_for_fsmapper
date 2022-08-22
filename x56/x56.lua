@@ -240,7 +240,7 @@ local function init(config)
     x56_context.throttle_map_reverse ={
         {-1023, -1023},
         {-600, -1023},
-        {1023, 1023},
+        {1023, 1000},
     }
     x56_context.throttle_map = x56_context.throttle_map_normal
 
@@ -254,6 +254,8 @@ local function init(config)
                     x56_context.throttle_map = x56_context.throttle_map_reverse
                     x56_context.joymap.base =  x56_context.make_joymap_airbus()
                     x56_context.update_secondary_mappings()
+                    mapper.raise_event(x56throttle.x.change, 1023)
+                    mapper.raise_event(x56throttle.y.change, 1023)
                 end
             )},
             {event=x56throttle.button33.down, action=filter.duplicator(
@@ -262,6 +264,8 @@ local function init(config)
                     x56_context.throttle_map = x56_context.throttle_map_normal
                     x56_context.joymap.base =  x56_context.make_joymap_airbus()
                     x56_context.update_secondary_mappings()
+                    mapper.raise_event(x56throttle.x.change, 1023)
+                    mapper.raise_event(x56throttle.y.change, 1023)
                 end
             )},
         }

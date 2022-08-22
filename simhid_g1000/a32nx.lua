@@ -57,7 +57,7 @@ local function start(config)
     --------------------------------------------------------------------------------------
     -- Register views to right & left viewports
     --------------------------------------------------------------------------------------
-    local captured_window = {
+    local captured_windows = {
         fcu = mapper.view_elements.captured_window{name="A320 FCU"},
         pfd = mapper.view_elements.captured_window{name="A320 PFD"},
         nd = mapper.view_elements.captured_window{name="A320 ND"},
@@ -66,40 +66,33 @@ local function start(config)
         mcdu = mapper.view_elements.captured_window{name = "A320 MCDU"},
     }
 
-    local function captured_window_view(name, window)
-        return {
-            name = name,
-            elements = {{object = window}},
-        }
-    end
-
     local global_mappings = {}
 
     fs2020.mfwasm.add_observed_data(observed_data)
-    local fcu_panel = require("a320nx/fcu")
+    local fcu_panel = require("a32nx/fcu")
     fs2020.mfwasm.add_observed_data(fcu_panel.observed_data)
     global_mappings[#global_mappings + 1] = fcu_panel.mappings
-    local ecam_panel = require("a320nx/ecam")
+    local ecam_panel = require("a32nx/ecam")
     fs2020.mfwasm.add_observed_data(ecam_panel.observed_data)
     global_mappings[#global_mappings + 1] = ecam_panel.mappings
-    local efis_panel = require("a320nx/efis")
+    local efis_panel = require("a32nx/efis")
     fs2020.mfwasm.add_observed_data(efis_panel.observed_data)
     global_mappings[#global_mappings + 1] = efis_panel.mappings
-    local engine_panel = require("a320nx/engine")
+    local engine_panel = require("a32nx/engine")
     fs2020.mfwasm.add_observed_data(engine_panel.observed_data)
     global_mappings[#global_mappings + 1] = engine_panel.mappings
-    local mcdu_panel = require("a320nx/cdu")
+    local mcdu_panel = require("a32nx/cdu")
 
-    local viewdef_left_pfd = fcu_panel.viewdef("l-pfd", captured_window.fcu, captured_window.pfd)
-    local viewdef_left_nd = efis_panel.viewdef("l-nd", captured_window.nd)
-    local viewdef_left_uecam = engine_panel.viewdef("l-uecam", captured_window.uecam)
-    local viewdef_left_lecam = ecam_panel.viewdef("l-uecam", captured_window.lecam)
-    local viewdef_left_mcdu = mcdu_panel.viewdef("l-mcdu", captured_window.mcdu)
-    local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_window.fcu, captured_window.pfd)
-    local viewdef_right_nd = efis_panel.viewdef("r-nd", captured_window.nd)
-    local viewdef_right_uecam = engine_panel.viewdef("r-uecam", captured_window.uecam)
-    local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_window.lecam)
-    local viewdef_right_mcdu = mcdu_panel.viewdef("r-mcdu", captured_window.mcdu)
+    local viewdef_left_pfd = fcu_panel.viewdef("l-pfd", captured_windows.fcu, captured_windows.pfd)
+    local viewdef_left_nd = efis_panel.viewdef("l-nd", captured_windows.nd)
+    local viewdef_left_uecam = engine_panel.viewdef("l-uecam", captured_windows.uecam)
+    local viewdef_left_lecam = ecam_panel.viewdef("l-uecam", captured_windows.lecam)
+    local viewdef_left_mcdu = mcdu_panel.viewdef("l-mcdu", captured_windows.mcdu)
+    local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_windows.fcu, captured_windows.pfd)
+    local viewdef_right_nd = efis_panel.viewdef("r-nd", captured_windows.nd)
+    local viewdef_right_uecam = engine_panel.viewdef("r-uecam", captured_windows.uecam)
+    local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_windows.lecam)
+    local viewdef_right_mcdu = mcdu_panel.viewdef("r-mcdu", captured_windows.mcdu)
 
     local view_left_pfd = viewport_left:register_view(viewdef_left_pfd)
     local view_left_nd = viewport_left:register_view(viewdef_left_nd)
@@ -115,7 +108,7 @@ local function start(config)
     --------------------------------------------------------------------------------------
     -- Register menu view
     --------------------------------------------------------------------------------------
-    local assets = require("a320nx/assets")
+    local assets = require("a32nx/assets")
     local img_menu = assets.menu
     local img_width = 128
     local img_height = 58
