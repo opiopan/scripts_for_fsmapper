@@ -1,5 +1,5 @@
 local config = {
-    -- debug = true,
+    debug = true,
     simhid_g1000_identifier = {path = "COM3"},
     simhid_g1000_display = 2,
     x56_stick_identifier = {name = "Saitek Pro Flight X-56 Rhino Stick"},
@@ -18,9 +18,29 @@ local context = {
 mapper.add_primary_mappings(context.simhid_g1000.init(config))
 mapper.add_primary_mappings(context.hotas.init(config))
 
+local synonym_map_fs2020 = {}
+synonym_map_fs2020["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = "Airbus A320 Neo FlyByWire"
+synonym_map_fs2020["Airbus A320 Neo Bhutan Airlines (A32NX Converted)"] = "Airbus A320 Neo FlyByWire"
+
+local function normalize_fs2020_aircraft_name(name)
+    local synonym = synonym_map_fs2020[name]
+    if synonym then
+        return synonym
+    else
+        if string.find(name, "FenixA320") == 1 then
+            return "FenixA320"
+        end
+        return name
+    end
+end
+
 local function change_aircraft(host, aircraft)
     mapper.reset_viewports()
     mapper.set_secondary_mappings({})
+
+    if host == "fs2020" then
+        aircraft = normalize_fs2020_aircraft_name(aircraft)
+    end
     
     local controller = context.simhid_g1000.change(host, aircraft)
     context.hotas.change(host, aircraft, controller)
@@ -36,7 +56,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
+    change_aircraft("fs2020", "FenixA320")
 else
     change_aircraft("", "")
 end

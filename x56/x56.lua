@@ -78,6 +78,12 @@ local function init(config)
     local cms_aft = vjoy:get_button(52)
     local cms_right = vjoy:get_button(53)
     local cms_left = vjoy:get_button(54)
+
+
+    function x56_context.reset()
+        reverse1:value_setter(false)
+        reverse2:value_setter(false)
+    end
     
     x56_context.joymap ={
         base = nill,
@@ -240,7 +246,7 @@ local function init(config)
     x56_context.throttle_map_reverse ={
         {-1023, -1023},
         {-600, -1023},
-        {1023, 1000},
+        {1023, 370},
     }
     x56_context.throttle_map = x56_context.throttle_map_normal
 
@@ -272,6 +278,44 @@ local function init(config)
     end
 
     x56_context.joymap_airbus = x56_context.make_joymap_airbus()
+
+    x56_context.throttle_map_normal2 ={
+        {-1023, -1023},
+        {1023, 0},
+    }
+    x56_context.throttle_map_reverse2 ={
+        {-1023, 1023},
+        {-600, 1023},
+        {1023, 50},
+    }
+    x56_context.throttle_map2 = x56_context.throttle_map_normal2
+
+    function x56_context.make_joymap_airbus2()
+        return {
+            {event=x56throttle.x.change, action=filter.lerp(throttle1:value_setter(), x56_context.throttle_map2)},
+            {event=x56throttle.y.change, action=filter.lerp(throttle2:value_setter(), x56_context.throttle_map2)},
+            {event=x56throttle.button33.up, action=filter.duplicator(
+                function ()
+                    x56_context.throttle_map2 = x56_context.throttle_map_reverse2
+                    x56_context.joymap.base =  x56_context.make_joymap_airbus2()
+                    x56_context.update_secondary_mappings()
+                    mapper.raise_event(x56throttle.x.change, 1023)
+                    mapper.raise_event(x56throttle.y.change, 1023)
+                end
+            )},
+            {event=x56throttle.button33.down, action=filter.duplicator(
+                function ()
+                    x56_context.throttle_map2 = x56_context.throttle_map_normal2
+                    x56_context.joymap.base =  x56_context.make_joymap_airbus2()
+                    x56_context.update_secondary_mappings()
+                    mapper.raise_event(x56throttle.x.change, 1023)
+                    mapper.raise_event(x56throttle.y.change, 1023)
+                end
+            )},
+        }
+    end
+
+    x56_context.joymap_airbus2 = x56_context.make_joymap_airbus2()
 
     x56_context.joymap_preflight = {
         {event=x56throttle.button6.change, action=eng1idle:value_setter()},
@@ -312,14 +356,15 @@ local function init(config)
 
     x56_context.fs2020_maps = {}
     x56_context.fs2020_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_airbus
-    x56_context.fs2020_maps["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = x56_context.joymap_airbus
-    x56_context.fs2020_maps["Airbus A320 Neo Bhutan Airlines (A32NX Converted)"] = x56_context.joymap_airbus
+    x56_context.fs2020_maps["FenixA320"] = x56_context.joymap_airbus2
 
     return static_mappings
 end
 
 local function change(host, aircraft, simhid_g1000)
     mapper.set_secondary_mappings({})
+
+    x56_context.reset()
 
     x56_context.joymap.others = simhid_g1000.global_mappings
     x56_context.joymap.move_next_view = simhid_g1000.move_next_view
