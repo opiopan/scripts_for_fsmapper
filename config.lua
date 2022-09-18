@@ -30,6 +30,9 @@ local function normalize_fs2020_aircraft_name(name)
         if string.find(name, "FenixA320") == 1 then
             return "FenixA320"
         end
+        if string.find(name, "PMDG 737") == 1 then
+            return "PMDG 737"
+        end
         return name
     end
 end
@@ -56,7 +59,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "FenixA320")
+    change_aircraft("fs2020", "PMDG 737")
 else
     change_aircraft("", "")
 end

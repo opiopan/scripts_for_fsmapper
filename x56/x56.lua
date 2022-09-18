@@ -13,6 +13,8 @@ local function init(config)
             {name = "button36", modtype = "button"},
             {name = "button28", modtype = "button"},
             {name = "button29", modtype = "button"},
+            {name = "button21", modtype = "button"},
+            {name = "button23", modtype = "button"},
         },
     }
     local x56throttle = x56_context.throttle.events
@@ -206,6 +208,8 @@ local function init(config)
         {event=x56throttle.button33.following_down, action=airbrake_close:value_setter(false)},
         {event=x56throttle.slider2.change, action=set_zoom_level},
         {event=x56stick.vpov1.change, action=reflect_cms},
+        {event=x56throttle.button21.down, action=mapper.key_sequence{codes={"F1"}}:emulator()},
+        {event=x56throttle.button23.down, action=mapper.key_sequence{codes={"F2"}}:emulator()},
     }
 
     x56_context.joymap_noab = {
