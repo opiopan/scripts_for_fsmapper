@@ -101,10 +101,17 @@ local function init(config)
         for i, mappings in ipairs(x56_context.joymap.others) do
             mapper.add_secondary_mappings(mappings)
         end
-        mapper.add_secondary_mappings({
-            {event=x56throttle.button28.down, action=x56_context.joymap.move_previous_view},
-            {event=x56throttle.button29.down, action=x56_context.joymap.move_next_view},
-        })
+        if x56_context.joymap.change_zoom then
+            mapper.add_secondary_mappings({
+                {event=x56throttle.button29.down, action=function () x56_context.joymap.change_zoom(false) end},
+                {event=x56throttle.button29.up, action=function () x56_context.joymap.change_zoom(true) end},
+            })
+        else
+            mapper.add_secondary_mappings({
+                {event=x56throttle.button28.down, action=x56_context.joymap.move_previous_view},
+                {event=x56throttle.button29.down, action=x56_context.joymap.move_next_view},
+            })
+        end
     end
 
     local static_mappings = {
@@ -133,8 +140,8 @@ local function init(config)
     local zoom_mode = true
     local zoom_in = -700
     local zoom_normal = 0
-    local function toggle_zoom()
-        zoom_mode = not zoom_mode
+    local function toggle_zoom(mode)
+        zoom_mode = mode
         if zoom_mode then
             zoom_level:set_value(zoom_normal)
         else
@@ -373,11 +380,13 @@ local function change(host, aircraft, simhid_g1000)
     x56_context.joymap.others = simhid_g1000.global_mappings
     x56_context.joymap.move_next_view = simhid_g1000.move_next_view
     x56_context.joymap.move_previous_view = simhid_g1000.move_previous_view
+    x56_context.joymap.change_zoom = nil
     
     if host ~= "fs2020" then
         x56_context.joymap.base = x56_context.joymap_dcs
-        x56_context.joymap.move_next_view = x56_context.toggle_zoom
-        x56_context.joymap.move_previous_view = x56_context.toggle_zoom
+        x56_context.joymap.move_next_view = function () end
+        x56_context.joymap.move_previous_view = function () end
+        x56_context.joymap.change_zoom = x56_context.toggle_zoom
     else
         local map = x56_context.fs2020_maps[aircraft]
         if map then
