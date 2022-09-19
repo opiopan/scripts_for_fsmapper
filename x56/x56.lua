@@ -215,8 +215,8 @@ local function init(config)
         {event=x56throttle.button33.following_down, action=airbrake_close:value_setter(false)},
         {event=x56throttle.slider2.change, action=set_zoom_level},
         {event=x56stick.vpov1.change, action=reflect_cms},
-        {event=x56throttle.button21.down, action=mapper.key_sequence{codes={"F1"}}:emulator()},
-        {event=x56throttle.button23.down, action=mapper.key_sequence{codes={"F2"}}:emulator()},
+        {event=x56throttle.button21.down, action=mapper.keystroke{codes={"f1"}}:synthesizer()},
+        {event=x56throttle.button23.down, action=mapper.keystroke{codes={"f2"}}:synthesizer()},
     }
 
     x56_context.joymap_noab = {
