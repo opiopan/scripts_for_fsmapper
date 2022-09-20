@@ -19,6 +19,7 @@ mapper.add_primary_mappings(context.simhid_g1000.init(config))
 mapper.add_primary_mappings(context.hotas.init(config))
 
 local synonym_map_fs2020 = {}
+synonym_map_fs2020["Airbus A320neo FlyByWire"] = "Airbus A320 Neo FlyByWire"
 synonym_map_fs2020["Airbus A320 NX ANA All Nippon Airways JA219A SoccerYCA "] = "Airbus A320 Neo FlyByWire"
 synonym_map_fs2020["Airbus A320 Neo Bhutan Airlines (A32NX Converted)"] = "Airbus A320 Neo FlyByWire"
 
@@ -59,7 +60,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "PMDG 737")
+    change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
 else
     change_aircraft("", "")
 end
