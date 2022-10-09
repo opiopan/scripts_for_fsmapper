@@ -11,6 +11,12 @@ fs2020_map["Cessna 208B Grand Caravan EX"] = require("g1000")
 fs2020_map["Airbus A320 Neo FlyByWire"] = require("a32nx")
 fs2020_map["FenixA320"] = require("fnx32")
 fs2020_map["PMDG 737"] = require("pmdg737")
+fs2020_map["Beechcraft King Air 350i Asobo"] = require("g3x_touch")
+fs2020_map["Asobo NXCub"] = require("g3x_touch")
+fs2020_map["Asobo XCub"] = require("g3x_touch")
+fs2020_map["Asobo XCub Floats"] = require("g3x_touch")
+fs2020_map["Asobo XCub Skis"] = require("g3x_touch")
+fs2020_map["VL3 Asobo"] = require("g3x_touch")
 
 local fallback={
     start = function ()
@@ -42,7 +48,7 @@ local function change(host, aircraft)
     else
         current = fallback
     end
-    return current.start(global_config)
+    return current.start(global_config, aircraft)
 end
 
 return {
