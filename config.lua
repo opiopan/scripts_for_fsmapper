@@ -60,7 +60,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "Asobo NXCub")
+    change_aircraft("fs2020", "TBM 930 Asobo")
 else
     change_aircraft("", "")
 end

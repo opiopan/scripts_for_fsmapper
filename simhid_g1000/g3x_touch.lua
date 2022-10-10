@@ -51,7 +51,7 @@ function context.start(config, aircraft)
 
     context.current_view = 1
     local function change_view(d)
-        context.current_view = context.current_view + 1
+        context.current_view = context.current_view + d
         if context.current_view > #context.views then
             context.current_view = 1
         elseif context.current_view < 1 then

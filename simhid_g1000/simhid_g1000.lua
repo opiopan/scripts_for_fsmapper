@@ -17,6 +17,7 @@ fs2020_map["Asobo XCub"] = require("g3x_touch")
 fs2020_map["Asobo XCub Floats"] = require("g3x_touch")
 fs2020_map["Asobo XCub Skis"] = require("g3x_touch")
 fs2020_map["VL3 Asobo"] = require("g3x_touch")
+fs2020_map["TBM 930 Asobo"] = require("tbm930")
 
 local fallback={
     start = function ()
