@@ -36,12 +36,13 @@ function context.start(config, aircraft)
         },
     }
     local g1000 = context.device.events
-    context.g3x_touch_view.init(context.device)
 
     local aircraft_def = aircraft_defs[aircraft]
     if not aircraft_def then
         aircraft_def = aircraft_fallback
     end
+
+    context.g3x_touch_view.init(context.device, aircraft_def.aptype ~= 2)
 
     context.views = {}
     for i, name in ipairs(aircraft_def.views) do
@@ -68,7 +69,7 @@ function context.start(config, aircraft)
 
     if aircraft_def.aptype == 1 then
         viewport:add_mappings{
-            {event=g1000.SW2.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_MASTER)")},
+            {event=g1000.SW2.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }")},
             {event=g1000.SW3.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT MASTER, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) }")},
             {event=g1000.SW4.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)")},
             {event=g1000.SW5.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_ALT_HOLD)")},
@@ -85,10 +86,12 @@ function context.start(config, aircraft)
             {event=g1000.EC2X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
             {event=g1000.EC2Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
             {event=g1000.EC2Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
+            {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
+            {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }
     elseif aircraft_def.aptype == 2 then
         viewport:add_mappings{
-            {event=g1000.SW2.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) if{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } (L:XMLVAR_APTrim) 0 == if{ (A:AUTOPILOT YAW DAMPER, Bool) ! (A:AUTOPILOT MASTER, bool) and if{ (K:YAW_DAMPER_TOGGLE) } } (A:AUTOPILOT MASTER, Bool) ! if{ (H:Generic_Autopilot_Manual_Off) } }")},
+            {event=g1000.SW2.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }")},
             {event=g1000.SW3.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT MASTER, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) }")},
             {event=g1000.SW4.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)")},
             {event=g1000.SW5.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_ALT_HOLD)")},
@@ -99,18 +102,36 @@ function context.start(config, aircraft)
             {event=g1000.SW12.down, action=fs2020.mfwasm.rpn_executer("(>K:FLIGHT_LEVEL_CHANGE) (A:AUTOPILOT FLIGHT LEVEL CHANGE, bool) if { (A:AIRSPEED INDICATED, knots) (>K:AP_SPD_VAR_SET) }")},
             {event=g1000.SW11.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_DEC) (>K:AP_VS_VAR_INC)")},
             {event=g1000.SW13.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_INC) (>K:AP_VS_VAR_DEC)")},
+            {event=g1000.SW28.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3X_Touch_1_Menu_Push)")},
+            {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
+            {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
+            {event=g1000.EC3P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:HEADING_BUG_SET)")},
+            {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
+            {event=g1000.EC4X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
+            {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
+            {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
+            {event=g1000.EC4P.down, action=fs2020.mfwasm.rpn_executer("(A:INDICATED ALTITUDE, feet) (>K:AP_ALT_VAR_SET_ENGLISH) (>H:AP_KNOB)")},
+            {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_INC)")},
+            {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_DEC)")},
+            {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR1_SET)")},
+            {event=g1000.EC8.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_INC)")},
+            {event=g1000.EC8.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_DEC)")},
+            {event=g1000.EC8P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR2_SET)")},
+            {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
+            {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
+        }
+    else
+        viewport:add_mappings{
             {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
             {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
             {event=g1000.EC2X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
             {event=g1000.EC2X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
             {event=g1000.EC2Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
             {event=g1000.EC2Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
-            {event=g1000.EC2P.down, action=fs2020.mfwasm.rpn_executer("(A:INDICATED ALTITUDE, feet) (>K:AP_ALT_VAR_SET_ENGLISH) (>H:AP_KNOB)")},
-            {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_INC)")},
-            {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_DEC)")},
-            {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR1_SET)")},
+            {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
+            {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }
-end
+    end
 
     return {
         move_next_view = function () change_view(1) end,

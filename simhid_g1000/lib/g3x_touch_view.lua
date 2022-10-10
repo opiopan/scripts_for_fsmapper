@@ -47,7 +47,8 @@ context.actions[2] = {
 --------------------------------------------------------------------------------------
 -- initialize module
 --------------------------------------------------------------------------------------
-function context.init(g1000)
+function context.init(g1000, has_buttons)
+    context.has_buttons = has_buttons
     context.assets = require("lib/g3x_touch_assets")
     context.g1000 = g1000.events
 
@@ -63,8 +64,10 @@ function context.init(g1000)
     rctx:set_brush(graphics.color(103, 103, 95))
     rctx:fill_rectangle(0, frame_height * 11, view_width, shadow_height)
 
-    for key, button in pairs(context.buttons) do
-        rctx:draw_bitmap(context.assets[key], button.x, button.y)
+    if has_buttons then
+        for key, button in pairs(context.buttons) do
+            rctx:draw_bitmap(context.assets[key], button.x, button.y)
+        end
     end
 
     rctx:finish_rendering()
@@ -84,28 +87,31 @@ end
 --------------------------------------------------------------------------------------
 function context.create_view(name, num)
     local actions = context.actions[num]
-    local mappings = {
-        {event=context.g1000.EC4X.increment, action=actions.lknob_inner_inc},
-        {event=context.g1000.EC4X.decrement, action=actions.lknob_inner_dec},
-        {event=context.g1000.EC4Y.increment, action=actions.lknob_outer_inc},
-        {event=context.g1000.EC4Y.decrement, action=actions.lknob_outer_dec},
-        {event=context.g1000.EC9X.increment, action=actions.rknob_inner_inc},
-        {event=context.g1000.EC9X.decrement, action=actions.rknob_inner_dec},
-        {event=context.g1000.EC9Y.increment, action=actions.rknob_outer_inc},
-        {event=context.g1000.EC9Y.decrement, action=actions.rknob_outer_dec},
-        {event=context.g1000.SW27.down, action=actions.direct_to},
-        {event=context.g1000.SW28.down, action=actions.menu},
-        {event=context.g1000.SW31.down, action=actions.back},
-    }
+    local mappings = {}
     local view_elements = {}
-    for key, button in pairs(context.buttons) do
-        local action = actions[key]
-        mappings[#mappings + 1] = {event=button.event, action=action}
-        view_elements[#view_elements + 1] = {
-            object = mapper.view_elements.operable_area{round_ratio=0.1, event_tap = button.event},
-            x = button.x, y = button.y,
-            width = context.assets.button_size.width, height = context.assets.button_size.height,
+    if context.has_buttons then
+        mappings = {
+            {event=context.g1000.EC4X.increment, action=actions.lknob_inner_inc},
+            {event=context.g1000.EC4X.decrement, action=actions.lknob_inner_dec},
+            {event=context.g1000.EC4Y.increment, action=actions.lknob_outer_inc},
+            {event=context.g1000.EC4Y.decrement, action=actions.lknob_outer_dec},
+            {event=context.g1000.EC9X.increment, action=actions.rknob_inner_inc},
+            {event=context.g1000.EC9X.decrement, action=actions.rknob_inner_dec},
+            {event=context.g1000.EC9Y.increment, action=actions.rknob_outer_inc},
+            {event=context.g1000.EC9Y.decrement, action=actions.rknob_outer_dec},
+            {event=context.g1000.SW27.down, action=actions.direct_to},
+            {event=context.g1000.SW28.down, action=actions.menu},
+            {event=context.g1000.SW31.down, action=actions.back},
         }
+        for key, button in pairs(context.buttons) do
+            local action = actions[key]
+            mappings[#mappings + 1] = {event=button.event, action=action}
+            view_elements[#view_elements + 1] = {
+                object = mapper.view_elements.operable_area{round_ratio=0.1, event_tap = button.event},
+                x = button.x, y = button.y,
+                width = context.assets.button_size.width, height = context.assets.button_size.height,
+            }
+        end
     end
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.captured_window{name=name},
