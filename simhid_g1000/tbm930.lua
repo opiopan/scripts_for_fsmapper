@@ -19,6 +19,7 @@ function context.start(config, aircraft)
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
+            {name = "EC6P", modtype = "button", modparam={longpress = 2000}},
         },
     }
     local g1000 = context.device.events
@@ -55,8 +56,8 @@ function context.start(config, aircraft)
         vertical_alignment = "top",
     }
     context.views = {
-        viewport_main:register_view(context.g3000_view.create_view("G3000 PFD", 1)),
-        viewport_main:register_view(context.g3000_view.create_view("G3000 MFD", 2)),
+        viewport_main:register_view(context.g3000_view.create_view("G3000 PFD", "PFD_1")),
+        viewport_main:register_view(context.g3000_view.create_view("G3000 MFD", "MFD")),
         viewport_main:register_view(context.tsc_view.create_view("G3000 TSC")),
     }
 
@@ -76,12 +77,54 @@ function context.start(config, aircraft)
         {event=g1000.AUX1U.down, action=function () change_view(-1) end},
         {event=g1000.AUX2D.down, action=function () change_view(1) end},
         {event=g1000.AUX2U.down, action=function () change_view(-1) end},
+
+        {event=g1000.SW2.down, action=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT YAW DAMPER, Bool) ! if{ (>K:YAW_DAMPER_TOGGLE) } } }")},
+        {event=g1000.SW3.down, action=fs2020.mfwasm.rpn_executer("1 (>K:TOGGLE_FLIGHT_DIRECTOR)")},
+        {event=g1000.SW4.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)")},
+        {event=g1000.SW5.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_ALT_HOLD)")},
+        {event=g1000.SW6.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_NAV1_HOLD)")},
+        {event=g1000.SW7.down, action=fs2020.mfwasm.rpn_executer("(L:XMLVAR_VNAVButtonValue) ! (>L:XMLVAR_VNAVButtonValue)")},
+        {event=g1000.SW8.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_APR_HOLD)")},
+        {event=g1000.SW9.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_BC_HOLD)")},
+        {event=g1000.SW10.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_PANEL_VS_HOLD) 1 0 (>K:2:AP_VS_VAR_SET_ENGLISH)")},
+        {event=g1000.SW12.down, action=fs2020.mfwasm.rpn_executer("(>K:FLIGHT_LEVEL_CHANGE) (A:AUTOPILOT FLIGHT LEVEL CHANGE, bool) if { (A:AIRSPEED INDICATED, knots) (>K:AP_SPD_VAR_SET) }")},
+        {event=g1000.SW11.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_DEC) (>K:AP_VS_VAR_INC)")},
+        {event=g1000.SW13.down, action=fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_INC) (>K:AP_VS_VAR_DEC)")},
+        {event=g1000.SW28.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3X_Touch_1_Menu_Push)")},
+        {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
+        {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
+        {event=g1000.EC3P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:HEADING_BUG_SET)")},
+        {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
+        {event=g1000.EC4X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
+        {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
+        {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
+        {event=g1000.EC4P.down, action=fs2020.mfwasm.rpn_executer("(A:INDICATED ALTITUDE, feet) (>K:AP_ALT_VAR_SET_ENGLISH) (>H:AP_KNOB)")},
+        {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_INC)")},
+        {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_DEC)")},
+        {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR1_SET)")},
+        {event=g1000.EC8.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_INC)")},
+        {event=g1000.EC8.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_DEC)")},
+        {event=g1000.EC8P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR2_SET)")},
+        {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
+        {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
+
+        {event=g1000.EC6Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Large_INC)")},
+        {event=g1000.EC6Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Large_DEC)")},
+        {event=g1000.EC6X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Small_INC)")},
+        {event=g1000.EC6X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Small_DEC)")},
+        {event=g1000.EC6P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Push)")},
+        {event=g1000.EC6P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_TopKnob_Push_Long)")},
+        {event=g1000.EC9Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_BottomKnob_Small_INC)")},
+        {event=g1000.EC9Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_BottomKnob_Small_DEC)")},
+        {event=g1000.EC9X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_BottomKnob_Small_INC)")},
+        {event=g1000.EC9X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_BottomKnob_Small_DEC)")},
+        {event=g1000.EC9P.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Horizontal_1_BottomKnob_Push)")},
     }
 
     return {
         move_next_view = function () change_view(1) end,
         move_previous_view = function () change_view(-1) end,
-        global_mappings = {},
+        global_mappings = global_mappings,
         need_to_start_viewports = true,
     }
 end

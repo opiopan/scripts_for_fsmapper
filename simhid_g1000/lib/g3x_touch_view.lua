@@ -52,25 +52,25 @@ function context.init(g1000, has_buttons)
     context.assets = require("lib/g3x_touch_assets")
     context.g1000 = g1000.events
 
-    context.background = graphics.bitmap(view_width, view_height)
-    local rctx = graphics.rendering_context(context.background)
-
-    rctx:set_brush(graphics.color(66, 66, 61))
-    rctx:fill_rectangle(0, 0, view_width, frame_height)
-    rctx:fill_rectangle(0, frame_height * 11, view_width, frame_height)
-    local shadow_height = 6
-    rctx:set_brush(graphics.color(49, 49, 44))
-    rctx:fill_rectangle(0, frame_height - shadow_height, view_width, shadow_height)
-    rctx:set_brush(graphics.color(103, 103, 95))
-    rctx:fill_rectangle(0, frame_height * 11, view_width, shadow_height)
-
     if has_buttons then
+        context.background = graphics.bitmap(view_width, view_height)
+        local rctx = graphics.rendering_context(context.background)
+
+        rctx:set_brush(graphics.color(66, 66, 61))
+        rctx:fill_rectangle(0, 0, view_width, frame_height)
+        rctx:fill_rectangle(0, frame_height * 11, view_width, frame_height)
+        local shadow_height = 6
+        rctx:set_brush(graphics.color(49, 49, 44))
+        rctx:fill_rectangle(0, frame_height - shadow_height, view_width, shadow_height)
+        rctx:set_brush(graphics.color(103, 103, 95))
+        rctx:fill_rectangle(0, frame_height * 11, view_width, shadow_height)
+
         for key, button in pairs(context.buttons) do
             rctx:draw_bitmap(context.assets[key], button.x, button.y)
         end
-    end
 
-    rctx:finish_rendering()
+        rctx:finish_rendering()
+    end
 end
 
 --------------------------------------------------------------------------------------
@@ -113,9 +113,13 @@ function context.create_view(name, num)
             }
         end
     end
+    local g3x_window_y_pos = frame_height
+    if not context.has_buttons then
+        g3x_window_y_pos = frame_height * 2
+    end
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.captured_window{name=name},
-        x = 0, y = frame_height,
+        x = 0, y = g3x_window_y_pos,
         width = view_width, height = frame_height * 10
     }
 

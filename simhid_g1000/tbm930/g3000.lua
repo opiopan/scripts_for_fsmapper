@@ -21,13 +21,13 @@ end
 --------------------------------------------------------------------------------------
 -- view definition generator
 --------------------------------------------------------------------------------------
-function context.create_view(name, num)
+function context.create_view(name, type)
     local mappings = {}
     local view_elements = {}
     for i = 1, 12 do
         mappings[#mappings + 1] = {
             event = context.g1000["SW" .. 13 + i].down,
-            action = fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_" .. num .. "_SOFTKEYS_" .. i .. ")")
+            action = fs2020.mfwasm.rpn_executer("(>H:AS3000_" .. type .. "_SOFTKEYS_" .. i .. ")")
         }
     end
     view_elements[#view_elements + 1] = {
