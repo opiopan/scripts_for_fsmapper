@@ -58,8 +58,8 @@ module.actions[2] = {
 --------------------------------------------------------------------------------------
 -- operable are definitions
 --------------------------------------------------------------------------------------
-local attr_normal = {width=110.264, height=73.366, rratio=0.05}
-local attr_range = {width=91.57, height=76.903, rratio=0}
+local attr_normal = {width=110.264, height=73.366, rratio=0.1}
+local attr_range = {width=91.57, height=76.903, rratio=0.1}
 local buttons = {
     rng_dezoom = {x=958.147, y=111.503, attr=attr_range},
     rng_zoom = {x=958.147, y=218.58, attr=attr_range},
@@ -101,7 +101,7 @@ setmetatable(module, {
 -- instance generator
 --------------------------------------------------------------------------------------
 function module.create_component(component_name, id, captured_window, x, y, scale, rctx, simhid_g1000)
-    component = {
+    local component = {
         name = component_name,
         view_elements = {},
         global_mappings = {},
