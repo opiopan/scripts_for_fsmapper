@@ -159,7 +159,7 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     component.view_elements[#component.view_elements + 1] = {
         object = captured_window,
         x = x + 266 * scale, y = y + 52 * scale,
-        width = 609 * scale, height = 306 * scale,
+        width = 609 * scale, height = 308 * scale,
     }
 
     -- Event-Action mappings which are enabled when the component is activated
