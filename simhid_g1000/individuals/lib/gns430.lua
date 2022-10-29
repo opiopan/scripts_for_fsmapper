@@ -71,7 +71,7 @@ end
 --------------------------------------------------------------------------------------
 setmetatable(module, {
     __gc = function (obj)
-        for i = 1, 2 do
+        for i = 1,#module.actions do
             for key, evid in pairs(obj.events[i]) do
                 mapper.unregister_message(evid)
             end

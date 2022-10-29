@@ -16,6 +16,7 @@ local captured_window_defs ={
 
 local views = {
     {
+        -----------------------------------------------------------------------------------
         name = "Primery View",
         viewid = nil,
         width = 2224, height = 1668,
@@ -31,6 +32,7 @@ local views = {
         initial_active_component = 1,
     },
     {
+        -----------------------------------------------------------------------------------
         name = "Secondary View",
         viewid = nil,
         width = 2224, height = 1668,
@@ -49,6 +51,7 @@ local views = {
         initial_active_component = 1,
     },
     {
+        -----------------------------------------------------------------------------------
         name = "3rd View",
         viewid = nil,
         width = 2224, height = 1668,
@@ -66,8 +69,6 @@ local views = {
         initial_active_component = 1,
     },
 }
-
-local current_view = 1
 
 function module.start(config, aircraft)
     local display = config.simhid_g1000_display
@@ -113,14 +114,7 @@ function module.start(config, aircraft)
         {event=g1000.SW18.down, action=libs.g3x.actions[1].softkey5},
     }
 
-    for i, lib in ipairs(libs) do
-        if lib.reset ~= nil then
-            lib.reset()
-        end
-        if lib.observed_data ~= nil then
-            fs2020.mfwasm.add_observed_data(lib.observed_data)
-        end
-    end
+    common.init_component_modules(libs)
 
     local viewport = mapper.viewport{
         name = "Extra 330 viewport",
@@ -130,108 +124,26 @@ function module.start(config, aircraft)
     }
 
     local viewport_mappings = {}
-
-    local function change_view(d)
-        current_view = current_view + d
-        if current_view > #views then
-            current_view = 1
-        elseif current_view < 1 then
-            current_view = #views
-        end
-        viewport:change_view(views[current_view].viewid)
-        mapper.delay(1, function ()
-            viewport:set_mappings(viewport_mappings)
-            local view = views[current_view]
-            viewport:add_mappings(view.components[view.active_component].instance.component_mappings)
-        end)
-    end
-
-    common.merge_array(viewport_mappings, {
-        {event=g1000.AUX1D.down, action=function () change_view(1) end},
-        {event=g1000.AUX1U.down, action=function () change_view(-1) end},
-        {event=g1000.AUX2D.down, action=function () change_view(1) end},
-        {event=g1000.AUX2U.down, action=function () change_view(-1) end},
-    })
-
-    local captured_windows ={}
-    for i, def in ipairs(captured_window_defs) do
-        captured_windows[def.key] ={
-            object = mapper.view_elements.captured_window{name=def.name}
-        }
-    end
-
-    for viewix, view in ipairs(views) do
-        view.active_component = view.initial_active_component
-        local background = graphics.bitmap(view.width, view.height)
-        local rctx = graphics.rendering_context(background)
-        local view_elements = {}
-        local view_mappings = {}
-        common.merge_array(view_mappgins, view.mappings)
-        rctx:set_brush(graphics.color(50, 50, 50))
-        for i, rect in ipairs(view.background_regions) do
-            rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
-        end
-        local change_active_component = function (cid)
-            if view.active_component ~= cid then
-                view.components[view.active_component].instance.activate(0)
-                view.active_component = cid
-                view.components[view.active_component].instance.activate(1)
-                viewport:set_mappings(viewport_mappings)
-                viewport:add_mappings(view.components[view.active_component].instance.component_mappings)
-            end
-        end
-        for i, component in ipairs(view.components) do
-            local cw = nil
-            if component.cw ~= nil then
-                cw = captured_windows[component.cw].object
-            end
-            component.instance = component.module.create_component(
-                i, component.type_id, cw,
-                component.x, component.y, component.scale,
-                rctx, module.device
-            )
-            common.merge_array(view_elements, component.instance.view_elements)
-            common.merge_array(view_mappings, component.instance.view_mappings)
-            component.instance.callback = change_active_component
-        end
-        rctx:finish_rendering()
-        view.viewid = viewport:register_view{
-            name = view.name,
-            elements = view_elements,
-            logical_width = view.width,
-            logical_height = view.height,
-            background = background,
-            mappings = view_mappings,
-        }
-        view.components[view.active_component].instance.activate(1)
-    end
+    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, g1000, {})
+    common.arrange_views(viewport, viewport_mappings, captured_window_defs, views)
 
     viewport:set_mappings(viewport_mappings)
-    local target_view = views[current_view]
+    local target_view = views[1]
     viewport:add_mappings(target_view.components[target_view.active_component].instance.component_mappings)
 
     local global_mappings = {}
-    for i, lib in ipairs(libs) do
-        if lib.create_global_mappings ~= nil then
-            global_mappings[#global_mappings + 1] = lib.create_global_mappings()
-        end
-    end
+    common.set_global_mappings(global_mappings, libs)
 
     return {
-        move_next_view = function () change_view(1) end,
-        move_previous_view = function () change_view(-1) end,
+        move_next_view = view_changer.move_next_view,
+        move_previous_view = view_changer.move_previous_view,
         global_mappings = global_mappings,
         need_to_start_viewports = true,
     }
 end
 
 function module.stop()
-    for i, view in ipairs(views) do
-        view.viewid = nil
-        for j, component in ipairs(view.components) do
-            component.instance = nil
-        end
-    end
+    common.clear_component_instance(views)
     module.device:close()
     module.device = nil
 end

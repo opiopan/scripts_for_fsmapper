@@ -25,7 +25,7 @@ local buttons = {
     right = {x=500.115, y=633.555, attr=attr_normal},
 }
 
-for i = 1,2 do
+for i = 1,#module.actions do
     module.events[i] = {}
     for name, button in pairs(buttons) do
         module.events[i][name] = mapper.register_event("Vigilus:" .. name .. "_tapped")
@@ -38,7 +38,7 @@ end
 --------------------------------------------------------------------------------------
 setmetatable(module, {
     __gc = function (obj)
-        for i = 1, 2 do
+        for i = 1,#module.actions do
             for key, evid in pairs(obj.events[i]) do
                 mapper.unregister_message(evid)
             end
