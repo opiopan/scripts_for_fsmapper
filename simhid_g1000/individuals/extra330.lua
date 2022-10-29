@@ -93,6 +93,26 @@ function module.start(config, aircraft)
     }
     local g1000 = module.device.events
 
+    views[1].mappings = {
+        {event=g1000.SW14.down, action=libs.g3x.actions[1].softkey1},
+        {event=g1000.SW15.down, action=libs.g3x.actions[1].softkey2},
+        {event=g1000.SW16.down, action=libs.g3x.actions[1].softkey3},
+        {event=g1000.SW17.down, action=libs.g3x.actions[1].softkey4},
+        {event=g1000.SW18.down, action=libs.g3x.actions[1].softkey5},
+        {event=g1000.SW20.down, action=libs.g3x.actions[2].softkey1},
+        {event=g1000.SW21.down, action=libs.g3x.actions[2].softkey2},
+        {event=g1000.SW22.down, action=libs.g3x.actions[2].softkey3},
+        {event=g1000.SW23.down, action=libs.g3x.actions[2].softkey4},
+        {event=g1000.SW24.down, action=libs.g3x.actions[2].softkey5},
+    }
+    views[2].mappings = {
+        {event=g1000.SW14.down, action=libs.g3x.actions[1].softkey1},
+        {event=g1000.SW15.down, action=libs.g3x.actions[1].softkey2},
+        {event=g1000.SW16.down, action=libs.g3x.actions[1].softkey3},
+        {event=g1000.SW17.down, action=libs.g3x.actions[1].softkey4},
+        {event=g1000.SW18.down, action=libs.g3x.actions[1].softkey5},
+    }
+
     for i, lib in ipairs(libs) do
         if lib.reset ~= nil then
             lib.reset()

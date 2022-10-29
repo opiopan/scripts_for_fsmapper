@@ -95,6 +95,26 @@ function module.start(config, aircraft)
     }
     local g1000 = module.device.events
 
+    views[1].mappings = {
+        {event=g1000.SW14.down, action=libs.g3x.actions[1].softkey1},
+        {event=g1000.SW15.down, action=libs.g3x.actions[1].softkey2},
+        {event=g1000.SW16.down, action=libs.g3x.actions[1].softkey3},
+        {event=g1000.SW17.down, action=libs.g3x.actions[1].softkey4},
+        {event=g1000.SW18.down, action=libs.g3x.actions[1].softkey5},
+        {event=g1000.SW20.down, action=libs.g3x.actions[2].softkey1},
+        {event=g1000.SW21.down, action=libs.g3x.actions[2].softkey2},
+        {event=g1000.SW22.down, action=libs.g3x.actions[2].softkey3},
+        {event=g1000.SW23.down, action=libs.g3x.actions[2].softkey4},
+        {event=g1000.SW24.down, action=libs.g3x.actions[2].softkey5},
+    }
+    views[2].mappings = {
+        {event=g1000.SW14.down, action=libs.g3x.actions[1].softkey1},
+        {event=g1000.SW15.down, action=libs.g3x.actions[1].softkey2},
+        {event=g1000.SW16.down, action=libs.g3x.actions[1].softkey3},
+        {event=g1000.SW17.down, action=libs.g3x.actions[1].softkey4},
+        {event=g1000.SW18.down, action=libs.g3x.actions[1].softkey5},
+    }
+
     for name, lib in pairs(libs) do
         if lib.reset ~= nil then
             lib.reset()
@@ -133,6 +153,13 @@ function module.start(config, aircraft)
         {event=g1000.AUX1U.down, action=function () change_view(-1) end},
         {event=g1000.AUX2D.down, action=function () change_view(1) end},
         {event=g1000.AUX2U.down, action=function () change_view(-1) end},
+
+        {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
+        {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
+        {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
+        {event=g1000.EC4X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
+        {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
+        {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
     })
 
     local captured_windows ={}
@@ -148,7 +175,7 @@ function module.start(config, aircraft)
         local rctx = graphics.rendering_context(background)
         local view_elements = {}
         local view_mappings = {}
-        common.merge_array(view_mappgins, view.mappings)
+        common.merge_array(view_mappings, view.mappings)
         rctx:set_brush(graphics.color(50, 50, 50))
         for i, rect in ipairs(view.background_regions) do
             rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
@@ -175,6 +202,9 @@ function module.start(config, aircraft)
             common.merge_array(view_elements, component.instance.view_elements)
             common.merge_array(view_mappings, component.instance.view_mappings)
             component.instance.callback = change_active_component
+            if component.instance.viewport_mappings ~= nil then
+                common.merge_array(viewport_mappings, component.instance.viewport_mappings)
+            end
         end
         rctx:finish_rendering()
         view.viewid = viewport:register_view{

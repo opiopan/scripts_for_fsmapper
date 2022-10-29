@@ -13,7 +13,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 module.actions[1] = {
     ap=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }"),
-    lvl=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT WING LEVELER, Bool)"),
+    lvl=fs2020.mfwasm.rpn_executer("(>K:AP_WING_LEVELER) (A:AUTOPILOT WING LEVELER, Bool) if{ (A:AUTOPILOT MASTER, Bool) (>O:APStateWhenLevelerEnabled) (A:AUTOPILOT MASTER, Bool) ! if{ (>K:AUTOPILOT_ON) } (>K:AP_PITCH_LEVELER_ON) } els{ (>K:AP_PITCH_LEVELER_OFF) (O:APStateWhenLevelerEnabled) if{ (>K:AUTOPILOT_ON) } els{ (>K:AUTOPILOT_OFF) } }"),
     fd=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT MASTER, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) }"),
     hdg=fs2020.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)"),
     alt=fs2020.mfwasm.rpn_executer("(>K:AP_ALT_HOLD)"),
@@ -127,6 +127,7 @@ function module.create_component(component_name, id, captured_window, x, y, scal
         view_elements = {},
         view_mappings = {},
         component_mappings = {},
+        viewport_mappings = {},
         callback = nil,
     }
 
@@ -176,7 +177,7 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     -- view scope mappings
     if simhid_g1000 then
         local g1000 = simhid_g1000.events
-        common.merge_array(component.view_mappings, {
+        component.viewport_mappings = {
             {event=g1000.SW2.down, action=module.actions[id].ap},
             {event=g1000.SW3.down, action=module.actions[id].fd},
             {event=g1000.SW4.down, action=module.actions[id].hdg},
@@ -186,9 +187,9 @@ function module.create_component(component_name, id, captured_window, x, y, scal
             {event=g1000.SW8.down, action=module.actions[id].apr},
             {event=g1000.SW10.down, action=module.actions[id].vs},
             {event=g1000.SW12.down, action=module.actions[id].ias},
-            {event=g1000.SW11.down, action=module.actions[id].dn},
-            {event=g1000.SW13.down, action=module.actions[id].up},
-        })
+            {event=g1000.SW11.down, action=module.actions[id].up},
+            {event=g1000.SW13.down, action=module.actions[id].dn},
+        }
     end
 
     return component
