@@ -58,7 +58,7 @@ local buttons = {
     proc = {x=786.505, y=398.823, attr=attr_bottom},
 }
 
-for i = 1,2 do
+for i = 1,#module.actions do
     module.events[i] = {}
     for name, button in pairs(buttons) do
         module.events[i][name] = mapper.register_event("GNS430:" .. name .. "_tapped")
@@ -86,7 +86,6 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     local component = {
         name = component_name,
         view_elements = {},
-        global_mappings = {},
         view_mappings = {},
         component_mappings = {},
         callback = nil,

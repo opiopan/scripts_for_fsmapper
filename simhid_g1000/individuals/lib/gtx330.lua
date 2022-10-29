@@ -60,7 +60,7 @@ local buttons = {
     num9 = {x=1010.16, y=210.824, attr=attr_normal},
 }
 
-for i = 1,2 do
+for i = 1,#module.actions do
     module.events[i] = {}
     for name, button in pairs(buttons) do
         module.events[i][name] = mapper.register_event("GTX330:" .. name .. "_tapped")
@@ -87,7 +87,6 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     local component = {
         name = component_name,
         view_elements = {},
-        global_mappings = {},
         view_mappings = {},
         component_mappings = {},
         callback = nil,

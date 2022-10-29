@@ -61,7 +61,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "Extra 330 Asobo")
+    change_aircraft("fs2020", "Pipistrel Alpha Electro Asobo")
 else
     change_aircraft("", "")
 end

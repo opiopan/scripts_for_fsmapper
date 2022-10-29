@@ -1,15 +1,15 @@
 local module = {}
 
 local common = require("lib/common")
-local g3x = require("lib/g3x_portrate")
-local vigilus = require("lib/vigilus")
-local gns430 = require("lib/gns430")
-local gtx330 = require("lib/gtx330")
+local libs = {
+    g3x = require("lib/g3x_portrate"),
+    gns430 = require("lib/gns430"),
+    gtx330 = require("lib/gtx330"),
+}
 
 local captured_window_defs ={
     {key="g3x_left", name="G3X Left Display"},
     {key="g3x_right", name="G3X Right Display"},
-    -- {key="vigilus", name="Vigilus Engine Status Display"},
     {key="gns430", name="GNS430 GPS"},
     {key="gtx330", name="GTX330 Transponder"},
 }
@@ -24,11 +24,11 @@ local views = {
             {x=0, y=1601, width=2224, height=67},
         },
         components = {
-            {name="Left G3X", module=g3x, cw="g3x_left", type_id=1, x=0, y=67, scale=1, instance=nil},
-            {name="Right G3X", module=g3x, cw="g3x_right", type_id=2, x=1112, y=67, scale=1, instance=nil},
+            {name="Left G3X", module=libs.g3x, cw="g3x_left", type_id=1, x=0, y=67, scale=1, instance=nil},
+            {name="Right G3X", module=libs.g3x, cw="g3x_right", type_id=2, x=1112, y=67, scale=1, instance=nil},
         },
         mappings = {},
-        active_component = 1,
+        initial_active_component = 1,
     },
     {
         name = "Secondary View",
@@ -41,13 +41,12 @@ local views = {
             {x=1112, y=1208, width=1112, height=460},
         },
         components = {
-            {name="Left G3X", module=g3x, cw="g3x_left", type_id=1, x=0, y=67, scale=1, instance=nil},
-            -- {name="Vigilus", module=vigilus, cw="vigilus", type_id=1, x=1269, y=30, scale=1, instance=nil},
-            {name="gns430", module=gns430, cw="gns430", type_id=1, x=1112, y=460, scale=1, instance=nil},
-            {name="gtx330", module=gtx330, cw="gtx330", type_id=1, x=1112, y=926, scale=1, instance=nil},
+            {name="Left G3X", module=libs.g3x, cw="g3x_left", type_id=1, x=0, y=67, scale=1, instance=nil},
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=460, scale=1, instance=nil},
+            {name="gtx330", module=libs.gtx330, cw="gtx330", type_id=1, x=1112, y=926, scale=1, instance=nil},
         },
         mappings = {},
-        active_component = 1,
+        initial_active_component = 1,
     },
     {
         name = "3rd View",
@@ -60,11 +59,11 @@ local views = {
             {x=1946, y=273, width=278, height=1122},
         },
         components = {
-            {name="gns430", module=gns430, cw="gns430", type_id=1, x=278, y=273, scale=1.5, instance=nil},
-            {name="gtx330", module=gtx330, cw="gtx330", type_id=1, x=278, y=972, scale=1.5, instance=nil},
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=278, y=273, scale=1.5, instance=nil},
+            {name="gtx330", module=libs.gtx330, cw="gtx330", type_id=1, x=278, y=972, scale=1.5, instance=nil},
         },
         mappings = {},
-        active_component = 1,
+        initial_active_component = 1,
     },
 }
 
@@ -93,6 +92,15 @@ function module.start(config, aircraft)
         },
     }
     local g1000 = module.device.events
+
+    for i, lib in ipairs(libs) do
+        if lib.reset ~= nil then
+            lib.reset()
+        end
+        if lib.observed_data ~= nil then
+            fs2020.mfwasm.add_observed_data(lib.observed_data)
+        end
+    end
 
     local viewport = mapper.viewport{
         name = "Extra 330 viewport",
@@ -132,14 +140,17 @@ function module.start(config, aircraft)
         }
     end
 
-    local global_mappings = {}
     for viewix, view in ipairs(views) do
-        view.active_component = 1
+        view.active_component = view.initial_active_component
         local background = graphics.bitmap(view.width, view.height)
         local rctx = graphics.rendering_context(background)
         local view_elements = {}
         local view_mappings = {}
         common.merge_array(view_mappgins, view.mappings)
+        rctx:set_brush(graphics.color(50, 50, 50))
+        for i, rect in ipairs(view.background_regions) do
+            rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
+        end
         local change_active_component = function (cid)
             if view.active_component ~= cid then
                 view.components[view.active_component].instance.activate(0)
@@ -150,19 +161,18 @@ function module.start(config, aircraft)
             end
         end
         for i, component in ipairs(view.components) do
+            local cw = nil
+            if component.cw ~= nil then
+                cw = captured_windows[component.cw].object
+            end
             component.instance = component.module.create_component(
-                i, component.type_id, captured_windows[component.cw].object,
+                i, component.type_id, cw,
                 component.x, component.y, component.scale,
                 rctx, module.device
             )
             common.merge_array(view_elements, component.instance.view_elements)
-            global_mappings[#global_mappings + 1] = component.instance.global_mappings
             common.merge_array(view_mappings, component.instance.view_mappings)
             component.instance.callback = change_active_component
-        end
-        rctx:set_brush(graphics.color(50, 50, 50))
-        for i, rect in ipairs(view.background_regions) do
-            rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
         end
         rctx:finish_rendering()
         view.viewid = viewport:register_view{
@@ -179,6 +189,13 @@ function module.start(config, aircraft)
     viewport:set_mappings(viewport_mappings)
     local target_view = views[current_view]
     viewport:add_mappings(target_view.components[target_view.active_component].instance.component_mappings)
+
+    local global_mappings = {}
+    for i, lib in ipairs(libs) do
+        if lib.create_global_mappings ~= nil then
+            global_mappings[#global_mappings + 1] = lib.create_global_mappings()
+        end
+    end
 
     return {
         move_next_view = function () change_view(1) end,
