@@ -1,6 +1,6 @@
 local module = {
     width = 1112,
-    height = 816,
+    height = 466,
     actions = {},
     events = {},
 }
@@ -10,62 +10,60 @@ local common = require("lib/common")
 -- action definitions
 --------------------------------------------------------------------------------------
 module.actions[1] = {
-    comswap = fs2020.mfwasm.rpn_executer("(>H:AS530_COMSWAP_Push)"),
-    navswap = fs2020.mfwasm.rpn_executer("(>H:AS530_NAVSWAP_Push)"),
-    rng_dezoom = fs2020.mfwasm.rpn_executer("(>H:AS530_RNG_Dezoom)"),
-    rng_zoom = fs2020.mfwasm.rpn_executer("(>H:AS530_RNG_Zoom)"),
-    directto = fs2020.mfwasm.rpn_executer("(>H:AS530_DirectTo_Push)"),
-    menu = fs2020.mfwasm.rpn_executer("(>H:AS530_MENU_Push)"),
-    clr = fs2020.mfwasm.rpn_executer("(>H:AS530_CLR_Push)"),
-    clr_long = fs2020.mfwasm.rpn_executer("(>H:AS530_CLR_Push_Long)"),
-    ent = fs2020.mfwasm.rpn_executer("(>H:AS530_ENT_Push)"),
-    cdi = fs2020.mfwasm.rpn_executer("(>H:AS530_CDI_Push)"),
-    obs = fs2020.mfwasm.rpn_executer("(>H:AS530_OBS_Push)"),
-    msg = fs2020.mfwasm.rpn_executer("(>H:AS530_MSG_Push)"),
-    fpl = fs2020.mfwasm.rpn_executer("(>H:AS530_FPL_Push)"),
-    vnav = fs2020.mfwasm.rpn_executer("(>H:AS530_VNAV_Push)"),
-    proc = fs2020.mfwasm.rpn_executer("(>H:AS530_PROC_Push)"),
-    left_large_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS530_LeftLargeKnob_Right)"),
-    left_large_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS530_LeftLargeKnob_Left)"),
-    left_small_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS530_LeftSmallKnob_Right)"),
-    left_small_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS530_LeftSmallKnob_Left)"),
-    left_small_knob_push = fs2020.mfwasm.rpn_executer("(>H:AS530_LeftSmallKnob_Push)"),
-    right_large_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS530_RightLargeKnob_Right)"),
-    right_large_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS530_RightLargeKnob_Left)"),
-    right_small_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS530_RightSmallKnob_Right)"),
-    right_small_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS530_RightSmallKnob_Left)"),
-    right_small_knob_push = fs2020.mfwasm.rpn_executer("(>H:AS530_RightSmallKnob_Push)"),
+    comswap = fs2020.mfwasm.rpn_executer("(>H:AS430_COMSWAP_Push)"),
+    navswap = fs2020.mfwasm.rpn_executer("(>H:AS430_NAVSWAP_Push)"),
+    rng_dezoom = fs2020.mfwasm.rpn_executer("(>H:AS430_RNG_Dezoom)"),
+    rng_zoom = fs2020.mfwasm.rpn_executer("(>H:AS430_RNG_Zoom)"),
+    directto = fs2020.mfwasm.rpn_executer("(>H:AS430_DirectTo_Push)"),
+    menu = fs2020.mfwasm.rpn_executer("(>H:AS430_MENU_Push)"),
+    clr = fs2020.mfwasm.rpn_executer("(>H:AS430_CLR_Push)"),
+    clr_long = fs2020.mfwasm.rpn_executer("(>H:AS430_CLR_Push_Long)"),
+    ent = fs2020.mfwasm.rpn_executer("(>H:AS430_ENT_Push)"),
+    cdi = fs2020.mfwasm.rpn_executer("(>H:AS430_CDI_Push)"),
+    obs = fs2020.mfwasm.rpn_executer("(>H:AS430_OBS_Push)"),
+    msg = fs2020.mfwasm.rpn_executer("(>H:AS430_MSG_Push)"),
+    fpl = fs2020.mfwasm.rpn_executer("(>H:AS430_FPL_Push)"),
+    proc = fs2020.mfwasm.rpn_executer("(>H:AS430_PROC_Push)"),
+    left_large_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS430_LeftLargeKnob_Right)"),
+    left_large_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS430_LeftLargeKnob_Left)"),
+    left_small_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS430_LeftSmallKnob_Right)"),
+    left_small_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS430_LeftSmallKnob_Left)"),
+    left_small_knob_push = fs2020.mfwasm.rpn_executer("(>H:AS430_LeftSmallKnob_Push)"),
+    right_large_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS430_RightLargeKnob_Right)"),
+    right_large_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS430_RightLargeKnob_Left)"),
+    right_small_knob_inc = fs2020.mfwasm.rpn_executer("(>H:AS430_RightSmallKnob_Right)"),
+    right_small_knob_dec = fs2020.mfwasm.rpn_executer("(>H:AS430_RightSmallKnob_Left)"),
+    right_small_knob_push = fs2020.mfwasm.rpn_executer("(>H:AS430_RightSmallKnob_Push)"),
 }
 --------------------------------------------------------------------------------------
 -- operable are definitions
 --------------------------------------------------------------------------------------
-local attr_swap = {width=49.127, height=74.005, rratio=0.1}
-local attr_range = {width=51.397, height=74.005, rratio=0.1}
-local attr_left = {width=79.97, height=51.706, rratio=0.1}
-local attr_bottom = {width=72.026, height=44.897, rratio=0.1}
+local attr_swap = {width=49.127, height=74.004, rratio=0.1}
+local attr_range = {width=67.501, height=52.437, rratio=0.1}
+local attr_left = {width=77.068, height=47.371, rratio=0.1}
+local attr_bottom = {width=69.189, height=50.003, rratio=0.1}
 local buttons = {
-    comswap = {x=97.934, y=70.371, attr=attr_swap},
-    navswap = {x=97.934, y=250.403, attr=attr_swap},
-    rng_zoom = {x=997.002, y=77.613, attr=attr_range},
-    rng_dezoom = {x=997.002, y=175.102, attr=attr_range},
-    directto = {x=983.283, y=263.553, attr=attr_left},
-    menu = {x=983.283, y=337.721, attr=attr_left},
-    clr = {x=983.283, y=410.233, attr=attr_left},
-    ent = {x=983.283, y=484.401, attr=attr_left},
-    cdi = {x=229.676, y=654.401, attr=attr_bottom},
-    obs = {x=342.805, y=654.401, attr=attr_bottom},
-    msg = {x=461.395, y=654.401, attr=attr_bottom},
-    fpl = {x=575.615, y=654.401, attr=attr_bottom},
-    vnav = {x=692.744, y=654.401, attr=attr_bottom},
-    proc = {x=807.334, y=654.401, attr=attr_bottom},
+    comswap = {x=183.481, y=71.039, attr=attr_swap},
+    navswap = {x=183.481, y=180.925, attr=attr_swap},
+    rng_zoom = {x=906.396, y=41.037, attr=attr_range},
+    rng_dezoom = {x=1003.637, y=41.037, attr=attr_range},
+    directto = {x=902.959, y=110.699, attr=attr_left},
+    menu = {x=1002.637, y=110.699, attr=attr_left},
+    clr = {x=902.959, y=178.925, attr=attr_left},
+    ent = {x=1002.637, y=178.925, attr=attr_left},
+    cdi = {x=282.645, y=398.823, attr=attr_bottom},
+    obs = {x=409.329, y=398.823, attr=attr_bottom},
+    msg = {x=534.746, y=398.823, attr=attr_bottom},
+    fpl = {x=659.821, y=398.823, attr=attr_bottom},
+    proc = {x=786.505, y=398.823, attr=attr_bottom},
 }
 
 for i = 1,#module.actions do
     module.events[i] = {}
     for name, button in pairs(buttons) do
-        module.events[i][name] = mapper.register_event("GNS530:" .. name .. "_tapped")
+        module.events[i][name] = mapper.register_event("GNS430:" .. name .. "_tapped")
     end
-    module.events[i].all = mapper.register_event("GNS530: background_tapped")
+    module.events[i].all = mapper.register_event("GNS430: background_tapped")
 end
 
 --------------------------------------------------------------------------------------
@@ -73,7 +71,7 @@ end
 --------------------------------------------------------------------------------------
 setmetatable(module, {
     __gc = function (obj)
-        for i = 1, 2 do
+        for i = 1,#module.actions do
             for key, evid in pairs(obj.events[i]) do
                 mapper.unregister_message(evid)
             end
@@ -94,7 +92,7 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     }
 
     -- update view background bitmap
-    local background = graphics.bitmap("assets/gns530.png")
+    local background = graphics.bitmap("assets/gns430.png")
     rctx:draw_bitmap{bitmap=background, x=x, y=y, scale=scale}
 
     -- operable area
@@ -143,12 +141,12 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     }
     component.view_elements[#component.view_elements + 1] = {
         object = canvas1,
-        x = x + 37.383 * scale, y = y + 645.479 * scale,
+        x = x + 36.853 * scale, y = y + 308.376 * scale,
         width = 102.201 * scale, height = 102.201 * scale
     }
     component.view_elements[#component.view_elements + 1] = {
         object = canvas2,
-        x = x + 984.283 * scale, y = y + 641.642 * scale,
+        x = x + 976.504 * scale, y = y + 308.376 * scale,
         width = 102.201 * scale, height = 102.201 * scale
     }
     function component.activate(state)
@@ -159,8 +157,8 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     -- captured window
     component.view_elements[#component.view_elements + 1] = {
         object = captured_window,
-        x = x + 186 * scale, y = y + 73 * scale,
-        width = 750 * scale, height = 538 * scale,
+        x = x + 266 * scale, y = y + 52 * scale,
+        width = 609 * scale, height = 308 * scale,
     }
 
     -- Event-Action mappings which are enabled when the component is activated
