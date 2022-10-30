@@ -23,6 +23,9 @@ fs2020_map["Volocity Microsoft"] = require("g3x_touch")
 fs2020_map["TBM 930 Asobo"] = require("tbm930")
 fs2020_map["Extra 330 Asobo"] = require("extra330")
 fs2020_map["Pipistrel Alpha Electro Asobo"] = require("sw121")
+fs2020_map["Cessna Skyhawk Asobo"] = require("c172")
+fs2020_map["Cessna Skyhawk Floaters Asobo"] = require("c172")
+fs2020_map["Cessna Skyhawk Skis Asobo"] = require("c172")
 
 local fallback={
     start = function ()

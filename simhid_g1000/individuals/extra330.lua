@@ -122,11 +122,9 @@ function module.start(config, aircraft)
         x = 0, y = 0, width = scale, height = scale,
         aspect_ratio = 4 / 3,
     }
-
     local viewport_mappings = {}
-    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, g1000, {})
-    common.arrange_views(viewport, viewport_mappings, captured_window_defs, views)
-
+    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, module.device, {})
+    common.arrange_views(viewport, viewport_mappings, captured_window_defs, views, module.device)
     viewport:set_mappings(viewport_mappings)
     local target_view = views[1]
     viewport:add_mappings(target_view.components[target_view.active_component].instance.component_mappings)

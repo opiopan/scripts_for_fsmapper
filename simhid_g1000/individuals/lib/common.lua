@@ -42,7 +42,7 @@ function module.init_component_modules(libs)
     end
 end
 
-function module.create_default_view_changer(viewport, views, initial_view, viewport_mappings, g1000, additional_viewport_mappings)
+function module.create_default_view_changer(viewport, views, initial_view, viewport_mappings, device, additional_viewport_mappings)
     local current_view = initial_view
     local function change_view(d)
         current_view = current_view + d
@@ -59,6 +59,7 @@ function module.create_default_view_changer(viewport, views, initial_view, viewp
         end)
     end
 
+    local g1000 = device.events
     module.merge_array(viewport_mappings, {
         {event=g1000.AUX1D.down, action=function () change_view(1) end},
         {event=g1000.AUX1U.down, action=function () change_view(-1) end},
@@ -74,7 +75,7 @@ function module.create_default_view_changer(viewport, views, initial_view, viewp
     }
 end
 
-function module.arrange_views(viewport, viewport_mappings, captured_window_defs, views)
+function module.arrange_views(viewport, viewport_mappings, captured_window_defs, views, device)
     local captured_windows ={}
     for i, def in ipairs(captured_window_defs) do
         captured_windows[def.key] ={
@@ -110,7 +111,7 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
             component.instance = component.module.create_component(
                 i, component.type_id, cw,
                 component.x, component.y, component.scale,
-                rctx, module.device
+                rctx, device
             )
             module.merge_array(view_elements, component.instance.view_elements)
             module.merge_array(view_mappings, component.instance.view_mappings)

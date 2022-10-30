@@ -124,9 +124,8 @@ function module.start(config, aircraft)
         x = 0, y = 0, width = scale, height = scale,
         aspect_ratio = 4 / 3,
     }
-
     local viewport_mappings = {}
-    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, g1000, {
+    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, module.device, {
         {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
         {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
         {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
@@ -134,8 +133,7 @@ function module.start(config, aircraft)
         {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
         {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
     })
-
-    common.arrange_views(viewport, viewport_mappings, captured_window_defs, views)
+    common.arrange_views(viewport, viewport_mappings, captured_window_defs, views, module.device)
 
     viewport:set_mappings(viewport_mappings)
     local target_view = views[1]
