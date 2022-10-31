@@ -148,6 +148,7 @@ function module.clear_component_instance(views)
             component.instance = nil
         end
     end
+    fs2020.mfwasm.clear_observed_data()
 end
 
 return module

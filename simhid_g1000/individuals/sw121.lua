@@ -88,10 +88,10 @@ function module.start(config, aircraft)
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
             {name = "SW31", modtype = "button", modparam={longpress = 2000}},
-            {name = "EC8U", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8D", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8R", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8L", modtype = "button", modparam={repeat_interval = 80}},
+            {name = "EC8U", modtype = "button", modparam={repeat_interval = 80, repeat_delay = 500}},
+            {name = "EC8D", modtype = "button", modparam={repeat_interval = 80, repeat_delay = 500}},
+            {name = "EC8R", modtype = "button", modparam={repeat_interval = 80, repeat_delay = 500}},
+            {name = "EC8L", modtype = "button", modparam={repeat_interval = 80, repeat_delay = 500}},
         },
     }
     local g1000 = module.device.events

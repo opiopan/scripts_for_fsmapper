@@ -4,7 +4,7 @@ local module = {
     actions = {},
     events = {},
     observed_data = {},
-    global_mapping_souces = {},
+    global_mapping_sources = {},
 }
 
 local common = require("lib/common")
@@ -88,7 +88,7 @@ indicators[1]= {
 }
 
 for i, indicator in ipairs(indicators) do
-    module.global_mapping_souces[i] = {}
+    module.global_mapping_sources[i] = {}
     for name, indicator in pairs(indicators[i]) do
         local evid = mapper.register_event("GMC305:"..name)
         module.events[i][name] = evid
@@ -113,8 +113,8 @@ setmetatable(module, {
 -- reset function called when aircraft evironment is build each
 --------------------------------------------------------------------------------------
 function module.reset()
-    for i, value in ipairs(module.global_mapping_souces) do
-        module.global_mapping_souces[i] = {}
+    for i, value in ipairs(module.global_mapping_sources) do
+        module.global_mapping_sources[i] = {}
     end
 end
 
@@ -168,10 +168,10 @@ function module.create_component(component_name, id, captured_window, x, y, scal
             x = x + indicator.x * scale, y = y + indicator.y * scale,
             width = indicator.attr.width * scale, height = indicator.attr.height * scale
         }
-        if module.global_mapping_souces[id][name] == nil then
-            module.global_mapping_souces[id][name] = {}
+        if module.global_mapping_sources[id][name] == nil then
+            module.global_mapping_sources[id][name] = {}
         end
-        module.global_mapping_souces[id][name][#module.global_mapping_souces[id][name] + 1] = function (value) canvas:set_value(value) end
+        module.global_mapping_sources[id][name][#module.global_mapping_sources[id][name] + 1] = function (value) canvas:set_value(value) end
     end
 
     -- view scope mappings
@@ -200,7 +200,7 @@ end
 --------------------------------------------------------------------------------------
 function module.create_global_mappings()
     local mappings = {}
-    for i, source in ipairs(module.global_mapping_souces) do
+    for i, source in ipairs(module.global_mapping_sources) do
         for key, actions in pairs(source) do
             mappings[#mappings + 1] = {event=module.events[i][key], action = function (evid, value)
                 for num, action in pairs(actions) do
