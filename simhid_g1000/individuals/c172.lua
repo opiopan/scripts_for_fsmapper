@@ -78,7 +78,7 @@ function module.start(config, aircraft)
     common.init_component_modules(libs)
 
     local viewport = mapper.viewport{
-        name = "SW121 viewport",
+        name = "C172 viewport",
         displayno = display,
         x = 0, y = 0, width = scale, height = scale,
         aspect_ratio = 4 / 3,

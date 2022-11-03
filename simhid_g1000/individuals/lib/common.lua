@@ -28,6 +28,19 @@ function module.merge_array(target, source)
     return target
 end
 
+function module.merge_table(target, source)
+    for key, value in pairs(source) do
+        target[key] = value
+    end
+    return target
+end
+
+function module.get_table_size(table)
+    local num = 0
+    for k, v in pairs(table) do num = num + 1 end
+    return num
+end
+
 --------------------------------------------------------------------------------------
 -- handling component based view
 --------------------------------------------------------------------------------------
