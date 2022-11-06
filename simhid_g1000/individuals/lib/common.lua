@@ -44,10 +44,14 @@ end
 --------------------------------------------------------------------------------------
 -- handling component based view
 --------------------------------------------------------------------------------------
-function module.init_component_modules(libs)
+function module.init_component_modules(libs, lib_options)
     for name, lib in pairs(libs) do
         if lib.reset ~= nil then
-            lib.reset()
+            if lib_options ~= nil then
+                lib.reset(lib_options[name])
+            else
+                lib.reset()
+            end
         end
         if lib.observed_data ~= nil then
             fs2020.mfwasm.add_observed_data(lib.observed_data)

@@ -7,6 +7,13 @@ local libs = {
     kap140 = require("lib/kap140"),
     kt76c = require("lib/kt76c"),
     kr87 = require("lib/kr87"),
+    cdi = require("lib/cdi")
+}
+local lib_options = {
+    cdi = {
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
+    },
 }
 
 local captured_window_defs ={
@@ -23,36 +30,22 @@ local views = {
         viewid = nil,
         width = 2224, height = 1668,
         background_regions = {
-            {x=0, y=0, width=2224, height=193},
-            {x=0, y=1475, width=1112, height=193},
-            {x=1112, y=1031, width=1112, height=637},
+            {x=0, y=569, width=1112, height=1099},
+            {x=1112, y=0, width=1112, height=63},
+            {x=1112, y=1605, width=1112, height=63},
         },
         components = {
-            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=0, y=193, scale=1, instance=nil},
-            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=0, y=1009, scale=1, instance=nil},
-            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=1112, y=193, scale=1, instance=nil},
-            {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=1112, y=489, scale=1, instance=nil},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=771, scale=1, instance=nil},
+            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=63, scale=1, instance=nil},
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=879, scale=1, instance=nil},
+            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1, instance=nil},
+            {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1, instance=nil},
+            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1345, scale=1, instance=nil},
+            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=306, y=606, scale=1, instance=nil},
+            {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=306, y=1141, scale=1, instance=nil},
         },
         mappings = {},
         initial_active_component = 1,
     },
-    -- {
-    --     -----------------------------------------------------------------------------------
-    --     name = "GNS530 View",
-    --     viewid = nil,
-    --     width = 2224, height = 1668,
-    --     background_regions = {
-    --         {x=0, y=0, width=2224, height=546},
-    --         {x=0, y=546, width=278, height=1122},
-    --         {x=1946, y=546, width=278, height=1122},
-    --     },
-    --     components = {
-    --         {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=666, scale=1.5, instance=nil},
-    --     },
-    --     mappings = {},
-    --     initial_active_component = 2,
-    -- },
 }
 
 function module.start(config, aircraft)
@@ -75,7 +68,7 @@ function module.start(config, aircraft)
     }
     local g1000 = module.device.events
 
-    common.init_component_modules(libs)
+    common.init_component_modules(libs, lib_options)
 
     local viewport = mapper.viewport{
         name = "C172 viewport",

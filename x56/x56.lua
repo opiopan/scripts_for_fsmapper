@@ -374,7 +374,6 @@ end
 
 local function change(host, aircraft, simhid_g1000)
     mapper.set_secondary_mappings({})
-
     x56_context.reset()
 
     x56_context.joymap.others = simhid_g1000.global_mappings
