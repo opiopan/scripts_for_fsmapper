@@ -74,7 +74,7 @@ cdi_parts.source ={
     source_indicator:create_partial_bitmap(71, 0, 71, 118),
 }
 
-local needle_width = 8
+local needle_width = 6
 local needle_movable_length = 240
 local needle_color=graphics.color("white")
 local needle_canvas_size = needle_movable_length + needle_width

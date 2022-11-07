@@ -107,7 +107,11 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
         local view_elements = {}
         local view_mappings = {}
         module.merge_array(view_mappings, view.mappings)
-        rctx:set_brush(module.view_background_color)
+        local background_color = module.view_background_color
+        if view.background_color then
+            background_color = view.background_color
+        end
+        rctx:set_brush(background_color)
         for i, rect in ipairs(view.background_regions) do
             rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
         end

@@ -30,6 +30,7 @@ local views = {
         name = "Normal View",
         viewid = nil,
         width = 2224, height = 1668,
+        background_color = graphics.color(30, 40, 50),
         background_regions = {
             {x=0, y=569, width=1112, height=1099},
             {x=1112, y=0, width=1112, height=126},
