@@ -7,12 +7,13 @@ local libs = {
     kap140 = require("lib/kap140"),
     kt76c = require("lib/kt76c"),
     kr87 = require("lib/kr87"),
+    c172navgps = require("lib/c172navgps"),
     cdi = require("lib/cdi")
 }
 local lib_options = {
     cdi = {
-        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
-        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
     },
 }
 
@@ -31,15 +32,15 @@ local views = {
         width = 2224, height = 1668,
         background_regions = {
             {x=0, y=569, width=1112, height=1099},
-            {x=1112, y=0, width=1112, height=63},
-            {x=1112, y=1605, width=1112, height=63},
+            {x=1112, y=0, width=1112, height=126},
         },
         components = {
-            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=63, scale=1, instance=nil},
-            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=879, scale=1, instance=nil},
+            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=126, scale=1, instance=nil},
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=942, scale=1, instance=nil},
             {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1, instance=nil},
             {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1, instance=nil},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1345, scale=1, instance=nil},
+            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1408, scale=1, instance=nil},
+            {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=1481.333, y=0, scale=1, instance=nil},
             {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=306, y=606, scale=1, instance=nil},
             {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=306, y=1141, scale=1, instance=nil},
         },

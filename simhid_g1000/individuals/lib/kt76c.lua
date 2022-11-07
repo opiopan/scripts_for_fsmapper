@@ -243,7 +243,7 @@ for i, val in ipairs(xmtr_sources) do
     for name, source in pairs(val) do
         local evid = mapper.register_event("KT-76C:"..name.."_source")
         module.events[i][name] = evid
-        module.observed_data[#module.observed_data + 1] = {rpn=source.rpn, event=evid}
+        module.observed_data[#module.observed_data + 1] = {rpn=source.rpn, epsilon=source.epsilon, event=evid}
     end
 end
 

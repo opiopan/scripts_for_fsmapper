@@ -77,7 +77,7 @@ cdi_parts.source ={
 local needle_width = 8
 local needle_movable_length = 240
 local needle_color=graphics.color("white")
-local needle_canvas_size = needle_movable_length
+local needle_canvas_size = needle_movable_length + needle_width
 local needle_value_scale = needle_movable_length / (127 * 2)
 cdi_parts.cdi_needle = graphics.bitmap(needle_width, needle_movable_length)
 cdi_parts.gs_needle = graphics.bitmap(needle_movable_length, needle_width)
@@ -89,8 +89,8 @@ rctx = graphics.rendering_context(cdi_parts.gs_needle)
 rctx:set_brush(needle_color)
 rctx:fill_rectangle(0, 0, cdi_parts.gs_needle.width, cdi_parts.gs_needle.height)
 rctx:finish_rendering()
-cdi_parts.cdi_needle:set_origin((needle_movable_length - needle_width) / -2, 0)
-cdi_parts.gs_needle:set_origin(0, (needle_movable_length - needle_width) / -2)
+cdi_parts.cdi_needle:set_origin(needle_movable_length / -2, needle_width / -2)
+cdi_parts.gs_needle:set_origin(needle_width / -2, needle_movable_length  / -2)
 
 local indicators ={}
 indicators[module.type.general] = {}
@@ -104,12 +104,12 @@ indicators[module.type.general][1]= {
     cdi_needle = {
         x=(module.width - needle_canvas_size) / 2, y=(module.height - needle_canvas_size) / 2, attr={width=needle_canvas_size, height=needle_canvas_size},
         shift={bitmap=cdi_parts.cdi_needle, axis="x", scale=needle_value_scale}, 
-        rpn="%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:1, Number) }"
+        rpn="%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:1, Number) }", epsilon=0.5
     },
     gs_needle = {
         x=(module.width - needle_canvas_size) / 2, y=(module.height - needle_canvas_size) / 2, attr={width=needle_canvas_size, height=needle_canvas_size},
         shift={bitmap=cdi_parts.gs_needle, axis="y", scale=needle_value_scale}, 
-        rpn="%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:1, Number) }"
+        rpn="%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:1, Number) }", epsilon = 0.5
     },
     source_indicator = {
         x=138.201, y=194.857, attr={width=70.606, height=117.375}, bitmaps={cdi_parts.source[1], cdi_parts.source[2]}, rpn="%s",
@@ -208,6 +208,7 @@ function module.reset(options)
             if indicator.rpn ~= nil then
                 module.observed_data[#module.observed_data + 1] = {
                     rpn = string.format(indicator.rpn, option.source_is_gps),
+                    epsilon= indicator.epsilon,
                     event = module.events[i][name]
                 }
             end
