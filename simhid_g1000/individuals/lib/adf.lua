@@ -3,7 +3,6 @@ local module = {
     height = 500,
     type = {
         general = 1,
-        no_glideslope = 2,
     },
     actions = {},
     events = {},
@@ -16,25 +15,17 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- appearance and behavior option
 --------------------------------------------------------------------------------------
-local module_options ={{}, {}} -- initialize when reset() will be called based on specified values and default values
+local module_options ={{}} -- initialize when reset() will be called based on specified values and default values
 local option_defaults = {
     type = module.type.general,
-    gps_dependency  = false,
-    source_is_gps = "0",  -- rpn fragment that return non-zero when cdi source is GPS
-    enable_nav = true, 
 }
 
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
 module.actions[1] = {
-    obs_inc = fs2020.event_sender("VOR1_OBI_INC"),
-    obs_dec = fs2020.event_sender("VOR1_OBI_DEC"),
-}
-
-module.actions[2] = {
-    obs_inc = fs2020.event_sender("VOR2_OBI_INC"),
-    obs_dec = fs2020.event_sender("VOR2_OBI_DEC"),
+    card_inc = fs2020.event_sender("ADF_CARD_INC"),
+    card_dec = fs2020.event_sender("ADF_CARD_DEC"),
 }
 
 --------------------------------------------------------------------------------------
@@ -42,108 +33,33 @@ module.actions[2] = {
 --------------------------------------------------------------------------------------
 for i = 1,#module.actions do
     module.events[i] = {}
-    module.events[i].all = mapper.register_event("CDI for NAV"..i..": background_tapped")
+    module.events[i].all = mapper.register_event("ADF instrument: background_tapped")
 end
 
 --------------------------------------------------------------------------------------
 -- indicator definitions
 --------------------------------------------------------------------------------------
-local instrument_parts = require("lib/instrument_parts")
-local cdi_parts = common.merge_table({}, instrument_parts)
-local source_indicator = graphics.bitmap(71*2, 118)
-local rctx = graphics.rendering_context(source_indicator)
-rctx:draw_bitmap{bitmap=cdi_parts.cdi_vloc.image, x=0, y=0}
-rctx:draw_bitmap{bitmap=cdi_parts.cdi_gps.image, x=71 + 8.738, y=86.797}
-rctx:finish_rendering()
-cdi_parts.source ={
-    source_indicator:create_partial_bitmap(0, 0, 71, 118),
-    source_indicator:create_partial_bitmap(71, 0, 71, 118),
-}
-
-local needle_width = 6
-local needle_movable_length = 240
-local needle_color=graphics.color("white")
-local needle_canvas_size = needle_movable_length + needle_width
-local needle_value_scale = needle_movable_length / (127 * 2)
-cdi_parts.cdi_needle = {image = graphics.bitmap(needle_width, needle_movable_length)}
-cdi_parts.gs_needle = {image = graphics.bitmap(needle_movable_length, needle_width)}
-rctx = graphics.rendering_context(cdi_parts.cdi_needle.image)
-rctx:set_brush(needle_color)
-rctx:fill_rectangle(0, 0, cdi_parts.cdi_needle.image.width, cdi_parts.cdi_needle.image.height)
-rctx:finish_rendering()
-rctx = graphics.rendering_context(cdi_parts.gs_needle.image)
-rctx:set_brush(needle_color)
-rctx:fill_rectangle(0, 0, cdi_parts.gs_needle.image.width, cdi_parts.gs_needle.image.height)
-rctx:finish_rendering()
-cdi_parts.cdi_needle.image:set_origin(needle_movable_length / -2, needle_width / -2)
-cdi_parts.gs_needle.image:set_origin(needle_width / -2, needle_movable_length  / -2)
+local parts = require("lib/instrument_parts")
 
 local indicators ={}
 indicators[module.type.general] = {}
 indicators[module.type.general][1]= {
-    heading_indicator = {x=237, y=92.731, attr={width=26, height=22.517}, bitmaps={cdi_parts.cdi_heading.image}},
-    tail_indicator = {x=242.5, y=383.711, attr={width=15, height=12.99}, bitmaps={cdi_parts.cdi_tail.image}},
+    standard_indicator = {x=40, y=40, attr={width=420, height=420}, bitmaps={parts.adf_starndard.image}},
     bearing_indicator = {
-        x=36.577, y=36.577, attr={width=427.05, height=427.05}, rotation={bitmap=cdi_parts.cdi_bearing.image, center={x=427.05/2, y=427.05/2}},
-        rpn="360 (A:NAV OBS:1, Degrees) -"
+        x=40, y=40, attr={width=420, height=420}, rotation={bitmap=parts.adf_bearing.image, center={x=420/2, y=420/2}},
+        rpn="360 (A:ADF CARD:1, Degrees) -"
     },
-    cdi_needle = {
-        x=(module.width - needle_canvas_size) / 2, y=(module.height - needle_canvas_size) / 2, attr={width=needle_canvas_size, height=needle_canvas_size},
-        shift={bitmap=cdi_parts.cdi_needle.image, axis="x", scale=needle_value_scale}, 
-        rpn="%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:1, Number) }", epsilon=0.5
-    },
-    gs_needle = {
-        x=(module.width - needle_canvas_size) / 2, y=(module.height - needle_canvas_size) / 2, attr={width=needle_canvas_size, height=needle_canvas_size},
-        shift={bitmap=cdi_parts.gs_needle.image, axis="y", scale=needle_value_scale}, 
-        rpn="%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:1, Number) }", epsilon = 0.5
-    },
-    source_indicator = {
-        x=138.201, y=194.857, attr={width=70.606, height=117.375}, bitmaps={cdi_parts.source[1], cdi_parts.source[2]}, rpn="%s",
-        enable_condition=function (option) return option.gps_dependency end
-    },
-    nav_indicator = {
-        x=145.419, y=157.943, attr={width=54.444, height=29.862}, bitmaps={nil, cdi_parts.cdi_nav.image},
-        rpn="%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:1, Bool) }",
-        enable_condition=function (option) return option.enable_nav end
-    },
-    tofrom_indicator = {
-        x=281.399, y=168.058, attr={width=83.607, height=36.622}, bitmaps={nil, cdi_parts.cdi_to.image, cdi_parts.cdi_from.image},
-        rpn="%s if{ 0 } els{ (A:NAV TOFROM:1, Enum) }"
-    },
-    na_loc_indicator = {
-        x=218.346, y=374.625, attr={width=63.307, height=22.075}, bitmaps={nil, cdi_parts.cdi_na_loc.image},
-        rpn="%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:1, Bool) } !"
-    },
-    na_gs_indicator = {
-        x=375, y=218.346, attr={width=22.075, height=63.306}, bitmaps={nil, cdi_parts.cdi_na_gs.image},
-        rpn="%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) (A:GPS HAS GLIDEPATH:1, Bool) and } els{ (A:NAV GS FLAG:1, Bool) } !"
+    needle_indicator = {
+        x=91.088, y=91.088, attr={width=317.824, height=317.824}, rotation={bitmap=parts.adf_needle.image, center={x=317.824/2, y=317.824/2}},
+        rpn="(A:ADF RADIAL:1, Degrees) 90 -", epsilon=0.5
     },
 }
 
-indicators[module.type.general][2] = {}
-for name, data in pairs(indicators[module.type.general][1]) do
-    indicators[module.type.general][2][name] = common.merge_table({}, data)
-end
-indicators[module.type.general][2].bearing_indicator.rpn = "360 (A:NAV OBS:2, Degrees) -"
-indicators[module.type.general][2].cdi_needle.rpn = "%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:2, Number) }"
-indicators[module.type.general][2].gs_needle.rpn = "%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:2, Number) }"
-indicators[module.type.general][2].nav_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) }"
-indicators[module.type.general][2].tofrom_indicator.rpn = "%s if{ 0 } els{ (A:NAV TOFROM:2, Enum) }"
-indicators[module.type.general][2].na_loc_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) } !"
-indicators[module.type.general][2].na_gs_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) (A:GPS HAS GLIDEPATH:1, Bool) and } els{ (A:NAV GS FLAG:2, Bool) } !"
-
 local indicator_orders = {}
 indicator_orders[module.type.general] = {
-    "heading_indicator",
-    "tail_indicator",
+    "standard_indicator",
     "bearing_indicator",
-    "cdi_needle",
-    "gs_needle",
-    "source_indicator",
-    "nav_indicator",
-    "tofrom_indicator",
-    "na_loc_indicator",
-    "na_gs_indicator",
+    "needle_indicator",
 }
 
 for type, typedef in ipairs(indicators) do
@@ -151,7 +67,7 @@ for type, typedef in ipairs(indicators) do
         module.global_mapping_sources[i] = {}
         for name, indicator in pairs(indicatordefs) do
             if module.events[i][name] == nil and indicator.rpn ~= nil then
-                module.events[i][name] = mapper.register_event("CDI:"..i..":"..name)
+                module.events[i][name] = mapper.register_event("ADF:"..i..":"..name)
             end
         end
     end
@@ -175,7 +91,6 @@ setmetatable(module, {
 --------------------------------------------------------------------------------------
 function module.reset(options)
     module_options[1] = common.merge_table({}, option_defaults)
-    module_options[2] = common.merge_table({}, option_defaults)
     if options ~= nil then
         for i, option in ipairs(options) do
             for key, value in pairs(option) do
@@ -215,8 +130,9 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     }
 
     -- update view background bitmap
-    rctx:draw_bitmap{bitmap=cdi_parts.base.image, x=x, y=y, scale=scale}
-    rctx:draw_bitmap{bitmap=cdi_parts.cdi_knob.image, x=x + 18.44 * scale, y=y + 410 * scale, scale=scale}
+    rctx:draw_bitmap{bitmap=parts.base.image, x=x, y=y, scale=scale}
+    rctx:draw_bitmap{bitmap=parts.adf_bg.image, x=x + 82.5 * scale, y=y + 82.5 * scale, scale=scale}
+    rctx:draw_bitmap{bitmap=parts.adf_knob.image, x=x + 18.44 * scale, y=y + 410 * scale, scale=scale}
 
     -- operable area
     local function notify_tapped()
@@ -303,8 +219,8 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     if simhid_g1000 then
         local g1000 = simhid_g1000.events
         component.component_mappings = {
-            {event=g1000.EC7X.increment, action=module.actions[id].obs_inc},
-            {event=g1000.EC7X.decrement, action=module.actions[id].obs_dec},
+            {event=g1000.EC3.increment, action=module.actions[id].card_inc},
+            {event=g1000.EC3.decrement, action=module.actions[id].card_dec},
         }
     end
 

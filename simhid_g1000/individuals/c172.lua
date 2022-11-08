@@ -8,7 +8,8 @@ local libs = {
     kt76c = require("lib/kt76c"),
     kr87 = require("lib/kr87"),
     c172navgps = require("lib/c172navgps"),
-    cdi = require("lib/cdi")
+    cdi = require("lib/cdi"),
+    adf = require("lib/adf"),
 }
 local lib_options = {
     cdi = {
@@ -42,11 +43,12 @@ local views = {
             {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1, instance=nil},
             {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1408, scale=1, instance=nil},
             {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=1481.333, y=0, scale=1, instance=nil},
-            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=306, y=606, scale=1, instance=nil},
-            {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=306, y=1141, scale=1, instance=nil},
+            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1, instance=nil},
+            {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=1136, scale=1, instance=nil},
+            {name="ADF", module=libs.adf, cw=nil, type_id=1, x=32.881, y=1136, scale=1, instance=nil},
         },
         mappings = {},
-        initial_active_component = 1,
+        initial_active_component = 1,       
     },
 }
 
@@ -79,10 +81,7 @@ function module.start(config, aircraft)
         aspect_ratio = 4 / 3,
     }
     local viewport_mappings = {}
-    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, module.device, {
-        {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
-        {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
-    })
+    local view_changer = common.create_default_view_changer(viewport, views, 1, viewport_mappings, module.device, {})
     common.arrange_views(viewport, viewport_mappings, captured_window_defs, views, module.device)
     viewport:set_mappings(viewport_mappings)
     local target_view = views[1]
@@ -90,6 +89,8 @@ function module.start(config, aircraft)
 
     local global_mappings = {
         {
+            {event=g1000.EC3.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
+            {event=g1000.EC3.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
             {event=g1000.EC4X.increment, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
             {event=g1000.EC4X.decrement, action=fs2020.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_DEC)")},
             {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
