@@ -10,11 +10,15 @@ local libs = {
     c172navgps = require("lib/c172navgps"),
     cdi = require("lib/cdi"),
     adf = require("lib/adf"),
+    dg = require("lib/dg"),
 }
 local lib_options = {
     cdi = {
         {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
         {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
+    },
+    dg = {
+        {type=libs.dg.type.general, red_mark=true, heading_bug=true},
     },
 }
 
@@ -46,6 +50,7 @@ local views = {
             {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1, instance=nil},
             {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=1136, scale=1, instance=nil},
             {name="ADF", module=libs.adf, cw=nil, type_id=1, x=32.881, y=1136, scale=1, instance=nil},
+            {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=601, scale=1, instance=nil},
         },
         mappings = {},
         initial_active_component = 1,       

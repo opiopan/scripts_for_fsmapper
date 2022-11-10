@@ -18,6 +18,12 @@ local module = {
     adf_starndard ={image=base_image:create_partial_bitmap(1687, 0, 420, 420)},
     adf_needle ={origin={x=317.824/2, y=22.507/2}, image=base_image:create_partial_bitmap(930, 376, 317.824, 22.507)},
     adf_knob ={image=base_image:create_partial_bitmap(1016, 414, 81.624, 81.624)},
+    dg_knob_right = {image=base_image:create_partial_bitmap(1100, 414, 81.624, 81.624)},
+    dg_knob_left = {image=base_image:create_partial_bitmap(1183, 414, 81.624, 81.624)},
+    dg_heading_bug = {origin={x=44.182/2, y=197.783}, image=base_image:create_partial_bitmap(1272, 451, 44.182, 47.248)},
+    dg_bearing = {origin={x=420/2, y=420/2}, image=base_image:create_partial_bitmap(2108, 0, 420, 420)},
+    dg_standard = {image=base_image:create_partial_bitmap(2529, 0, 123, 314.478)},
+    dg_standard_red = {image=base_image:create_partial_bitmap(2653, 0, 470, 470)},
 }
 
 local function set_origin(part)
@@ -27,5 +33,7 @@ end
 set_origin(module.cdi_bearing)
 set_origin(module.adf_bearing)
 set_origin(module.adf_needle)
+set_origin(module.dg_heading_bug)
+set_origin(module.dg_bearing)
 
 return module
