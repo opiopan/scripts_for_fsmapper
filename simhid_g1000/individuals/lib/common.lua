@@ -172,4 +172,238 @@ function module.clear_component_instance(views)
     fs2020.mfwasm.clear_observed_data()
 end
 
+--------------------------------------------------------------------------------------
+-- support functions to realize the component
+--------------------------------------------------------------------------------------
+function module.component_module_init(cmodule, cmodule_defs)
+    for i = 1,#cmodule.actions do
+        cmodule.events[i] = {}
+        if cmodule_defs.operables ~= nil then
+            for typeid, operables in ipairs(cmodule_defs.operables) do
+                for name, operable in pairs(operables) do
+                    if cmodule.events[i][name] == nil then
+                        cmodule.events[i][name] = mapper.register_event(cmodule_defs.prefix .. ":" .. name .. "_tapped")
+                    end
+                end
+            end
+        end
+        if cmodule_defs.activatable then
+            cmodule.events[i].all = mapper.register_event(cmodule_defs.prefix..": background_tapped")
+        end
+    end
+
+    cmodule.global_mapping_sources = {}
+    if cmodule_defs.indicators ~= nil then
+        for type, typedef in ipairs(cmodule_defs.indicators) do
+            for i, indicatordefs in ipairs(typedef) do
+                cmodule.global_mapping_sources[i] = {}
+                for name, indicator in pairs(indicatordefs) do
+                    if cmodule.events[i][name] == nil and indicator.rpn ~= nil then
+                        local evid = mapper.register_event(cmodule_defs.prefix..":"..i..":"..name)
+                        cmodule.events[i][name] = evid
+                        cmodule.observed_data[#cmodule.observed_data + 1] = {rpn=indicator.rpn, event=evid, epsilon = indicator.epsilon}
+                    end
+                end
+            end
+        end
+    end
+
+    if cmodule_defs.indicators ~= nil and cmodule_defs.indicator_orders == nil then
+        cmodule_defs.indicator_orders = {}
+        for typeid, indicators in ipairs(cmodule_defs.indicators) do
+            cmodule_defs.indicator_orders[typeid] = {}
+            for key, value in pairs(indicators[1]) do
+                cmodule_defs.indicator_orders[typeid][#cmodule_defs.indicator_orders[typeid] + 1] = key
+            end
+        end
+    end
+
+    --
+    -- reset function called when aircraft evironment is build each
+    --
+    cmodule.reset = function (options)
+        for i, data in ipairs(cmodule_defs.options) do
+            cmodule_defs.options[i] = module.merge_table({}, cmodule_defs.option_defaults)
+        end
+        if options ~= nil then
+            for i, option in ipairs(options) do
+                for key, value in pairs(option) do
+                    cmodule_defs.options[i][key] = value
+                end
+            end
+        end
+    
+        for i, value in ipairs(cmodule.global_mapping_sources) do
+            cmodule.global_mapping_sources[i] = {}
+        end
+    end
+
+    --
+    -- module destructor (GC handler)
+    --
+    setmetatable(cmodule, {
+        __gc = function (obj)
+            for i = 1,#cmodule.actions do
+                for key, evid in pairs(obj.events[i]) do
+                    mapper.unregister_message(evid)
+                end
+            end
+        end
+    })
+
+    --
+    -- global mappings generator
+    --
+    cmodule.create_global_mappings = function()
+        local mappings = {}
+        for i, source in ipairs(cmodule.global_mapping_sources) do
+            for key, actions in pairs(source) do
+                mappings[#mappings + 1] = {event=cmodule.events[i][key], action = function (evid, value)
+                    for num, action in pairs(actions) do
+                        action(value)
+                    end
+                end}
+            end
+        end
+        return mappings
+    end
+end
+
+function module.component_module_create_instance(cmodule, cmodule_defs, instance_opts)
+    local component_name = instance_opts.name
+    local id = instance_opts.id
+    local captured_window = instance_opts.captured_window
+    local x = instance_opts.x
+    local y = instance_opts.y
+    local scale = instance_opts.scale
+    local simhid_g1000 = instance_opts.simhid_g1000
+    local option = cmodule_defs.options[id]
+
+    local component = {
+        name = component_name,
+        view_elements = {},
+        view_mappings = {},
+        component_mappings = {},
+        callback = nil,
+    }
+
+    -- operable area
+    local function notify_tapped()
+        if component.callback then
+            component.callback(component_name)
+        end
+    end
+    if cmodule_defs.operables ~= nil and cmodule_defs.operables[option.type] then
+        for name, operable in pairs(cmodule_defs.operables[option.type]) do
+            component.view_elements[#component.view_elements + 1] = {
+                object = mapper.view_elements.operable_area{event_tap = cmodule.events[id][name], round_ratio=operable.attr.rratio},
+                x = x + operable.x * scale, y = y + operable.y * scale,
+                width = operable.attr.width * scale, height = operable.attr.height * scale
+            }
+            if cmodule_defs.activatable then
+                component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=filter.duplicator(cmodule.actions[id][name], notify_tapped)}
+            else
+                component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=cmodule.actions[id][name]}
+            end
+        end
+    end
+    if cmodule_defs.activatable then
+        component.view_elements[#component.view_elements + 1] = {
+            object = mapper.view_elements.operable_area{event_tap = cmodule.events[id].all, reaction_color=graphics.color(0, 0, 0, 0)},
+            x = x, y = y,
+            width = cmodule.width * scale, height = cmodule.height * scale
+        }
+        component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id].all, action=notify_tapped}
+    end
+
+    -- activation indicator
+    local active_indicators = {}
+    if cmodule_defs.active_indicators ~= nil then
+        for i, aindicator in ipairs(cmodule_defs.active_indicators[option.type]) do
+            local canvas = mapper.view_elements.canvas{
+                logical_width = 1,
+                logical_height = 1,
+                value = 0,
+                renderer = function (rctx, value)
+                    if value > 0 then
+                        rctx:set_brush(module.active_indicator_color)
+                        rctx:fill_geometry{geometry = module.circle, x = 0, y = 0}
+                    end
+                end
+            }
+            component.view_elements[#component.view_elements + 1] = {
+                object = canvas,
+                x = x + aindicator.x * scale, y = y + aindicator.y * scale,
+                width = aindicator.width * scale, height = aindicator.height * scale
+            }
+            active_indicators[#active_indicators + 1] = canvas
+        end
+    end
+    function component.activate(state)
+        for i, canvas in ipairs(active_indicators) do
+            canvas:set_value(state)
+        end
+    end
+
+    -- indicators
+    if cmodule_defs.indicator_orders ~= nil and cmodule_defs.indicator_orders[option.type] then
+        for i, name in ipairs(cmodule_defs.indicator_orders[option.type]) do
+            local indicator = cmodule_defs.indicators[option.type][id][name]
+            if indicator.enable_condition == nil or indicator.enable_condition(option) then
+                local renderer = nil
+                if indicator.bitmaps ~= nil then
+                    renderer = function (ctx, value)
+                        local image = indicator.bitmaps[value + 1]
+                        if image then
+                            ctx:draw_bitmap(image, 0, 0)
+                        end
+                    end
+                elseif indicator.rotation ~= nil then
+                    renderer = function (ctx, value)
+                        ctx:draw_bitmap{bitmap=indicator.rotation.bitmap, x=indicator.rotation.center.x, y=indicator.rotation.center.y, angle=value}
+                    end
+                elseif indicator.shift ~= nil and indicator.shift.axis == "x" then
+                    renderer = function (ctx, value)
+                        ctx:draw_bitmap{bitmap=indicator.shift.bitmap, x=indicator.shift.scale * value, y=0}
+                    end
+                elseif indicator.shift ~= nil and indicator.shift.axis == "y" then
+                    renderer = function (ctx, value)
+                        ctx:draw_bitmap{bitmap=indicator.shift.bitmap, x=0, y=indicator.shift.scale * value}
+                    end
+                end
+
+                local canvas = mapper.view_elements.canvas{
+                    logical_width = indicator.attr.width,
+                    logical_height = indicator.attr.height,
+                    value = 0,
+                    renderer = renderer
+                }
+                component.view_elements[#component.view_elements + 1] = {
+                    object = canvas,
+                    x = x + indicator.x * scale, y = y + indicator.y * scale,
+                    width = indicator.attr.width * scale, height = indicator.attr.height * scale
+                }
+                if indicator.rpn ~= nil then
+                    if cmodule.global_mapping_sources[id][name] == nil then
+                        cmodule.global_mapping_sources[id][name] = {}
+                    end
+                    cmodule.global_mapping_sources[id][name][#cmodule.global_mapping_sources[id][name] + 1] = function (value) canvas:set_value(value) end
+                end
+            end
+        end
+    end
+
+    -- captured window
+    if cmodule_defs.captured_window ~= nil and cmodule_defs.captured_window[option.type] ~= nil then
+        local def = cmodule_defs.captured_window[option.type]
+        component.view_elements[#component.view_elements + 1] = {
+            object = captured_window,
+            x = x + def.x * scale, y = y + def.y * scale,
+            width = def.width * scale, height = def.height * scale,
+        }
+    end
+
+    return component
+end
+
 return module

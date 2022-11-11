@@ -1,8 +1,20 @@
 local module = {
     width = 1112,
     height = 282,
+    type = {
+        general = 1,
+    },
     actions = {},
     events = {},
+}
+
+local module_defs = {
+    prefix = "GTX330",
+    activatable = true,
+    options = {{}},
+    option_defaults = {
+        type = module.type.general,
+    },
 }
 
 local common = require("lib/common")
@@ -31,13 +43,15 @@ module.actions[1] = {
     num8 = fs2020.mfwasm.rpn_executer("(>H:Transponder8)"),
     num9 = fs2020.mfwasm.rpn_executer("(>H:Transponder9)"),
 }
+
 --------------------------------------------------------------------------------------
--- operable are definitions
+-- operable area definitions
 --------------------------------------------------------------------------------------
 local attr_normal = {width=69.189, height=45.569, rratio=0.05}
 local attr_portrate = {width=47.887, height=62.842, rratio=0.05}
 local attr_alt = {width=47.211, height=47.211, rratio=0.5}
-local buttons = {
+module_defs.operables = {}
+module_defs.operables[module.type.general] = {
     ident = {x=25.693, y=45.803, attr=attr_normal},
     vfr = {x=25.693, y=120.552, attr=attr_normal},
     on = {x=150.054, y=22.1, attr=attr_normal},
@@ -60,63 +74,32 @@ local buttons = {
     num9 = {x=1010.16, y=210.824, attr=attr_normal},
 }
 
-for i = 1,#module.actions do
-    module.events[i] = {}
-    for name, button in pairs(buttons) do
-        module.events[i][name] = mapper.register_event("GTX330:" .. name .. "_tapped")
-    end
-end
+--------------------------------------------------------------------------------------
+-- captured window placeholder definition
+--------------------------------------------------------------------------------------
+module_defs.captured_window = {}
+module_defs.captured_window[module.type.general] = {x=303, y=32, width=580, height=142}
 
 --------------------------------------------------------------------------------------
--- module destructor (GC handler)
+-- prepare module scope environment
 --------------------------------------------------------------------------------------
-setmetatable(module, {
-    __gc = function (obj)
-        for i = 1,#module.actions do
-            for key, evid in pairs(obj.events[i]) do
-                mapper.unregister_message(evid)
-            end
-        end
-    end
-})
+common.component_module_init(module, module_defs)
 
 --------------------------------------------------------------------------------------
 -- instance generator
 --------------------------------------------------------------------------------------
 function module.create_component(component_name, id, captured_window, x, y, scale, rctx, simhid_g1000)
-    local component = {
+    local component = common.component_module_create_instance(module, module_defs,{
         name = component_name,
-        view_elements = {},
-        view_mappings = {},
-        component_mappings = {},
-        callback = nil,
-    }
+        id = id,
+        captured_window = captured_window,
+        x = x, y = y, scale = scale,
+        simhid_g1000 = simhid_g1000
+    })
 
     -- update view background bitmap
     local background = graphics.bitmap("assets/gtx330.png")
     rctx:draw_bitmap{bitmap=background, x=x, y=y, scale=scale}
-
-    -- operable area
-    local function notify_tapped()
-        if component.callback then
-            component.callback(component_name)
-        end
-    end
-    for name, button in pairs(buttons) do
-        component.view_elements[#component.view_elements + 1] = {
-            object = mapper.view_elements.operable_area{event_tap = module.events[id][name], round_ratio=button.attr.rratio},
-            x = x + button.x * scale, y = y + button.y * scale,
-            width = button.attr.width * scale, height = button.attr.height * scale
-        }
-        component.view_mappings[#component.view_mappings + 1] = {event=module.events[id][name], action=module.actions[id][name]}
-    end
-
-    -- captured window
-    component.view_elements[#component.view_elements + 1] = {
-        object = captured_window,
-        x = x + 303 * scale, y = y + 32 * scale,
-        width = 580 * scale, height = 142 * scale,
-    }
 
     return component
 end

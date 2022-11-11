@@ -1,10 +1,22 @@
 local module = {
     width = 1112,
     height = 328,
+    type = {
+        general = 1,
+    },
     actions = {},
     events = {},
     observed_data = {},
     global_mapping_sources = {},
+}
+
+local module_defs = {
+    prefix = "GMC305",
+    activatable = false,
+    options = {{}},
+    option_defaults = {
+        type = module.type.general,
+    },
 }
 
 local common = require("lib/common")
@@ -31,7 +43,9 @@ module.actions[1] = {
 --------------------------------------------------------------------------------------
 local attr_normal = {width=74.989, height=53.318, rratio=0.1}
 local attr_alt = {width=48.473, height=83.977, rratio=0.05}
-local buttons = {
+local attr_normal = {width=69.674, height=39.247, rratio=0.05}
+module_defs.operables = {}
+module_defs.operables[module.type.general] = {
     hdg = {x=102.18, y=75.849, attr=attr_normal},
     nav = {x=229.789, y=75.849, attr=attr_normal},
     apr = {x=229.789, y=202.973, attr=attr_normal},
@@ -45,13 +59,6 @@ local buttons = {
     dn = {x=696.996, y=60.447, attr=attr_alt},
     up = {x=696.996, y=187.643, attr=attr_alt},
 }
-
-for i = 1,#module.actions do
-    module.events[i] = {}
-    for name, button in pairs(buttons) do
-        module.events[i][name] = mapper.register_event("GMC305:" .. name .. "_tapped")
-    end
-end
 
 --------------------------------------------------------------------------------------
 -- indicator definitions
@@ -73,8 +80,9 @@ rctx:fill_geometry{geometry = path_indicator, x=0, y=0}
 rctx:finish_rendering()
 
 local attr_indicator = {width=20, height=17.321}
-local indicators ={}
-indicators[1]= {
+module_defs.indicators ={}
+module_defs.indicators[module.type.general] = {}
+module_defs.indicators[module.type.general][1]= {
     hdg_indicator = {x=129.674, y=51.276, attr=attr_indicator, bitmaps={nil, img_indicator}, rpn="(A:AUTOPILOT HEADING LOCK, Bool)"},
     nav_indicator = {x=257.284, y=51.276, attr=attr_indicator, bitmaps={nil, img_indicator}, rpn="(A:AUTOPILOT NAV1 LOCK, Bool)"},
     apr_indicator = {x=257.284, y=178.867, attr=attr_indicator, bitmaps={nil, img_indicator}, rpn="(A:AUTOPILOT APPROACH HOLD, Bool) (A:AUTOPILOT GLIDESLOPE HOLD, Bool) and"},
@@ -87,92 +95,26 @@ indicators[1]= {
     vnv_indicator = {x=967.939, y=178.867, attr=attr_indicator, bitmaps={nil, img_indicator}, rpn="(L:XMLVAR_VNAVButtonValue)"},
 }
 
-for i, indicator in ipairs(indicators) do
-    module.global_mapping_sources[i] = {}
-    for name, indicator in pairs(indicators[i]) do
-        local evid = mapper.register_event("GMC305:"..name)
-        module.events[i][name] = evid
-        module.observed_data[#module.observed_data + 1] = {rpn=indicator.rpn, event=evid}
-    end
-end
-
 --------------------------------------------------------------------------------------
--- module destructor (GC handler)
+-- prepare module scope environment
 --------------------------------------------------------------------------------------
-setmetatable(module, {
-    __gc = function (obj)
-        for i = 1,#module.actions do
-            for key, evid in pairs(obj.events[i]) do
-                mapper.unregister_message(evid)
-            end
-        end
-    end
-})
-
---------------------------------------------------------------------------------------
--- reset function called when aircraft evironment is build each
---------------------------------------------------------------------------------------
-function module.reset()
-    for i, value in ipairs(module.global_mapping_sources) do
-        module.global_mapping_sources[i] = {}
-    end
-end
+common.component_module_init(module, module_defs, true)
 
 --------------------------------------------------------------------------------------
 -- instance generator
 --------------------------------------------------------------------------------------
 function module.create_component(component_name, id, captured_window, x, y, scale, rctx, simhid_g1000)
-    local component = {
+    local component = common.component_module_create_instance(module, module_defs,{
         name = component_name,
-        view_elements = {},
-        view_mappings = {},
-        component_mappings = {},
-        viewport_mappings = {},
-        callback = nil,
-    }
+        id = id,
+        captured_window = captured_window,
+        x = x, y = y, scale = scale,
+        simhid_g1000 = simhid_g1000
+    })
 
     -- update view background bitmap
     local background = graphics.bitmap("assets/gmc305.png")
     rctx:draw_bitmap{bitmap=background, x=x, y=y, scale=scale}
-
-    -- operable area
-    local function notify_tapped()
-        if component.callback then
-            component.callback(component_name)
-        end
-    end
-    for name, button in pairs(buttons) do
-        component.view_elements[#component.view_elements + 1] = {
-            object = mapper.view_elements.operable_area{event_tap = module.events[id][name], round_ratio=button.attr.rratio},
-            x = x + button.x * scale, y = y + button.y * scale,
-            width = button.attr.width * scale, height = button.attr.height * scale
-        }
-        component.view_mappings[#component.view_mappings + 1] = {event=module.events[id][name], action=module.actions[id][name]}
-    end
-
-    -- indicators
-    for name, indicator in pairs(indicators[id]) do
-        local canvas = mapper.view_elements.canvas{
-            logical_width = indicator.attr.width,
-            logical_height = indicator.attr.height,
-            value = 0,
-            renderer = function (ctx, value)
-                local image = indicator.bitmaps[value + 1]
-                if image then
-                    ctx:draw_bitmap(image, 0, 0)
-                end
-            end
-        }
-        component.view_elements[#component.view_elements + 1] = {
-            object = canvas,
-            x = x + indicator.x * scale, y = y + indicator.y * scale,
-            width = indicator.attr.width * scale, height = indicator.attr.height * scale
-        }
-        if module.global_mapping_sources[id][name] == nil then
-            module.global_mapping_sources[id][name] = {}
-        end
-        module.global_mapping_sources[id][name][#module.global_mapping_sources[id][name] + 1] = function (value) canvas:set_value(value) end
-    end
 
     -- view scope mappings
     if simhid_g1000 then
@@ -193,23 +135,6 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     end
 
     return component
-end
-
---------------------------------------------------------------------------------------
--- global mappings generator
---------------------------------------------------------------------------------------
-function module.create_global_mappings()
-    local mappings = {}
-    for i, source in ipairs(module.global_mapping_sources) do
-        for key, actions in pairs(source) do
-            mappings[#mappings + 1] = {event=module.events[i][key], action = function (evid, value)
-                for num, action in pairs(actions) do
-                    action(value)
-                end
-            end}
-        end
-    end
-    return mappings
 end
 
 return module

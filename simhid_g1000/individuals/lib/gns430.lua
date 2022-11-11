@@ -1,8 +1,20 @@
 local module = {
     width = 1112,
     height = 466,
+    type = {
+        general = 1,
+    },
     actions = {},
     events = {},
+}
+
+local module_defs = {
+    prefix = "GNS430",
+    activatable = true,
+    options = {{}},
+    option_defaults = {
+        type = module.type.general,
+    },
 }
 
 local common = require("lib/common")
@@ -42,7 +54,8 @@ local attr_swap = {width=49.127, height=74.004, rratio=0.1}
 local attr_range = {width=67.501, height=52.437, rratio=0.1}
 local attr_left = {width=77.068, height=47.371, rratio=0.1}
 local attr_bottom = {width=69.189, height=50.003, rratio=0.1}
-local buttons = {
+module_defs.operables = {}
+module_defs.operables[module.type.general] = {
     comswap = {x=183.481, y=71.039, attr=attr_swap},
     navswap = {x=183.481, y=180.925, attr=attr_swap},
     rng_zoom = {x=906.396, y=41.037, attr=attr_range},
@@ -58,108 +71,41 @@ local buttons = {
     proc = {x=786.505, y=398.823, attr=attr_bottom},
 }
 
-for i = 1,#module.actions do
-    module.events[i] = {}
-    for name, button in pairs(buttons) do
-        module.events[i][name] = mapper.register_event("GNS430:" .. name .. "_tapped")
-    end
-    module.events[i].all = mapper.register_event("GNS430: background_tapped")
-end
+--------------------------------------------------------------------------------------
+-- captured window placeholder definition
+--------------------------------------------------------------------------------------
+module_defs.captured_window = {}
+module_defs.captured_window[module.type.general] = {x=266, y=52, width=609, height=308}
 
 --------------------------------------------------------------------------------------
--- module destructor (GC handler)
+-- active indicator difinitions
 --------------------------------------------------------------------------------------
-setmetatable(module, {
-    __gc = function (obj)
-        for i = 1,#module.actions do
-            for key, evid in pairs(obj.events[i]) do
-                mapper.unregister_message(evid)
-            end
-        end
-    end
-})
+module_defs.active_indicators= {}
+module_defs.active_indicators[module.type.general] = {
+    {x=36.853, y=308.376, width=102.201, height=102.201},
+    {x=976.504, y=308.376, width=102.201, height=102.201},
+}
+
+--------------------------------------------------------------------------------------
+-- prepare module scope environment
+--------------------------------------------------------------------------------------
+common.component_module_init(module, module_defs)
 
 --------------------------------------------------------------------------------------
 -- instance generator
 --------------------------------------------------------------------------------------
 function module.create_component(component_name, id, captured_window, x, y, scale, rctx, simhid_g1000)
-    local component = {
+    local component = common.component_module_create_instance(module, module_defs,{
         name = component_name,
-        view_elements = {},
-        view_mappings = {},
-        component_mappings = {},
-        callback = nil,
-    }
+        id = id,
+        captured_window = captured_window,
+        x = x, y = y, scale = scale,
+        simhid_g1000 = simhid_g1000
+    })
 
     -- update view background bitmap
     local background = graphics.bitmap("assets/gns430.png")
     rctx:draw_bitmap{bitmap=background, x=x, y=y, scale=scale}
-
-    -- operable area
-    local function notify_tapped()
-        if component.callback then
-            component.callback(component_name)
-        end
-    end
-    for name, button in pairs(buttons) do
-        component.view_elements[#component.view_elements + 1] = {
-            object = mapper.view_elements.operable_area{event_tap = module.events[id][name], round_ratio=button.attr.rratio},
-            x = x + button.x * scale, y = y + button.y * scale,
-            width = button.attr.width * scale, height = button.attr.height * scale
-        }
-        component.view_mappings[#component.view_mappings + 1] = {event=module.events[id][name], action=filter.duplicator(module.actions[id][name], notify_tapped)}
-    end
-    component.view_elements[#component.view_elements + 1] = {
-        object = mapper.view_elements.operable_area{event_tap = module.events[id].all, reaction_color=graphics.color(0, 0, 0, 0)},
-        x = x, y = y,
-        width = module.width * scale, height = module.height * scale
-    }
-    component.view_mappings[#component.view_mappings + 1] = {event=module.events[id].all, action=notify_tapped}
-
-    -- activation indicator
-    local canvas1 = mapper.view_elements.canvas{
-        logical_width = 1,
-        logical_height = 1,
-        value = 0,
-        renderer = function (rctx, value)
-            if value > 0 then
-                rctx:set_brush(common.active_indicator_color)
-                rctx:fill_geometry{geometry = common.circle, x = 0, y = 0}
-            end
-        end
-    }
-    local canvas2 = mapper.view_elements.canvas{
-        logical_width = 1,
-        logical_height = 1,
-        value = 0,
-        renderer = function (rctx, value)
-            if value > 0 then
-                rctx:set_brush(common.active_indicator_color)
-                rctx:fill_geometry{geometry = common.circle, x = 0, y = 0}
-            end
-        end
-    }
-    component.view_elements[#component.view_elements + 1] = {
-        object = canvas1,
-        x = x + 36.853 * scale, y = y + 308.376 * scale,
-        width = 102.201 * scale, height = 102.201 * scale
-    }
-    component.view_elements[#component.view_elements + 1] = {
-        object = canvas2,
-        x = x + 976.504 * scale, y = y + 308.376 * scale,
-        width = 102.201 * scale, height = 102.201 * scale
-    }
-    function component.activate(state)
-        canvas1:set_value(state)
-        canvas2:set_value(state)
-    end
-
-    -- captured window
-    component.view_elements[#component.view_elements + 1] = {
-        object = captured_window,
-        x = x + 266 * scale, y = y + 52 * scale,
-        width = 609 * scale, height = 308 * scale,
-    }
 
     -- Event-Action mappings which are enabled when the component is activated
     if simhid_g1000 then

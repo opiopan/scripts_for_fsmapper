@@ -11,18 +11,19 @@ local module = {
     global_mapping_sources = {},
 }
 
-local common = require("lib/common")
-
---------------------------------------------------------------------------------------
--- appearance and behavior option
---------------------------------------------------------------------------------------
-local module_options ={{}, {}} -- initialize when reset() will be called based on specified values and default values
-local option_defaults = {
-    type = module.type.general,
-    gps_dependency  = false,
-    source_is_gps = "0",  -- rpn fragment that return non-zero when cdi source is GPS
-    enable_nav = true, 
+local module_defs = {
+    prefix = "CDI",
+    activatable = true,
+    options = {{}, {}},
+    option_defaults = {
+        type = module.type.general,
+        gps_dependency  = false,
+        source_is_gps = "0",  -- rpn fragment that return non-zero when cdi source is GPS
+        enable_nav = true, 
+    },
 }
+
+local common = require("lib/common")
 
 --------------------------------------------------------------------------------------
 -- action definitions
@@ -36,14 +37,6 @@ module.actions[2] = {
     obs_inc = fs2020.event_sender("VOR2_OBI_INC"),
     obs_dec = fs2020.event_sender("VOR2_OBI_DEC"),
 }
-
---------------------------------------------------------------------------------------
--- operable area definitions
---------------------------------------------------------------------------------------
-for i = 1,#module.actions do
-    module.events[i] = {}
-    module.events[i].all = mapper.register_event("CDI for NAV"..i..": background_tapped")
-end
 
 --------------------------------------------------------------------------------------
 -- indicator definitions
@@ -78,9 +71,9 @@ rctx:finish_rendering()
 cdi_parts.cdi_needle.image:set_origin(needle_movable_length / -2, needle_width / -2)
 cdi_parts.gs_needle.image:set_origin(needle_width / -2, needle_movable_length  / -2)
 
-local indicators ={}
-indicators[module.type.general] = {}
-indicators[module.type.general][1]= {
+module_defs.indicators ={}
+module_defs.indicators[module.type.general] = {}
+module_defs.indicators[module.type.general][1]= {
     heading_indicator = {x=237, y=92.731, attr={width=26, height=22.517}, bitmaps={cdi_parts.cdi_heading.image}},
     tail_indicator = {x=242.5, y=383.711, attr={width=15, height=12.99}, bitmaps={cdi_parts.cdi_tail.image}},
     bearing_indicator = {
@@ -120,20 +113,20 @@ indicators[module.type.general][1]= {
     },
 }
 
-indicators[module.type.general][2] = {}
-for name, data in pairs(indicators[module.type.general][1]) do
-    indicators[module.type.general][2][name] = common.merge_table({}, data)
+module_defs.indicators[module.type.general][2] = {}
+for name, data in pairs(module_defs.indicators[module.type.general][1]) do
+    module_defs.indicators[module.type.general][2][name] = common.merge_table({}, data)
 end
-indicators[module.type.general][2].bearing_indicator.rpn = "360 (A:NAV OBS:2, Degrees) -"
-indicators[module.type.general][2].cdi_needle.rpn = "%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:2, Number) }"
-indicators[module.type.general][2].gs_needle.rpn = "%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:2, Number) }"
-indicators[module.type.general][2].nav_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) }"
-indicators[module.type.general][2].tofrom_indicator.rpn = "%s if{ 0 } els{ (A:NAV TOFROM:2, Enum) }"
-indicators[module.type.general][2].na_loc_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) } !"
-indicators[module.type.general][2].na_gs_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) (A:GPS HAS GLIDEPATH:1, Bool) and } els{ (A:NAV GS FLAG:2, Bool) } !"
+module_defs.indicators[module.type.general][2].bearing_indicator.rpn = "360 (A:NAV OBS:2, Degrees) -"
+module_defs.indicators[module.type.general][2].cdi_needle.rpn = "%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:2, Number) }"
+module_defs.indicators[module.type.general][2].gs_needle.rpn = "%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:2, Number) }"
+module_defs.indicators[module.type.general][2].nav_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) }"
+module_defs.indicators[module.type.general][2].tofrom_indicator.rpn = "%s if{ 0 } els{ (A:NAV TOFROM:2, Enum) }"
+module_defs.indicators[module.type.general][2].na_loc_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) } !"
+module_defs.indicators[module.type.general][2].na_gs_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) (A:GPS HAS GLIDEPATH:1, Bool) and } els{ (A:NAV GS FLAG:2, Bool) } !"
 
-local indicator_orders = {}
-indicator_orders[module.type.general] = {
+module_defs.indicator_orders = {}
+module_defs.indicator_orders[module.type.general] = {
     "heading_indicator",
     "tail_indicator",
     "bearing_indicator",
@@ -146,51 +139,31 @@ indicator_orders[module.type.general] = {
     "na_gs_indicator",
 }
 
-for type, typedef in ipairs(indicators) do
-    for i, indicatordefs in ipairs(typedef) do
-        module.global_mapping_sources[i] = {}
-        for name, indicator in pairs(indicatordefs) do
-            if module.events[i][name] == nil and indicator.rpn ~= nil then
-                module.events[i][name] = mapper.register_event("CDI:"..i..":"..name)
-            end
-        end
-    end
-end
+--------------------------------------------------------------------------------------
+-- active indicator difinitions
+--------------------------------------------------------------------------------------
+module_defs.active_indicators= {}
+module_defs.active_indicators[module.type.general] = {
+    {x=18.44, y=410, width=81.624, height=81.624},
+}
 
 --------------------------------------------------------------------------------------
--- module destructor (GC handler)
+-- prepare module scope environment
 --------------------------------------------------------------------------------------
-setmetatable(module, {
-    __gc = function (obj)
-        for i = 1,#module.actions do
-            for key, evid in pairs(obj.events[i]) do
-                mapper.unregister_message(evid)
-            end
-        end
-    end
-})
+common.component_module_init(module, module_defs)
 
 --------------------------------------------------------------------------------------
 -- reset function called when aircraft evironment is build each
+--   override the default function which set in common.component_module_init()
 --------------------------------------------------------------------------------------
-function module.reset(options)
-    module_options[1] = common.merge_table({}, option_defaults)
-    module_options[2] = common.merge_table({}, option_defaults)
-    if options ~= nil then
-        for i, option in ipairs(options) do
-            for key, value in pairs(option) do
-                module_options[i][key] = value
-            end
-        end
-    end
+local default_reset = module.reset
 
-    for i, value in ipairs(module.global_mapping_sources) do
-        module.global_mapping_sources[i] = {}
-    end
+module.reset = function (options)
+    default_reset(options)
 
     module.observed_data = {}
-    for i, option in ipairs(module_options) do
-        for name, indicator in pairs(indicators[option.type][i]) do
+    for i, option in ipairs(module_defs.options) do
+        for name, indicator in pairs(module_defs.indicators[option.type][i]) do
             if indicator.rpn ~= nil then
                 module.observed_data[#module.observed_data + 1] = {
                     rpn = string.format(indicator.rpn, option.source_is_gps),
@@ -206,98 +179,17 @@ end
 -- instance generator
 --------------------------------------------------------------------------------------
 function module.create_component(component_name, id, captured_window, x, y, scale, rctx, simhid_g1000)
-    local component = {
+    local component = common.component_module_create_instance(module, module_defs,{
         name = component_name,
-        view_elements = {},
-        view_mappings = {},
-        component_mappings = {},
-        callback = nil,
-    }
+        id = id,
+        captured_window = captured_window,
+        x = x, y = y, scale = scale,
+        simhid_g1000 = simhid_g1000
+    })
 
     -- update view background bitmap
     rctx:draw_bitmap{bitmap=cdi_parts.base.image, x=x, y=y, scale=scale}
     rctx:draw_bitmap{bitmap=cdi_parts.cdi_knob.image, x=x + 18.44 * scale, y=y + 410 * scale, scale=scale}
-
-    -- operable area
-    local function notify_tapped()
-        if component.callback then
-            component.callback(component_name)
-        end
-    end
-    component.view_elements[#component.view_elements + 1] = {
-        object = mapper.view_elements.operable_area{event_tap = module.events[id].all, reaction_color=graphics.color(0, 0, 0, 0)},
-        x = x, y = y,
-        width = module.width * scale, height = module.height * scale
-    }
-    component.view_mappings[#component.view_mappings + 1] = {event=module.events[id].all, action=notify_tapped}
-
-    -- activation indicator
-    local canvas1 = mapper.view_elements.canvas{
-        logical_width = 1,
-        logical_height = 1,
-        value = 0,
-        renderer = function (rctx, value)
-            if value > 0 then
-                rctx:set_brush(common.active_indicator_color)
-                rctx:fill_geometry{geometry = common.circle, x = 0, y = 0}
-            end
-        end
-    }
-    component.view_elements[#component.view_elements + 1] = {
-        object = canvas1,
-        x = x + 18.44 * scale, y = y + 410 * scale,
-        width = 81.624 * scale, height = 81.624 * scale
-    }
-    function component.activate(state)
-        canvas1:set_value(state)
-    end
-
-    -- indicators
-    local option = module_options[id]
-    for i, name in ipairs(indicator_orders[option.type]) do
-        local indicator = indicators[option.type][id][name]
-        if indicator.enable_condition == nil or indicator.enable_condition(option) then
-            local renderer = nil
-            if indicator.bitmaps ~= nil then
-                renderer = function (ctx, value)
-                    local image = indicator.bitmaps[value + 1]
-                    if image then
-                        ctx:draw_bitmap(image, 0, 0)
-                    end
-                end
-            elseif indicator.rotation ~= nil then
-                renderer = function (ctx, value)
-                    ctx:draw_bitmap{bitmap=indicator.rotation.bitmap, x=indicator.rotation.center.x, y=indicator.rotation.center.y, angle=value}
-                end
-            elseif indicator.shift ~= nil and indicator.shift.axis == "x" then
-                renderer = function (ctx, value)
-                    ctx:draw_bitmap{bitmap=indicator.shift.bitmap, x=indicator.shift.scale * value, y=0}
-                end
-            elseif indicator.shift ~= nil and indicator.shift.axis == "y" then
-                renderer = function (ctx, value)
-                    ctx:draw_bitmap{bitmap=indicator.shift.bitmap, x=0, y=indicator.shift.scale * value}
-                end
-            end
-
-            local canvas = mapper.view_elements.canvas{
-                logical_width = indicator.attr.width,
-                logical_height = indicator.attr.height,
-                value = 0,
-                renderer = renderer
-            }
-            component.view_elements[#component.view_elements + 1] = {
-                object = canvas,
-                x = x + indicator.x * scale, y = y + indicator.y * scale,
-                width = indicator.attr.width * scale, height = indicator.attr.height * scale
-            }
-            if indicator.rpn ~= nil then
-                if module.global_mapping_sources[id][name] == nil then
-                    module.global_mapping_sources[id][name] = {}
-                end
-                module.global_mapping_sources[id][name][#module.global_mapping_sources[id][name] + 1] = function (value) canvas:set_value(value) end
-            end
-        end
-    end
 
     -- Event-Action mappings which are enabled when the component is activated
     if simhid_g1000 then
@@ -309,23 +201,6 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     end
 
     return component
-end
-
---------------------------------------------------------------------------------------
--- global mappings generator
---------------------------------------------------------------------------------------
-function module.create_global_mappings()
-    local mappings = {}
-    for i, source in ipairs(module.global_mapping_sources) do
-        for key, actions in pairs(source) do
-            mappings[#mappings + 1] = {event=module.events[i][key], action = function (evid, value)
-                for num, action in pairs(actions) do
-                    action(value)
-                end
-            end}
-        end
-    end
-    return mappings
 end
 
 return module
