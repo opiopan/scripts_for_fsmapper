@@ -29,30 +29,68 @@ local captured_window_defs ={
     {key="kr87", name="KR-87 ADF"},
 }
 
+local bg_color = graphics.color(30, 40, 50)
 local views = {
     {
         -----------------------------------------------------------------------------------
         name = "Normal View",
         viewid = nil,
         width = 2224, height = 1668,
-        background_color = graphics.color(30, 40, 50),
+        background_color = bg_color,
         background_regions = {
             {x=0, y=569, width=1112, height=1099},
             {x=1112, y=0, width=1112, height=126},
         },
         components = {
-            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=126, scale=1, instance=nil},
-            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=942, scale=1, instance=nil},
-            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1, instance=nil},
-            {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1, instance=nil},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1408, scale=1, instance=nil},
-            {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=1481.333, y=0, scale=1, instance=nil},
-            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1, instance=nil},
-            {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=1136, scale=1, instance=nil},
-            {name="ADF", module=libs.adf, cw=nil, type_id=1, x=32.881, y=1136, scale=1, instance=nil},
-            {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=601, scale=1, instance=nil},
+            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=1112, y=126, scale=1},
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=942, scale=1},
+            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1},
+            {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1},
+            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1408, scale=1},
+            {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=1481.333, y=0, scale=1},
+            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1},
+            {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=1136, scale=1},
+            {name="ADF", module=libs.adf, cw=nil, type_id=1, x=32.881, y=1136, scale=1},
+            {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=601, scale=1},
         },
-        mappings = {},
+        initial_active_component = 1,       
+    },
+    {
+        -----------------------------------------------------------------------------------
+        name = "NAV1 View",
+        viewid = nil,
+        width = 2224, height = 1668,
+        background_color = bg_color,
+        background_regions = {
+            {x=0, y=0, width=556, height=1668},
+        },
+        components = {
+            {name="gns530", module=libs.gns530, cw="gns530", type_id=1, x=556, y=0, scale=1.5},
+            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=556, y=1224, scale=1.5},
+            {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=94.74, y=60.211, scale=1},
+            {name="DG", module=libs.dg, cw=nil, type_id=1, x=31.406, y=288.234, scale=1},
+            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=31.406, y=879.766, scale=1},
+        },
+        initial_active_component = 1,       
+    },
+    {
+        -----------------------------------------------------------------------------------
+        name = "NAV2 View",
+        viewid = nil,
+        width = 2224, height = 1668,
+        background_color = bg_color,
+        background_regions = {
+            {x=0, y=0, width=556, height=1668},
+            {x=556, y=1566, width=1668, height=102},
+        },
+        components = {
+            {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=556, y=0, scale=1.5},
+            {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=556, y=699, scale=1.5},
+            {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=556, y=1143, scale=1.5},
+            {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=94.74, y=60.211, scale=1},
+            {name="DG", module=libs.dg, cw=nil, type_id=1, x=31.406, y=288.234, scale=1},
+            {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=2, x=31.406, y=879.766, scale=1},
+        },
         initial_active_component = 1,       
     },
 }

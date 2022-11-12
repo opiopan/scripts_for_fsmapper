@@ -106,7 +106,9 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
         local rctx = graphics.rendering_context(background)
         local view_elements = {}
         local view_mappings = {}
-        module.merge_array(view_mappings, view.mappings)
+        if view.mappings ~= nil then
+            module.merge_array(view_mappings, view.mappings)
+        end
         local background_color = module.view_background_color
         if view.background_color then
             background_color = view.background_color
