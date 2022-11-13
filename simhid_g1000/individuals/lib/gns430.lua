@@ -74,7 +74,7 @@ module_defs.operables[module.type.general] = {
 -- captured window placeholder definition
 --------------------------------------------------------------------------------------
 module_defs.captured_window = {}
-module_defs.captured_window[module.type.general] = {x=266, y=52, width=609, height=308}
+module_defs.captured_window[module.type.general] = {x=266, y=52, width=610, height=308}
 
 --------------------------------------------------------------------------------------
 -- active indicator difinitions

@@ -24,6 +24,7 @@ local module = {
     dg_bearing = {origin={x=420/2, y=420/2}, image=base_image:create_partial_bitmap(2108, 0, 420, 420)},
     dg_standard = {image=base_image:create_partial_bitmap(2529, 0, 123, 314.478)},
     dg_standard_red = {image=base_image:create_partial_bitmap(2653, 0, 470, 470)},
+    dg_standard_type2 = {image=base_image:create_partial_bitmap(3124, 0, 470, 470)},
 }
 
 local function set_origin(part)

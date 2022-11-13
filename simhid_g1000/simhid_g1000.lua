@@ -26,6 +26,8 @@ fs2020_map["Pipistrel Alpha Electro Asobo"] = require("sw121")
 fs2020_map["Cessna Skyhawk Asobo"] = require("c172")
 fs2020_map["Cessna Skyhawk Floaters Asobo"] = require("c172")
 fs2020_map["Cessna Skyhawk Skis Asobo"] = require("c172")
+fs2020_map["DA40 TDI Asobo"] = require("da40tdi")
+fs2020_map["DV20 Asobo"] = require("da40tdi")
 
 local fallback={
     start = function ()

@@ -12,6 +12,7 @@ local module_defs = {
     options = {{}},
     option_defaults = {
         type = module.type.general,
+        indicator_type = 1,
         red_mark = false,
         heading_bug = false,
     },
@@ -38,10 +39,17 @@ local parts = require("lib/instrument_parts")
 module_defs.indicators = {}
 module_defs.indicators[module.type.general] = {}
 module_defs.indicators[module.type.general][1]= {
-    standard_indicator = {x=193, y=97, attr={width=123, height=314.478}, bitmaps={parts.dg_standard.image}},
+    standard_indicator = {
+        x=193, y=97, attr={width=123, height=314.478}, bitmaps={parts.dg_standard.image},
+        enable_condition=function (option) return option.indicator_type == 1 end
+        },
     standard_red_indicator = {
         x=15, y=15, attr={width=470, height=470}, bitmaps={parts.dg_standard_red.image},
-        enable_condition=function (option) return option.red_mark end
+        enable_condition=function (option) return option.red_mark and option.indicator_type == 1 end
+    },
+    standard_type2_indicator = {
+        x=15, y=15, attr={width=470, height=470}, bitmaps={parts.dg_standard_type2.image},
+        enable_condition=function (option) return option.indicator_type == 2 end
     },
     heading_bug_indicator = {
         x=52.219, y=52.219, attr={width=197.783*2, height=197.783*2}, rotation={bitmap=parts.dg_heading_bug.image, center={x=197.783, y=197.783}},
@@ -58,6 +66,7 @@ module_defs.indicator_orders = {}
 module_defs.indicator_orders[module.type.general] = {
     "standard_indicator",
     "standard_red_indicator",
+    "standard_type2_indicator",
     "heading_bug_indicator",
     "bearing_indicator",
 }
