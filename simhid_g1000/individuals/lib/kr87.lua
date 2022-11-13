@@ -4,8 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
 }
 
 local module_defs = {
@@ -21,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     adf=fs2020.mfwasm.rpn_executer("(>H:adf_AntAdf)"),
     bfo=fs2020.mfwasm.rpn_executer("(>H:adf_bfo)"),
@@ -63,7 +62,7 @@ module_defs.active_indicators[module.type.general] = {
 --------------------------------------------------------------------------------------
 -- prepare module scope environment
 --------------------------------------------------------------------------------------
-common.component_module_init(module, module_defs)
+common.component_module_init(module, module_defs, true)
 
 --------------------------------------------------------------------------------------
 -- instance generator

@@ -71,7 +71,7 @@ function module.create_font(params)
         num_letter = num_letter + common.get_table_size(params.patterns)
         common.merge_table(patterns, params.patterns)
     end
-    local bitmap = graphics.bitmap(math.floor(params.width * num_letter + 0.9), math.floor(params.height + 0.9))
+    local bitmap = graphics.bitmap(math.floor((params.width + 1) * num_letter + 0.9), math.floor(params.height + 0.9))
 
     -- render a bitmap as a source of font object
     local x = 0
@@ -88,7 +88,7 @@ function module.create_font(params)
             rctx:fill_geometry{geometry = def.paths[path_no], x = x, y = 0, scale = scale}
         end
         glyphs[key] = bitmap:create_partial_bitmap(x, 0, params.width, params.height)
-        x = x + params.width
+        x = x + params.width + 1
     end
     local gap_width = params.width - def.width * scale
     local point_diameter = def.point_diameter * scale

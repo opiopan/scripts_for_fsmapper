@@ -4,8 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
 }
 
 local module_defs = {
@@ -21,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     ap=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } }"),
     hdg=fs2020.mfwasm.rpn_executer("(>H:KAP140_Push_HDG)"),

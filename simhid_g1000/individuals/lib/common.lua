@@ -178,6 +178,7 @@ end
 -- support functions to realize the component
 --------------------------------------------------------------------------------------
 function module.component_module_init(cmodule, cmodule_defs)
+    cmodule.events = {}
     for i = 1,#cmodule.actions do
         cmodule.events[i] = {}
         if cmodule_defs.operables ~= nil then
@@ -195,6 +196,7 @@ function module.component_module_init(cmodule, cmodule_defs)
     end
 
     cmodule.global_mapping_sources = {}
+    cmodule.observed_data = {}
     if cmodule_defs.indicators ~= nil then
         for type, typedef in ipairs(cmodule_defs.indicators) do
             for i, indicatordefs in ipairs(typedef) do

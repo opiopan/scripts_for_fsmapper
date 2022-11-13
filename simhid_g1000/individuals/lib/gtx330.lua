@@ -4,8 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
 }
 
 local module_defs = {
@@ -21,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     ident = fs2020.mfwasm.rpn_executer("(>K:XPNDR_IDENT_ON)"),
     vfr = fs2020.mfwasm.rpn_executer("(>H:TransponderVFR)"),

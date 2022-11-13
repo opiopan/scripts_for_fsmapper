@@ -4,10 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
-    observed_data = {},
-    global_mapping_sources = {},
 }
 
 local module_defs = {
@@ -26,6 +22,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     gyro_drift_inc = fs2020.event_sender("GYRO_DRIFT_INC"),
     gyro_drift_dec = fs2020.event_sender("GYRO_DRIFT_DEC"),

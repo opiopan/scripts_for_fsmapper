@@ -4,10 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
-    observed_data = {},
-    global_mapping_sources = {},
 }
 
 local module_defs = {
@@ -23,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     ap=fs2020.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }"),
     lvl=fs2020.mfwasm.rpn_executer("(>K:AP_WING_LEVELER) (A:AUTOPILOT WING LEVELER, Bool) if{ (A:AUTOPILOT MASTER, Bool) (>O:APStateWhenLevelerEnabled) (A:AUTOPILOT MASTER, Bool) ! if{ (>K:AUTOPILOT_ON) } (>K:AP_PITCH_LEVELER_ON) } els{ (>K:AP_PITCH_LEVELER_OFF) (O:APStateWhenLevelerEnabled) if{ (>K:AUTOPILOT_ON) } els{ (>K:AUTOPILOT_OFF) } }"),

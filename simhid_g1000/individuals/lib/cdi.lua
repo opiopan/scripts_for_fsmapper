@@ -5,10 +5,6 @@ local module = {
         general = 1,
         no_glideslope = 2,
     },
-    actions = {},
-    events = {},
-    observed_data = {},
-    global_mapping_sources = {},
 }
 
 local module_defs = {
@@ -28,6 +24,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     obs_inc = fs2020.event_sender("VOR1_OBI_INC"),
     obs_dec = fs2020.event_sender("VOR1_OBI_DEC"),

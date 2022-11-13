@@ -4,8 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
 }
 
 local module_defs = {
@@ -21,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     comswap = fs2020.mfwasm.rpn_executer("(>H:AS530_COMSWAP_Push)"),
     navswap = fs2020.mfwasm.rpn_executer("(>H:AS530_NAVSWAP_Push)"),

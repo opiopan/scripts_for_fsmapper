@@ -4,8 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
 }
 
 local module_defs = {
@@ -21,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     rng_zoom = fs2020.mfwasm.rpn_executer("(>H:AS3X_1_RNG_Zoom)"),
     rng_dezoom = fs2020.mfwasm.rpn_executer("(>H:AS3X_1_RNG_Dezoom)"),

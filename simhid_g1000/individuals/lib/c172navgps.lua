@@ -4,10 +4,6 @@ local module = {
     type = {
         general = 1,
     },
-    actions = {},
-    events = {},
-    observed_data = {},
-    global_mapping_sources = {},
 }
 
 local module_defs = {
@@ -23,6 +19,7 @@ local common = require("lib/common")
 --------------------------------------------------------------------------------------
 -- action definitions
 --------------------------------------------------------------------------------------
+module.actions = {}
 module.actions[1] = {
     navgps = fs2020.event_sender("TOGGLE_GPS_DRIVES_NAV1"),
 }
