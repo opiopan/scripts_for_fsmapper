@@ -77,7 +77,7 @@ module_defs.indicator_orders[module.type.general] = {
 module_defs.active_indicators= {}
 module_defs.active_indicators[module.type.general] = {
     {x=18.44, y=410, width=81.624, height=81.624},
-    {x=400.376, y=410, width=81.624, height=81.624},
+    {x=400.376, y=410, width=81.624, height=81.624, enable_condition=function (option) return option.heading_bug end},
 }
 
 --------------------------------------------------------------------------------------

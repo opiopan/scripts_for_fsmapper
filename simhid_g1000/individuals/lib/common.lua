@@ -299,15 +299,17 @@ function module.component_module_create_instance(cmodule, cmodule_defs, instance
     end
     if cmodule_defs.operables ~= nil and cmodule_defs.operables[option.type] then
         for name, operable in pairs(cmodule_defs.operables[option.type]) do
-            component.view_elements[#component.view_elements + 1] = {
-                object = mapper.view_elements.operable_area{event_tap = cmodule.events[id][name], round_ratio=operable.attr.rratio},
-                x = x + operable.x * scale, y = y + operable.y * scale,
-                width = operable.attr.width * scale, height = operable.attr.height * scale
-            }
-            if cmodule_defs.activatable then
-                component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=filter.duplicator(cmodule.actions[id][name], notify_tapped)}
-            else
-                component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=cmodule.actions[id][name]}
+            if operable.enable_condition == nil or operable.enable_condition(option) then
+                component.view_elements[#component.view_elements + 1] = {
+                    object = mapper.view_elements.operable_area{event_tap = cmodule.events[id][name], round_ratio=operable.attr.rratio},
+                    x = x + operable.x * scale, y = y + operable.y * scale,
+                    width = operable.attr.width * scale, height = operable.attr.height * scale
+                }
+                if cmodule_defs.activatable then
+                    component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=filter.duplicator(cmodule.actions[id][name], notify_tapped)}
+                else
+                    component.view_mappings[#component.view_mappings + 1] = {event=cmodule.events[id][name], action=cmodule.actions[id][name]}
+                end
             end
         end
     end
@@ -324,23 +326,26 @@ function module.component_module_create_instance(cmodule, cmodule_defs, instance
     local active_indicators = {}
     if cmodule_defs.active_indicators ~= nil then
         for i, aindicator in ipairs(cmodule_defs.active_indicators[option.type]) do
-            local canvas = mapper.view_elements.canvas{
-                logical_width = 1,
-                logical_height = 1,
-                value = 0,
-                renderer = function (rctx, value)
-                    if value > 0 then
-                        rctx:set_brush(module.active_indicator_color)
-                        rctx:fill_geometry{geometry = module.circle, x = 0, y = 0}
+            if aindicator.enable_condition == nil or aindicator.enable_condition(option) then
+                local canvas = mapper.view_elements.canvas{
+                    logical_width = 1,
+                    logical_height = 1,
+                    value = 0,
+                    translucency = true;
+                    renderer = function (rctx, value)
+                        if value > 0 then
+                            rctx:set_brush(module.active_indicator_color)
+                            rctx:fill_geometry{geometry = module.circle, x = 0, y = 0}
+                        end
                     end
-                end
-            }
-            component.view_elements[#component.view_elements + 1] = {
-                object = canvas,
-                x = x + aindicator.x * scale, y = y + aindicator.y * scale,
-                width = aindicator.width * scale, height = aindicator.height * scale
-            }
-            active_indicators[#active_indicators + 1] = canvas
+                }
+                component.view_elements[#component.view_elements + 1] = {
+                    object = canvas,
+                    x = x + aindicator.x * scale, y = y + aindicator.y * scale,
+                    width = aindicator.width * scale, height = aindicator.height * scale
+                }
+                active_indicators[#active_indicators + 1] = canvas
+            end
         end
     end
     function component.activate(state)
