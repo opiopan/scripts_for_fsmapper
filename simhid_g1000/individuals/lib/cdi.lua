@@ -85,7 +85,7 @@ module_defs.indicators[module.type.general][1]= {
     gs_needle = {
         x=(module.width - needle_canvas_size) / 2, y=(module.height - needle_canvas_size) / 2, attr={width=needle_canvas_size, height=needle_canvas_size},
         shift={bitmap=cdi_parts.gs_needle.image, axis="y", scale=needle_value_scale}, 
-        rpn="%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:1, Number) }", epsilon = 0.5
+        rpn="%s if{ (A:GPS GSI NEEDLE:1, Number) } els{ (A:NAV GSI:1, Number) }", epsilon = 0.5
     },
     source_indicator = {
         x=138.201, y=194.857, attr={width=70.606, height=117.375}, bitmaps={cdi_parts.source[1], cdi_parts.source[2]}, rpn="%s",
@@ -98,7 +98,8 @@ module_defs.indicators[module.type.general][1]= {
     },
     tofrom_indicator = {
         x=281.399, y=168.058, attr={width=83.607, height=36.622}, bitmaps={nil, cdi_parts.cdi_to.image, cdi_parts.cdi_from.image},
-        rpn="%s if{ 0 } els{ (A:NAV TOFROM:1, Enum) }"
+        rpn="%s if{ (A:GPS IS ACTIVE FLIGHT PLAN, Bool) if{ (A:GPS WP TRUE BEARING, Degrees) (A:GPS WP TRUE REQ HDG, Degrees) - 90 + d360 180 < if{ 1 } els{ 2 } } els{  0 } } els{ (A:NAV TOFROM:1, Enum) }"
+        -- rpn="(A:GPS WP TRUE BEARING: Degrees) (A:GPS WP TRUE REQ HDG: Degrees) -  90 + d360"
     },
     na_loc_indicator = {
         x=218.346, y=374.625, attr={width=63.307, height=22.075}, bitmaps={nil, cdi_parts.cdi_na_loc.image},
@@ -118,7 +119,7 @@ module_defs.indicators[module.type.general][2].bearing_indicator.rpn = "360 (A:N
 module_defs.indicators[module.type.general][2].cdi_needle.rpn = "%s if{ (A:GPS CDI NEEDLE:1, Number) } els{ (A:NAV CDI:2, Number) }"
 module_defs.indicators[module.type.general][2].gs_needle.rpn = "%s if{ (A:GPS HSI NEEDLE:1, Number) } els{ (A:NAV GSI:2, Number) }"
 module_defs.indicators[module.type.general][2].nav_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) }"
-module_defs.indicators[module.type.general][2].tofrom_indicator.rpn = "%s if{ 0 } els{ (A:NAV TOFROM:2, Enum) }"
+module_defs.indicators[module.type.general][2].tofrom_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN, Bool) if{ (A:GPS WP TRUE BEARING, Degrees) (A:GPS WP TRUE REQ HDG, Degrees) - 90 + d360 180 < if{ 1 } els{ 2 } } els{  0 } } els{ (A:NAV TOFROM:2, Enum) }"
 module_defs.indicators[module.type.general][2].na_loc_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) } els{ (A:NAV HAS NAV:2, Bool) } !"
 module_defs.indicators[module.type.general][2].na_gs_indicator.rpn = "%s if{ (A:GPS IS ACTIVE FLIGHT PLAN:1, Bool) (A:GPS HAS GLIDEPATH:1, Bool) and } els{ (A:NAV GS FLAG:2, Bool) } !"
 
