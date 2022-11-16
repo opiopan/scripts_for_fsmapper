@@ -59,6 +59,15 @@ function module.init_component_modules(libs, lib_options)
     end
 end
 
+function module.change_viewport_mappings(viewport, viewport_mappings, view)
+    mapper.delay(1, function ()
+        viewport:set_mappings(viewport_mappings)
+        if view.active_component ~= nil then
+            viewport:add_mappings(view.components[view.active_component].instance.component_mappings)
+        end
+    end)
+end
+
 function module.create_default_view_changer(viewport, views, initial_view, viewport_mappings, device, additional_viewport_mappings)
     local current_view = initial_view
     local function change_view(d)
@@ -69,11 +78,7 @@ function module.create_default_view_changer(viewport, views, initial_view, viewp
             current_view = #views
         end
         viewport:change_view(views[current_view].viewid)
-        mapper.delay(1, function ()
-            viewport:set_mappings(viewport_mappings)
-            local view = views[current_view]
-            viewport:add_mappings(view.components[view.active_component].instance.component_mappings)
-        end)
+        module.change_viewport_mappings(viewport, viewport_mappings, views[current_view])
     end
 
     local g1000 = device.events
@@ -113,9 +118,11 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
         if view.background_color then
             background_color = view.background_color
         end
-        rctx:set_brush(background_color)
-        for i, rect in ipairs(view.background_regions) do
-            rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
+        if view.background_regions ~= nil then
+            rctx:set_brush(background_color)
+            for i, rect in ipairs(view.background_regions) do
+                rctx:fill_rectangle(rect.x, rect.y, rect.width, rect.height)    
+            end
         end
         local change_active_component = function (cid)
             if view.active_component ~= cid then
@@ -134,7 +141,7 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
             component.instance = component.module.create_component(
                 i, component.type_id, cw,
                 component.x, component.y, component.scale,
-                rctx, device
+                rctx, device, component.options
             )
             module.merge_array(view_elements, component.instance.view_elements)
             module.merge_array(view_mappings, component.instance.view_mappings)
@@ -152,7 +159,9 @@ function module.arrange_views(viewport, viewport_mappings, captured_window_defs,
             background = background,
             mappings = view_mappings,
         }
-        view.components[view.active_component].instance.activate(1)
+        if view.active_component ~= nil then
+            view.components[view.active_component].instance.activate(1)
+        end
     end
 end
 

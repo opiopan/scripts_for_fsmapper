@@ -61,8 +61,8 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    -- change_aircraft("fs2020", "Pipistrel Alpha Electro Asobo")
-    change_aircraft("fs2020", "Cessna Skyhawk Asobo")
+    change_aircraft("fs2020", "Cessna Longitude Asobo")
+    -- change_aircraft("fs2020", "Cessna Skyhawk Asobo")
 else
     change_aircraft("", "")
 end
