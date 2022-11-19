@@ -99,7 +99,6 @@ module_defs.indicators[module.type.general][1]= {
     tofrom_indicator = {
         x=281.399, y=168.058, attr={width=83.607, height=36.622}, bitmaps={nil, cdi_parts.cdi_to.image, cdi_parts.cdi_from.image},
         rpn="%s if{ (A:GPS IS ACTIVE FLIGHT PLAN, Bool) if{ (A:GPS WP TRUE BEARING, Degrees) (A:GPS WP TRUE REQ HDG, Degrees) - 90 + d360 180 < if{ 1 } els{ 2 } } els{  0 } } els{ (A:NAV TOFROM:1, Enum) }"
-        -- rpn="(A:GPS WP TRUE BEARING: Degrees) (A:GPS WP TRUE REQ HDG: Degrees) -  90 + d360"
     },
     na_loc_indicator = {
         x=218.346, y=374.625, attr={width=63.307, height=22.075}, bitmaps={nil, cdi_parts.cdi_na_loc.image},

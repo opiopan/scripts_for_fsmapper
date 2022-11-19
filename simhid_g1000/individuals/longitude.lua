@@ -64,11 +64,6 @@ local views_main = {
     },
 }
 
-local switchable_views = {
-    {current=1, views = {views_main[1], views_main[2]}},
-    {current=1, views = {views_main[3], views_main[4]}},
-}
-
 function module.start(config, aircraft)
     local display = config.simhid_g1000_display
     local scale = 1.0
@@ -91,6 +86,11 @@ function module.start(config, aircraft)
         },
     }
     local g1000 = module.device.events
+
+    local switchable_views = {
+        {current=1, views = {views_main[1], views_main[2]}},
+        {current=1, views = {views_main[3], views_main[4]}},
+    }
 
     local pfd_mappings = {
         {event=g1000.EC6Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Large_INC)")},
@@ -173,6 +173,10 @@ function module.start(config, aircraft)
         viewport_main:change_view(view.viewid)
         common.change_viewport_mappings(viewport_main, viewport_main_mappings, view)
     end
+    views_main[1].components[1].options.on_tap = change_sub_view
+    views_main[2].components[1].options.on_tap = change_sub_view
+    views_main[3].components[1].options.on_tap = change_sub_view
+    views_main[4].components[1].options.on_tap = change_sub_view
     common.arrange_views(viewport_main, viewport_main_mappings, captured_window_defs, views_main, module.device)
     viewport_main:set_mappings(viewport_main_mappings)
 
