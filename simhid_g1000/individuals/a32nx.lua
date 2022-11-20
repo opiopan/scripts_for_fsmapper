@@ -7,9 +7,9 @@ local vratio_menu = height_menu / height_total
 local vratio_display = height_display / height_total    
 local vratio_panel = height_panel / height_total
 
+local common = require("lib/common")
 
 local a320_context = {}
-
 
 local events = {
     dc_bus_change = mapper.register_event("A32NX:DC_BUS:change"),
@@ -60,6 +60,14 @@ local function start(config)
         vertical_alignment = "top",
     }
 
+    local viewport_efb = mapper.viewport{
+        name = "A320 EFB Viewport",
+        displayno = display,
+        x = 0, y = 0,
+        width = scale, height = scale,
+        aspect_ratio = 4 / 3,
+    }
+
     --------------------------------------------------------------------------------------
     -- Register views to right & left viewports
     --------------------------------------------------------------------------------------
@@ -70,6 +78,7 @@ local function start(config)
         uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM"},
         lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM"},
         mcdu = mapper.view_elements.captured_window{name = "A320 MCDU"},
+        efb = mapper.view_elements.captured_window{name = "A320 EFB"},
     }
 
     local global_mappings = {}
@@ -110,6 +119,14 @@ local function start(config)
     local view_right_uecam = viewport_right:register_view(viewdef_right_uecam)
     local view_right_lecam = viewport_right:register_view(viewdef_right_lecam)
     local view_right_mcdu = viewport_right:register_view(viewdef_right_mcdu)
+
+    --------------------------------------------------------------------------------------
+    -- Register EFB view
+    --------------------------------------------------------------------------------------
+    local efb_view = viewport_efb:register_view{
+        name = "EFB View", elements={{object=captured_windows.efb}}
+    }
+    viewport_efb:change_view(viewport_efb.empty_view)
 
     --------------------------------------------------------------------------------------
     -- Register menu view
@@ -295,7 +312,34 @@ local function start(config)
         end,
     }
 
+    local efb_is_visible = false
+    local main_views = {}
+
+    local function toggle_efb()
+        efb_is_visible = not efb_is_visible
+        if efb_is_visible then
+            mapper.print("EFB ON")
+            main_views.left = viewport_left.current_view
+            main_views.right = viewport_right.current_view
+            main_views.menu = viewport_menu.current_view
+            viewport_efb:change_view(efb_view)
+            viewport_left:change_view(viewport_left.empty_view)
+            viewport_right:change_view(viewport_right.empty_view)
+            viewport_menu:change_view(viewport_menu.empty_view)
+        else
+            mapper.print("EFB OFF")
+            viewport_left:change_view(main_views.left)
+            viewport_right:change_view(main_views.right)
+            viewport_menu:change_view(main_views.menu)
+            viewport_efb:change_view(viewport_efb.empty_view)
+        end
+    end
+
     local function change_view(target, view_name, opposite)
+        if efb_is_visible then
+            toggle_efb()
+            return true
+        end
         target_ctx = menu_context[target]
         opposite_ctx = menu_context[opposite]
         rule = target_ctx.rule[view_name]
@@ -312,6 +356,10 @@ local function start(config)
     end
 
     local function change_typical_view(direction)
+        if efb_is_visible then
+            toggle_efb()
+            return
+        end
         local left = menu_context.left.current
         local right = menu_context.right.current
         local ix = nil
@@ -429,7 +477,11 @@ local function start(config)
         {event=g1000.AUX1U.down, action=function() change_typical_view(-1) end},
         {event=g1000.AUX2D.down, action=function() change_typical_view(1) end},
         {event=g1000.AUX2U.down, action=function() change_typical_view(-1) end},
+        {event=g1000.AUX1P.down, action=toggle_efb},
+        {event=g1000.AUX2P.down, action=toggle_efb},
     }
+
+    viewport_menu:add_mappings(mappings)
 
     viewport_menu:register_view{
         name = "menu",
@@ -437,7 +489,6 @@ local function start(config)
         elements = {
             {object = menu_bar},
         },
-        mappings = mappings,
     }
 
     return {

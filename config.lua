@@ -61,8 +61,9 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    change_aircraft("fs2020", "Cessna Longitude Asobo")
+    -- change_aircraft("fs2020", "Cessna Longitude Asobo")
     -- change_aircraft("fs2020", "Cessna Skyhawk Asobo")
+    change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
 else
     change_aircraft("", "")
 end
