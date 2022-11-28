@@ -318,7 +318,6 @@ local function start(config)
     local function toggle_efb()
         efb_is_visible = not efb_is_visible
         if efb_is_visible then
-            mapper.print("EFB ON")
             main_views.left = viewport_left.current_view
             main_views.right = viewport_right.current_view
             main_views.menu = viewport_menu.current_view
@@ -327,7 +326,6 @@ local function start(config)
             viewport_right:change_view(viewport_right.empty_view)
             viewport_menu:change_view(viewport_menu.empty_view)
         else
-            mapper.print("EFB OFF")
             viewport_left:change_view(main_views.left)
             viewport_right:change_view(main_views.right)
             viewport_menu:change_view(main_views.menu)

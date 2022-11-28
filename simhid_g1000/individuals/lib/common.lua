@@ -42,6 +42,25 @@ function module.get_table_size(table)
 end
 
 --------------------------------------------------------------------------------------
+-- generating another color version of bitmap
+--------------------------------------------------------------------------------------
+function module.change_bitmap_color(bitmap, color)
+    local new_bitmap = graphics.bitmap(math.ceil(bitmap.width), math.ceil(bitmap.height))
+    local brush = graphics.bitmap(new_bitmap.width, new_bitmap.height)
+    local rect = graphics.rectangle(0, 0, new_bitmap.width, new_bitmap.height)
+    local rctx = graphics.rendering_context(brush)
+    rctx.brush = color
+    rctx:fill_geometry{geometry=rect, x=0, y=0}
+    rctx:finish_rendering()
+    rctx=graphics.rendering_context(new_bitmap)
+    rctx.brush = brush
+    rctx.opacity_mask = bitmap
+    rctx:fill_geometry{geometry=rect, x=0, y=0}
+    rctx:finish_rendering()
+    return new_bitmap
+end
+
+--------------------------------------------------------------------------------------
 -- handling component based view
 --------------------------------------------------------------------------------------
 function module.init_component_modules(libs, lib_options)
