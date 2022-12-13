@@ -149,7 +149,7 @@ local function init(config)
         end
     end
     local function set_zoom_level(evid, value)
-        zoom_normal = value
+        zoom_normal = math.floor(value / 2)
         if zoom_mode then
             zoom_level:set_value(zoom_normal)
         end

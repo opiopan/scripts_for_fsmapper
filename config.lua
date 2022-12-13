@@ -35,6 +35,9 @@ local function normalize_fs2020_aircraft_name(name)
         if string.find(name, "PMDG 737") == 1 then
             return "PMDG 737"
         end
+        if string.find(name, "Blackbird Simulations DHC-") == 1 then
+            return "Blackbird Simulations DHC-2"
+        end
         return name
     end
 end
@@ -62,8 +65,8 @@ mapper.add_primary_mappings({
 
 if config.debug then
     -- change_aircraft("fs2020", "Cessna Longitude Asobo")
-    -- change_aircraft("fs2020", "Cessna Skyhawk Asobo")
-    change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
+    change_aircraft("fs2020", "Cessna Skyhawk Asobo")
+    -- change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
 else
     change_aircraft("", "")
 end

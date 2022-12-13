@@ -29,6 +29,7 @@ fs2020_map["Cessna Skyhawk Skis Asobo"] = require("c172")
 fs2020_map["DA40 TDI Asobo"] = require("da40tdi")
 fs2020_map["DV20 Asobo"] = require("da40tdi")
 fs2020_map["Cessna Longitude Asobo"] = require("longitude")
+fs2020_map["Blackbird Simulations DHC-2"] = require("dhc2")
 
 local fallback={
     start = function ()
