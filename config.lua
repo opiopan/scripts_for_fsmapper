@@ -1,5 +1,5 @@
 local config = {
-    -- debug = true,
+    debug = true,
     simhid_g1000_identifier = {path = "COM3"},
     simhid_g1000_display = 2,
     x56_stick_identifier = {name = "Saitek Pro Flight X-56 Rhino Stick"},
