@@ -68,21 +68,26 @@ module_defs.active_indicators[module.type.general] = {
 -- virtual NAVCOM implementation
 --------------------------------------------------------------------------------------
 local navcom = {
-    {power=0, nav=0, nav_stby=0, com=0, com_stby=0},
-    {power=0, nav=0, nav_stby=0, com=0, com_stby=0},
+    {power=0, nav_active=0, nav_standby=0, com_active=0, com_standby=0},
+    {power=0, nav_active=0, nav_standby=0, com_active=0, com_standby=0},
 }
 
-local function set_canvas_value(canvases, value)
-    for i, canvas in pairs(canvases) do
-        canvas.value = value
+local function set_canvas_value(self, name, value)
+    if value > 100 then
+        self[name] = value
+        for i, canvas in pairs(self.canvases[name]) do
+            canvas.value = value * self.power
+        end
     end
 end
+navcom[1].set_value = set_canvas_value
+navcom[2].set_value = set_canvas_value
 
 local function update_navcom (self)
-    set_canvas_value(self.canvases.nav_active, self.power * self.nav)
-    set_canvas_value(self.canvases.nav_standby, self.power * self.nav_stby)
-    set_canvas_value(self.canvases.com_active, self.power * self.com)
-    set_canvas_value(self.canvases.com_standby, self.power * self.com_stby)
+    self:set_value("nav_active", self.nav_active)
+    self:set_value("nav_standby", self.nav_standby)
+    self:set_value("com_active", self.com_active)
+    self:set_value("com_standby", self.com_standby)
 end
 navcom[1].update = update_navcom
 navcom[2].update = update_navcom
@@ -91,17 +96,17 @@ module_defs.reactions = {}
 module_defs.reactions[module.type.general] = {}
 module_defs.reactions[module.type.general][1] = {
     com_power = {rpn="(A:COM STATUS:1, Enum) 0 == if{ 1 } els{ 0 }", action=function (value) navcom[1].power=value; navcom[1]:update() end},
-    com_active = {rpn="(A:COM ACTIVE FREQUENCY:1, Megahertz)", action=function (value) navcom[1].com=value; set_canvas_value(navcom[1].canvases.com_active, value*navcom[1].power) end},
-    com_standby = {rpn="(A:COM STANDBY FREQUENCY:1, Megahertz)", action=function (value) navcom[1].com_stby=value; set_canvas_value(navcom[1].canvases.com_standby, value*navcom[1].power) end},
-    nav_active = {rpn="(A:NAV ACTIVE FREQUENCY:1, Megahertz)", action=function (value) navcom[1].nav=value; set_canvas_value(navcom[1].canvases.nav_active, value*navcom[1].power) end},
-    nav_standby = {rpn="(A:NAV STANDBY FREQUENCY:1, Megahertz)", action=function (value) navcom[1].nav_stby=value; set_canvas_value(navcom[1].canvases.nav_standby, value*navcom[1].power) end},
+    com_active = {rpn="(A:COM ACTIVE FREQUENCY:1, Megahertz)", action=function (value) navcom[1]:set_value("com_active", value) end},
+    com_standby = {rpn="(A:COM STANDBY FREQUENCY:1, Megahertz)", action=function (value) navcom[1]:set_value("com_standby", value) end},
+    nav_active = {rpn="(A:NAV ACTIVE FREQUENCY:1, Megahertz)", action=function (value) navcom[1]:set_value("nav_active", value) end},
+    nav_standby = {rpn="(A:NAV STANDBY FREQUENCY:1, Megahertz)", action=function (value) navcom[1]:set_value("nav_standby", value) end},
 }
 module_defs.reactions[module.type.general][2] = {
-    com_power = {rpn="(A:COM STATUS:2, Enum) 0 == if{ 1 } els{ 0 }", action=function (value) navcom[2].power=value; navcom[2]:update() end},
-    com_active = {rpn="(A:COM ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2].com=value; set_canvas_value(navcom[2].canvases.com_active, value*navcom[2].power) end},
-    com_standby = {rpn="(A:COM STANDBY FREQUENCY:2, Megahertz)", action=function (value) navcom[2].com_stby=value; set_canvas_value(navcom[2].canvases.com_standby, value*navcom[2].power) end},
-    nav_active = {rpn="(A:NAV ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2].nav=value; set_canvas_value(navcom[2].canvases.nav_active, value*navcom[2].power) end},
-    nav_standby = {rpn="(A:NAV STANDBY FREQUENCY:2, Megahertz)", action=function (value) navcom[2].nav_stby=value; set_canvas_value(navcom[2].canvases.nav_standby, value*navcom[2].power) end},
+    com_power = {rpn="(A:COM STATUS:2, Enum) 0 == if{ 1 } els{ 0 }", action=function (value) navcom[2].power=value; navcom[1]:update() end},
+    com_active = {rpn="(A:COM ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("com_active", value) end},
+    com_standby = {rpn="(A:COM STANDBY FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("com_standby", value) end},
+    nav_active = {rpn="(A:NAV ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("nav_active", value) end},
+    nav_standby = {rpn="(A:NAV STANDBY FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("nav_standby", value) end},
 }
 
 --------------------------------------------------------------------------------------

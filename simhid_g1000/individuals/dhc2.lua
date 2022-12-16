@@ -98,7 +98,7 @@ local views = {
             {name="ADF", module=libs.adf, cw=nil, type_id=1, x=579.119, y=851.5, scale=1},
             {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=316.5, scale=1},
         },
-        initial_active_component = 1,
+        initial_active_component = 2,
     },
     {
         -----------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ local views = {
             {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=851.5, scale=1},
             {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=316.5, scale=1},
         },
-        initial_active_component = 1,
+        initial_active_component = 2,
     },
 }
 

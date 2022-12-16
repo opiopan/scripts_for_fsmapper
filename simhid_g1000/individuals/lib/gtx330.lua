@@ -8,7 +8,7 @@ local module = {
 
 local module_defs = {
     prefix = "GTX330",
-    activatable = true,
+    activatable = false,
     options = {{}},
     option_defaults = {
         type = module.type.general,
