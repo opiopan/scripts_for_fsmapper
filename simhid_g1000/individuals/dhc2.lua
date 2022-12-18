@@ -6,16 +6,19 @@ local libs = {
     gns430 = require("lib/gns430"),
     kap140 = require("lib/kap140"),
     gtx330 = require("lib/gtx330"),
-    kr87 = require("lib/kr87"),
+    kr87 = require("lib/kr87_emu"),
     kx165 = require("lib/kx165"),
     cdi = require("lib/cdi"),
     adf = require("lib/adf"),
     dg = require("lib/dg"),
 }
 local lib_options = {
+    kr87 = {
+        {power_rpn = "3 (>A:BUS LOOKUP INDEX, Number) (A:BUS CONNECTION ON:4, Bool) (A:ADF VOLUME:1, Percent Over 100) 0 > and"}
+    },
     cdi = {
-        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
-        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS530_CDI_Source_1) (L:DHC2_TAB_RADIOS) ! and"}, -- NAV1
+        {type=libs.cdi.type.general, gps_dependency=true, enable_nav=true, source_is_gps="(L:AS430_CDI_Source_1) (L:DHC2_TAB_RADIOS) ! and"}, -- NAV2
     },
     dg = {
         {type=libs.dg.type.general, red_mark=true, heading_bug=true},
@@ -27,7 +30,6 @@ local captured_window_defs ={
     {key="gns430", name="GNS430 GPS"},
     {key="kap140", name="KAP-140 Auto Pilot Control"},
     {key="gtx330", name="GTX330 Transponder"},
-    {key="kr87", name="KR-87 ADF"},
 }
 
 local bg_color = graphics.color(30, 40, 50)
@@ -48,7 +50,7 @@ local views = {
             {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=879, scale=1},
             {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1},
             {name="gtx330", module=libs.gtx330, cw="gtx330", type_id=1, x=0, y=296, scale=1},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1345, scale=1},
+            {name="kr87", module=libs.kr87, cw=nil, type_id=1, x=1112, y=1345, scale=1},
             {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1},
             {name="ADF", module=libs.adf, cw=nil, type_id=1, x=579.119, y=1136, scale=1},
             {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=601, scale=1},
@@ -93,7 +95,7 @@ local views = {
             {name="navcom1", module=libs.kx165, cw=nil, type_id=1, x=1112, y=372, scale=1},
             {name="navcom2", module=libs.kx165, cw=nil, type_id=2, x=1112, y=711, scale=1},
             {name="gtx330", module=libs.gtx330, cw="gtx330", type_id=1, x=1112, y=1050, scale=1},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1332, scale=1},
+            {name="kr87", module=libs.kr87, cw=nil, type_id=1, x=1112, y=1332, scale=1},
             {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=316.5, scale=1},
             {name="ADF", module=libs.adf, cw=nil, type_id=1, x=579.119, y=851.5, scale=1},
             {name="DG", module=libs.dg, cw=nil, type_id=1, x=32.881, y=316.5, scale=1},

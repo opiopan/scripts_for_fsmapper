@@ -77,7 +77,7 @@ function module.create_component(component_name, id, captured_window, x, y, scal
     })
 
     -- update view background bitmap
-    local background = graphics.bitmap("assets/kr87.png")
+    local background = graphics.bitmap("assets/kr87.png"):create_partial_bitmap(0, 0, module.width, module.height)
     rctx:draw_bitmap{bitmap=background, x=x, y=y, scale=scale}
 
     -- Event-Action mappings which are enabled when the component is activated

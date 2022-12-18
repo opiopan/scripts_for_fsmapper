@@ -73,7 +73,7 @@ local navcom = {
 }
 
 local function set_canvas_value(self, name, value)
-    if value > 100 then
+    if value > 100  and value < 500 then
         self[name] = value
         for i, canvas in pairs(self.canvases[name]) do
             canvas.value = value * self.power
@@ -102,7 +102,7 @@ module_defs.reactions[module.type.general][1] = {
     nav_standby = {rpn="(A:NAV STANDBY FREQUENCY:1, Megahertz)", action=function (value) navcom[1]:set_value("nav_standby", value) end},
 }
 module_defs.reactions[module.type.general][2] = {
-    com_power = {rpn="(A:COM STATUS:2, Enum) 0 == if{ 1 } els{ 0 }", action=function (value) navcom[2].power=value; navcom[1]:update() end},
+    com_power = {rpn="(A:COM STATUS:2, Enum) 0 == if{ 1 } els{ 0 }", action=function (value) navcom[2].power=value; navcom[2]:update() end},
     com_active = {rpn="(A:COM ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("com_active", value) end},
     com_standby = {rpn="(A:COM STANDBY FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("com_standby", value) end},
     nav_active = {rpn="(A:NAV ACTIVE FREQUENCY:2, Megahertz)", action=function (value) navcom[2]:set_value("nav_active", value) end},
@@ -113,9 +113,10 @@ module_defs.reactions[module.type.general][2] = {
 -- indicator definitions
 --------------------------------------------------------------------------------------
 local segdisp = require("lib/segdisp")
-local seg_font_attr = {width=43.334, height=48.284}
+local seg_font_attr = {width=42.83, height=44}
 local seg_font = segdisp.create_font{type=segdisp.seg7_type1, width=seg_font_attr.width, height=seg_font_attr.height, color=graphics.color(248, 87, 43)}
-local attr_indicator = {width=seg_font_attr.width * 6, height=seg_font_attr.height}
+local attr_com = {width=seg_font_attr.width * 6, height=seg_font_attr.height}
+local attr_nav = {width=seg_font_attr.width * 5, height=seg_font_attr.height}
 local function com_renderer(rctx, value)
     if value > 0 then
         rctx.font = seg_font
@@ -132,7 +133,7 @@ local function nav_renderer(rctx, value)
         rctx.font = seg_font
         rctx:draw_number{
             value = value,
-            precision = 6,
+            precision = 5,
             fraction_precision = 2,
             leading_zero = false
         }
@@ -141,16 +142,16 @@ end
 module_defs.indicators ={}
 module_defs.indicators[module.type.general] = {}
 module_defs.indicators[module.type.general][1]= {
-    com_active = {x=18.303, y=33.696, attr=attr_indicator, renderer=com_renderer, pin=navcom[1]},
-    com_standby = {x=285.003, y=33.696, attr=attr_indicator, renderer=com_renderer, pin=navcom[1]},
-    nav_active = {x=576.973, y=33.696, attr=attr_indicator, renderer=nav_renderer, pin=navcom[1]},
-    nav_standby = {x=843.673, y=33.696, attr=attr_indicator, renderer=nav_renderer, pin=navcom[1]},
+    com_active = {x=15.303, y=35.837, attr=attr_com, renderer=com_renderer, pin=navcom[1]},
+    com_standby = {x=289.129, y=35.837, attr=attr_com, renderer=com_renderer, pin=navcom[1]},
+    nav_active = {x=615.023, y=35.837, attr=attr_nav, renderer=nav_renderer, pin=navcom[1]},
+    nav_standby = {x=862.02, y=35.837, attr=attr_nav, renderer=nav_renderer, pin=navcom[1]},
 }
 module_defs.indicators[module.type.general][2]= {
-    com_active = {x=18.303, y=33.696, attr=attr_indicator, renderer=com_renderer, pin=navcom[2]},
-    com_standby = {x=285.003, y=33.696, attr=attr_indicator, renderer=com_renderer, pin=navcom[2]},
-    nav_active = {x=576.973, y=33.696, attr=attr_indicator, renderer=nav_renderer, pin=navcom[2]},
-    nav_standby = {x=843.673, y=33.696, attr=attr_indicator, renderer=nav_renderer, pin=navcom[2]},
+    com_active = {x=15.303, y=35.837, attr=attr_com, renderer=com_renderer, pin=navcom[2]},
+    com_standby = {x=289.129, y=35.837, attr=attr_com, renderer=com_renderer, pin=navcom[2]},
+    nav_active = {x=615.023, y=35.837, attr=attr_nav, renderer=nav_renderer, pin=navcom[2]},
+    nav_standby = {x=862.02, y=35.837, attr=attr_nav, renderer=nav_renderer, pin=navcom[2]},
 }
 
 --------------------------------------------------------------------------------------

@@ -6,13 +6,16 @@ local libs = {
     gns430 = require("lib/gns430"),
     kap140 = require("lib/kap140"),
     kt76c = require("lib/kt76c"),
-    kr87 = require("lib/kr87"),
+    kr87 = require("lib/kr87_emu"),
     c172navgps = require("lib/c172navgps"),
     cdi = require("lib/cdi"),
     adf = require("lib/adf"),
     dg = require("lib/dg"),
 }
 local lib_options = {
+    kr87 = {
+        {power_rpn = "1 (>A:BUS LOOKUP INDEX, Number) (A:BUS CONNECTION ON:4, Bool) 2 (>A:BUS LOOKUP INDEX, Number) (A:BUS CONNECTION ON:5, Bool) or (A:ADF VOLUME:1, Percent Over 100) 0 > and"}
+    },
     cdi = {
         {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS530_CDI_Source_1)"}, -- NAV1
         {type=libs.cdi.type.general, gps_dependency=true, enable_nav=false, source_is_gps="(L:AS430_CDI_Source_1)"}, -- NAV2
@@ -26,7 +29,6 @@ local captured_window_defs ={
     {key="gns530", name="GNS530 GPS"},
     {key="gns430", name="GNS430 GPS"},
     {key="kap140", name="KAP-140 Auto Pilot Control"},
-    {key="kr87", name="KR-87 ADF"},
 }
 
 local bg_color = graphics.color(30, 40, 50)
@@ -46,7 +48,7 @@ local views = {
             {name="gns430", module=libs.gns430, cw="gns430", type_id=1, x=1112, y=942, scale=1},
             {name="kap140", module=libs.kap140, cw="kap140", type_id=1, x=0, y=0, scale=1},
             {name="kt76c", module=libs.kt76c, cw=nil, type_id=1, x=0, y=296, scale=1},
-            {name="kr87", module=libs.kr87, cw="kr87", type_id=1, x=1112, y=1408, scale=1},
+            {name="kr87", module=libs.kr87, cw=nil, type_id=1, x=1112, y=1408, scale=1},
             {name="navgps", module=libs.c172navgps, cw=nil, type_id=1, x=1481.333, y=0, scale=1},
             {name="NAV1 CDI", module=libs.cdi, cw=nil, type_id=1, x=579.119, y=601, scale=1},
             {name="NAV2 CDI", module=libs.cdi, cw=nil, type_id=2, x=579.119, y=1136, scale=1},
