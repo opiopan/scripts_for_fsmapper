@@ -118,7 +118,7 @@ local seg_font = segdisp.create_font{type=segdisp.seg7_type1, width=seg_font_att
 local attr_com = {width=seg_font_attr.width * 6, height=seg_font_attr.height}
 local attr_nav = {width=seg_font_attr.width * 5, height=seg_font_attr.height}
 local function com_renderer(rctx, value)
-    if value > 0 then
+    if value > 0 and value < 500 then
         rctx.font = seg_font
         rctx:draw_number{
             value = value,
@@ -129,7 +129,7 @@ local function com_renderer(rctx, value)
     end
 end
 local function nav_renderer(rctx, value)
-    if value > 0 then
+    if value > 0 and value < 500 then
         rctx.font = seg_font
         rctx:draw_number{
             value = value,

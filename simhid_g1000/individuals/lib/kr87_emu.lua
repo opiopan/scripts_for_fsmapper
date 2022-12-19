@@ -158,7 +158,7 @@ local attr_freq = {width=seg_font_attr.width * 4, height=seg_font_attr.height}
 local function freq_renderer(rctx, value)
     if value > 0 then
         rctx.font = seg_font
-        rctx:draw_string(string.format("%4x", value >> 16))
+        rctx:draw_string(string.format("%4x", (math.floor(value) & 0xffff0000) >> 16))
     end
 end
 module_defs.indicators ={}

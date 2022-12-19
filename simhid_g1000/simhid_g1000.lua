@@ -1,13 +1,16 @@
 local fs2020_map = {}
 fs2020_map["SR22 Asobo"] = require("g1000")
+fs2020_map["SR 22"] = require("g1000")
 fs2020_map["DA40-NG Asobo"] = require("g1000")
+fs2020_map["DA 40 NG"] = require("g1000")
 fs2020_map["DA62 Asobo"] = require("g1000")
-fs2020_map["Asobo Baron G58"] = require("g1000")
-fs2020_map["Bonanza G36 Asobo"] = require("g1000")
-fs2020_map["Cessna Skyhawk G1000 Asobo"] = require("g1000")
-fs2020_map["Cessna Skyhawk G1000 Floaters Asobo"] = require("g1000")
-fs2020_map["Cessna Skyhawk G1000 Skis Asobo"] = require("g1000")
+fs2020_map["DA 62"] = require("g1000")
+fs2020_map["Baron G58"] = require("g1000")
+fs2020_map["Bonanza G36"] = require("g1000")
+fs2020_map["Cessna Skyhawk G1000"] = require("g1000")
+fs2020_map["Cessna Skyhawk 172Sp G1000"] = require("g1000")
 fs2020_map["Cessna 208B Grand Caravan EX"] = require("g1000")
+fs2020_map["Cessna Grand Caravan"] = require("g1000")
 fs2020_map["Pilatus PC-6 G950 Wheels"] = require("g1000")
 fs2020_map["Pilatus PC-6 G950 Floats"] = require("g1000")
 fs2020_map["Airbus A320 Neo FlyByWire"] = require("a32nx")
@@ -26,10 +29,13 @@ fs2020_map["Pipistrel Alpha Electro Asobo"] = require("sw121")
 fs2020_map["Cessna Skyhawk Asobo"] = require("c172")
 fs2020_map["Cessna Skyhawk Floaters Asobo"] = require("c172")
 fs2020_map["Cessna Skyhawk Skis Asobo"] = require("c172")
+fs2020_map["Cessna Skyhawk 172Sp Classic"] = require("c172")
 fs2020_map["DA40 TDI Asobo"] = require("da40tdi")
 fs2020_map["DV20 Asobo"] = require("da40tdi")
-fs2020_map["Cessna Longitude Asobo"] = require("longitude")
+fs2020_map["DV 20"] = require("da40tdi")
+fs2020_map["Cessna Longitude"] = require("longitude")
 fs2020_map["Blackbird Simulations DHC-2"] = require("dhc2")
+fs2020_map["Cessna 152"] = require("c152")
 
 local fallback={
     start = function ()
@@ -56,7 +62,15 @@ local function change(host, aircraft)
     if host == "fs2020" then
         current = fs2020_map[aircraft]
         if not current then
-            current = fallback
+            for name, mod in pairs(fs2020_map) do
+                if string.find(aircraft, name) ~= nil then
+                    current = mod
+                    break
+                end
+            end
+            if not current then
+                current = fallback
+            end
         end
     else
         current = fallback
