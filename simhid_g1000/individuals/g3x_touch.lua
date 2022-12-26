@@ -69,10 +69,9 @@ end
 local aircraft_defs = {}
 aircraft_defs["Asobo NXCub"] = {views={"G3X Touch PFD"}, aptype=1}
 aircraft_defs["Asobo XCub"] = {views={"G3X Touch PFD"}, aptype=1}
-aircraft_defs["Asobo XCub Floats"] = {views={"G3X Touch PFD"}, aptype=1}
-aircraft_defs["Asobo XCub Skis"] = {views={"G3X Touch PFD"}, aptype=1}
-aircraft_defs["Beechcraft King Air 350i Asobo"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=2}
-aircraft_defs["VL3 Asobo"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=3}
+aircraft_defs["Xcub"] = {views={"G3X Touch PFD"}, aptype=1}
+aircraft_defs["Beechcraft King Air 350"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=2}
+aircraft_defs["VL3"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=3}
 aircraft_defs["Volocity Microsoft"] = {views={"G3X Touch PFD"}, aptype=3}
 aircraft_fallback = {views={"G3X Touch PFD"}, aptype=3}
 
@@ -107,7 +106,15 @@ function context.start(config, aircraft)
 
     local aircraft_def = aircraft_defs[aircraft]
     if not aircraft_def then
-        aircraft_def = aircraft_fallback
+        for name, def in pairs(aircraft_defs) do
+            if string.find(aircraft, name) ~= nil then
+                aircraft_def = def
+                break
+            end
+        end
+        if not aircraft_def then
+            aircraft_def = aircraft_fallback
+        end
     end
 
     context.g3x_touch_view.init(context.device, aircraft_def.aptype ~= 2)
