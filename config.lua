@@ -6,6 +6,12 @@ local config = {
     x56_throttle_identifier = {name = "Saitek Pro Flight X-56 Rhino Throttle"},
 }
 
+if debug_config ~= nil then
+    config.debug = debug_config.enabled
+    config.initial_sim = debug_config.initial_sim
+    config.initial_aircraft = debug_config.initial_aircraft
+end
+
 package.path = package.path .. 
                ";" .. mapper.script_dir .. "\\simhid_g1000\\?.lua" ..
                ";" .. mapper.script_dir .. "\\simhid_g1000\\individuals\\?.lua" ..
@@ -64,11 +70,7 @@ mapper.add_primary_mappings({
 })
 
 if config.debug then
-    -- change_aircraft("fs2020", "Cessna Longitude Asobo")
-    -- change_aircraft("fs2020", "Cessna Skyhawk Asobo")
-    -- change_aircraft("fs2020", "Cessna 152")
-    -- change_aircraft("fs2020", "Airbus A320 Neo FlyByWire")
-    change_aircraft("", "")
+    change_aircraft(config.initial_sim, config.initial_aircraft)
 else
     change_aircraft("", "")
 end
