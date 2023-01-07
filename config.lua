@@ -14,7 +14,7 @@ end
 
 package.path = package.path .. 
                ";" .. mapper.script_dir .. "\\simhid_g1000\\?.lua" ..
-               ";" .. mapper.script_dir .. "\\simhid_g1000\\individuals\\?.lua" ..
+               ";" .. mapper.script_dir .. "\\simhid_g1000\\fs2020\\?.lua" ..
                ";" .. mapper.script_dir .. "\\x56\\?.lua"
 
 local context = {
