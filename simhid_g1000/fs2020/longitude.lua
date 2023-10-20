@@ -11,7 +11,8 @@ local captured_window_defs ={
     {key="pfd", name="G5000 PFD"},
     {key="mfd", name="G5000 MFD"},
     {key="gtc_pfd", name="GTC for PFD"},
-    {key="gtc_mfd", name="GTC for MFD"},
+    {key="gtc_mfdl", name="GTC for MFD (Left)"},
+    {key="gtc_mfdr", name="GTC for MFD (Right)"},
 }
 
 local views_fcu = {
@@ -26,6 +27,7 @@ local views_fcu = {
 }
 
 local main_view_height = 1668 - libs.fcu.height
+local gtc_height = 1264
 local gtc_width = 948
 local views_main = {
     {
@@ -55,11 +57,26 @@ local views_main = {
     },
     {
         -----------------------------------------------------------------------------------
-        name = "MFD + GTC View",
+        name = "MFD + Left GTC View",
         width = libs.fcu.width, height = main_view_height,
         components = {
-            {name="PFD", module=libs.cw, cw="mfd", type_id=1, x=0, y=0, options={width=libs.fcu.width - gtc_width, height=main_view_height}},
-            {name="GTC", module=libs.cw, cw="gtc_mfd", type_id=1, x=libs.fcu.width - gtc_width, y=0, options={width=gtc_width, height=main_view_height}},
+            {name="MFD", module=libs.cw, cw="mfd", type_id=1, x=0, y=0, options={width=libs.fcu.width - gtc_width, height=main_view_height}},
+            {name="GTC left", module=libs.cw, cw="gtc_mfdl", type_id=1, x=libs.fcu.width - gtc_width, y=0, options={
+                width=gtc_width, height=main_view_height, y_offset=126,
+                tap_area = {x=403.5, y=25.451, width=141, height=76, rratio=0.5},
+            }},
+        },
+    },
+    {
+        -----------------------------------------------------------------------------------
+        name = "MFD + Right GTC View",
+        width = libs.fcu.width, height = main_view_height,
+        components = {
+            {name="MFD", module=libs.cw, cw="mfd", type_id=1, x=0, y=0, options={width=libs.fcu.width - gtc_width, height=main_view_height}},
+            {name="GTC right", module=libs.cw, cw="gtc_mfdr", type_id=1, x=libs.fcu.width - gtc_width, y=0, options={
+                width=gtc_width, height=main_view_height, y_offset=126,
+                tap_area = {x=403.5, y=25.451, width=141, height=76, rratio=0.5},
+            }},
         },
     },
 }
@@ -72,6 +89,12 @@ function module.start(config, aircraft)
         scale = 0.5
     end
 
+    local gtc_selector_width = 948
+    local gtc_selector_height = 126
+    local gtc_selector_image = graphics.bitmap("assets/longitude_gtc_selector.png")
+    views_main[4].components[2].options.bg_image = gtc_selector_image:create_partial_bitmap(0, 0, gtc_selector_width, gtc_selector_height)
+    views_main[5].components[2].options.bg_image = gtc_selector_image:create_partial_bitmap(0, 127, gtc_selector_width, gtc_selector_height)
+
     module.device = mapper.device{
         name = "SimHID G1000",
         type = "simhid",
@@ -80,7 +103,10 @@ function module.start(config, aircraft)
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
             {name = "EC6P", modtype = "button", modparam={longpress = 2000}},
-            {name = "EC9P", modtype = "button", modparam={longpress = 2000}},
+            {name = "EC8U", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
+            {name = "EC8D", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
+            {name = "EC8L", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
+            {name = "EC8R", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
             {name = "SW11", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
             {name = "SW13", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
         },
@@ -88,42 +114,55 @@ function module.start(config, aircraft)
     local g1000 = module.device.events
 
     local switchable_views = {
-        {current=1, views = {views_main[1], views_main[2]}},
-        {current=1, views = {views_main[3], views_main[4]}},
+        {current=1, gtc_offset=0, views = {views_main[1], views_main[2]}},
+        {current=1, gtc_offset=0, views = {views_main[3], views_main[4], views_main[5]}},
     }
 
     local pfd_mappings = {
-        {event=g1000.EC6Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Large_INC)")},
-        {event=g1000.EC6Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Large_DEC)")},
-        {event=g1000.EC6X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Small_INC)")},
-        {event=g1000.EC6X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Small_DEC)")},
-        {event=g1000.EC6P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Push)")},
-        {event=g1000.EC6P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_TopKnob_Push_Long)")},
-        {event=g1000.EC9Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Small_INC)")},
-        {event=g1000.EC9Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Small_DEC)")},
-        {event=g1000.EC9X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Small_INC)")},
-        {event=g1000.EC9X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Small_DEC)")},
-        {event=g1000.EC9P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Push)")},
-        {event=g1000.EC9P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_BottomKnob_Push_Long)")},
+        {event=g1000.EC5.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_MiddleKnob_INC)")},
+        {event=g1000.EC5.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_MiddleKnob_DEC)")},
+        {event=g1000.EC5P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_MiddleKnob_Push)")},
+        {event=g1000.EC8.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_INC)")},
+        {event=g1000.EC8.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_DEC)")},
+        {event=g1000.EC8P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_Push)")},
+        {event=g1000.EC8U.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_Up)")},
+        {event=g1000.EC8D.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_Down)")},
+        {event=g1000.EC8L.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_Left)")},
+        {event=g1000.EC8R.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_Joystick_Right)")},
+        {event=g1000.EC6Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Large_INC)")},
+        {event=g1000.EC6Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Large_DEC)")},
+        {event=g1000.EC6X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Small_INC)")},
+        {event=g1000.EC6X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Small_DEC)")},
+        {event=g1000.EC6P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Push)")},
+        {event=g1000.EC6P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_1_RightKnob_Push_Long)")},
     }
+    local mfd_gtc_is_left = true
+    local execute_gtc_rpn = function (suffix)
+        fs2020.mfwasm.execute_rpn("(>H:AS3000_TSC_Vertical_" .. (mfd_gtc_is_left and "2" or "3") .. suffix)
+    end
     local mfd_mappings = {
-        {event=g1000.EC6Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Large_INC)")},
-        {event=g1000.EC6Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Large_DEC)")},
-        {event=g1000.EC6X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Small_INC)")},
-        {event=g1000.EC6X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Small_DEC)")},
-        {event=g1000.EC6P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Push)")},
-        {event=g1000.EC6P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_TopKnob_Push_Long)")},
-        {event=g1000.EC9Y.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Small_INC)")},
-        {event=g1000.EC9Y.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Small_DEC)")},
-        {event=g1000.EC9X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Small_INC)")},
-        {event=g1000.EC9X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Small_DEC)")},
-        {event=g1000.EC9P.up, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Push)")},
-        {event=g1000.EC9P.longpressed, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_TSC_Vertical_2_BottomKnob_Push_Long)")},
+        {event=g1000.EC5.increment, action=function () execute_gtc_rpn("(_MiddleKnob_INC)") end},
+        {event=g1000.EC5.decrement, action=function () execute_gtc_rpn("(_MiddleKnob_DEC)") end},
+        {event=g1000.EC5P.up, action=function () execute_gtc_rpn("_MiddleKnob_Push)") end},
+        {event=g1000.EC8.increment, action=function () execute_gtc_rpn("_Joystick_INC)") end},
+        {event=g1000.EC8.decrement, action=function () execute_gtc_rpn("_Joystick_DEC)") end},
+        {event=g1000.EC8P.up, action=function () execute_gtc_rpn("_Joystick_Push)") end},
+        {event=g1000.EC8U.down, action=function () execute_gtc_rpn("_Joystick_Up)") end},
+        {event=g1000.EC8D.down, action=function () execute_gtc_rpn("_Joystick_Down)") end},
+        {event=g1000.EC8L.down, action=function () execute_gtc_rpn("_Joystick_Left)") end},
+        {event=g1000.EC8R.down, action=function () execute_gtc_rpn("_Joystick_Right)") end},
+        {event=g1000.EC6Y.increment, action=function () execute_gtc_rpn("_RightKnob_Large_INC)") end},
+        {event=g1000.EC6Y.decrement, action=function () execute_gtc_rpn("_RightKnob_Large_DEC)") end},
+        {event=g1000.EC6X.increment, action=function () execute_gtc_rpn("_RightKnob_Small_INC)") end},
+        {event=g1000.EC6X.decrement, action=function () execute_gtc_rpn("_RightKnob_Small_DEC)") end},
+        {event=g1000.EC6P.up, action=function () execute_gtc_rpn("_RightKnob_Push)") end},
+        {event=g1000.EC6P.longpressed, action=function () execute_gtc_rpn("_RightKnob_Push_Long)") end},
     }
     views_main[1].mappings = pfd_mappings
     views_main[2].mappings = pfd_mappings
     views_main[3].mappings = mfd_mappings
     views_main[4].mappings = mfd_mappings
+    views_main[5].mappings = mfd_mappings
 
     common.init_component_modules(libs, lib_options)
 
@@ -151,7 +190,7 @@ function module.start(config, aircraft)
     }
     local viewport_main_mappings = {}
     local current_view_group = 1
-    local function change_view_group(delta)
+        local function change_view_group(delta)
         current_view_group = current_view_group + delta
         if current_view_group > #switchable_views then
             current_view_group = 1
@@ -165,10 +204,17 @@ function module.start(config, aircraft)
     end
     local function change_sub_view()
         local vg = switchable_views[current_view_group]
-        vg.current = vg.current + 1
-        if vg.current > #vg.views then
-            vg.current = 1
-        end
+        vg.current = vg.current == 1 and 2 + vg.gtc_offset or 1
+        local view = vg.views[vg.current]
+        viewport_main:change_view(view.viewid)
+        common.change_viewport_mappings(viewport_main, viewport_main_mappings, view)
+    end
+    local function change_mfd_gtc()
+        local vg = switchable_views[current_view_group]
+        mfd_gtc_is_left = not mfd_gtc_is_left
+        vg.gtc_offset = mfd_gtc_is_left and 0 or 1
+        vg.current = vg.current == 1 and 1 or 2 + vg.gtc_offset
+        mapper.print(string.format("vg:%d current:%d offset:%d", current_view_group, vg.current, vg.gtc_offset))
         local view = vg.views[vg.current]
         viewport_main:change_view(view.viewid)
         common.change_viewport_mappings(viewport_main, viewport_main_mappings, view)
@@ -177,6 +223,9 @@ function module.start(config, aircraft)
     views_main[2].components[1].options.on_tap = change_sub_view
     views_main[3].components[1].options.on_tap = change_sub_view
     views_main[4].components[1].options.on_tap = change_sub_view
+    views_main[5].components[1].options.on_tap = change_sub_view
+    views_main[4].components[2].options.on_tap = change_mfd_gtc
+    views_main[5].components[2].options.on_tap = change_mfd_gtc
     common.arrange_views(viewport_main, viewport_main_mappings, captured_window_defs, views_main, module.device)
     viewport_main:set_mappings(viewport_main_mappings)
 
@@ -197,12 +246,9 @@ function module.start(config, aircraft)
             {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
             {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
             {event=g1000.EC4P.down, action=fs2020.mfwasm.rpn_executer("(A:INDICATED ALTITUDE, feet) (>K:AP_ALT_VAR_SET_ENGLISH) (>H:AP_KNOB)")},
-            {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_INC)")},
-            {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_DEC)")},
-            {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR1_SET)")},
-            {event=g1000.EC8.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_INC)")},
-            {event=g1000.EC8.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_DEC)")},
-            {event=g1000.EC8P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR2_SET)")},
+            {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_INC)")},
+            {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_DEC)")},
+            {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_PUSH)")},
             {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
             {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }

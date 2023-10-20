@@ -34,16 +34,21 @@ module.actions[1] = {
     up = fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_DEC) (>K:AP_VS_VAR_INC)"),
     dn = fs2020.mfwasm.rpn_executer("(>K:AP_SPD_VAR_INC) (>K:AP_VS_VAR_DEC)"),
     bank = fs2020.mfwasm.rpn_executer("(>K:AP_MAX_BANK_INC)"),
-    caution = fs2020.mfwasm.rpn_executer("1 (>H:Generic_Master_Caution_Push, Number)"),
-    warning = fs2020.mfwasm.rpn_executer("1 (>H:Generic_Master_Warning_Push, Number)"),
-    std = fs2020.mfwasm.rpn_executer("1 (>K:BAROMETRIC)"),
+    -- caution = fs2020.mfwasm.rpn_executer("1 (>H:Generic_Master_Caution_Push, Number)"),
+    caution = fs2020.mfwasm.rpn_executer("(>K:MASTER_CAUTION_ACKNOWLEDGE)"),
+    warning = fs2020.mfwasm.rpn_executer("(>K:MASTER_WARNING_ACKNOWLEDGE)"),
+    std = fs2020.mfwasm.rpn_executer("(L:XMLVAR_Baro1_ForcedToSTD) ! (>L:XMLVAR_Baro1_ForcedToSTD)"),
+    at = fs2020.mfwasm.rpn_executer("(>K:AUTO_THROTTLE_ARM)"),
+    spd_ref = fs2020.mfwasm.rpn_executer("(L:XMLVAR_SpeedIsManuallySet) ! (>L:XMLVAR_SpeedIsManuallySet)"),
+    spd_mach = fs2020.mfwasm.rpn_executer("(>K:AP_MANAGED_SPEED_IN_MACH_TOGGLE) (A:AUTOPILOT MANAGED SPEED IN MACH, Bool) (>L:XMLVAR_AirSpeedIsInMach)"),
 }
 
 --------------------------------------------------------------------------------------
 -- operable area definitions
 --------------------------------------------------------------------------------------
 local attr_normal = {width=100, height=71.335, rratio=0.05}
-local attr_circle = {width=67.465, height=67.465, rratio=0.5}
+local attr_circle = {width=68, height=68, rratio=0.5}
+local attr_toggle = {width=141, height=76, rratio=0.5}
 local attr_caution = {width=162.328, height=125.744, rratio=0.05}
 module_defs.operables = {}
 module_defs.operables[module.type.general] = {
@@ -53,14 +58,17 @@ module_defs.operables[module.type.general] = {
     vnav = {x=1154.059, y=38.864, attr=attr_normal},
     flc = {x=1307.841, y=38.864, attr=attr_normal},
     ap = {x=1461.624, y=38.864, attr=attr_normal},
+    at = {x=1461.624, y=167.801, attr=attr_normal},
     nav = {x=1615.407, y=38.864, attr=attr_normal},
     hdg = {x=1769.189, y=38.864, attr=attr_normal},
     apr = {x=1922.972, y=38.864, attr=attr_normal},
     bank = {x=1615.407, y=167.801, attr=attr_normal},
     bc = {x=1922.972, y=167.801, attr=attr_normal},
-    std = {x=584.085, y=101.299, attr=attr_circle},
-    caution = {x=280.005, y=76.128, attr=attr_caution},
-    warning = {x=61.14, y=76.128, attr=attr_caution},
+    std = {x=588.378, y=105, attr=attr_circle},
+    spd_mach = {x=868.868, y=187.803, attr=attr_circle},
+    spd_ref = {x=1114.098, y=184.254, attr=attr_toggle},
+    warning = {x=280.005, y=76.128, attr=attr_caution},
+    caution = {x=61.14, y=76.128, attr=attr_caution},
 }
 
 --------------------------------------------------------------------------------------
@@ -68,8 +76,11 @@ module_defs.operables[module.type.general] = {
 --------------------------------------------------------------------------------------
 local buttons_img = graphics.bitmap("assets/longitude_buttons.png")
 local attr_caution_indicator = {width=142.61, height=104.973}
+local attr_toggle_indicator = {width=139, height=74}
 local caution_img = buttons_img:create_partial_bitmap(144, 0, attr_caution_indicator.width, attr_caution_indicator.height)
 local warning_img = buttons_img:create_partial_bitmap(0, 0, attr_caution_indicator.width, attr_caution_indicator.height)
+local toggle_1_img = buttons_img:create_partial_bitmap(291, 11, attr_toggle_indicator.width, attr_toggle_indicator.height)
+local toggle_2_img = buttons_img:create_partial_bitmap(433, 11, attr_toggle_indicator.width, attr_toggle_indicator.height)
 
 local attr_engaged_indicator = {width=8.417, height=61.593}
 local engaged_off_img = graphics.bitmap(math.floor(attr_engaged_indicator.width + 0.5), math.floor(attr_engaged_indicator.height + 0.5))
@@ -79,16 +90,18 @@ rctx:set_brush(graphics.color(48, 48, 48))
 rctx:fill_rectangle(0, 0, attr_engaged_indicator.width, attr_engaged_indicator.height)
 rctx:finish_rendering()
 rctx = graphics.rendering_context(engaged_on_img)
-rctx:set_brush(graphics.color("White"))
+rctx:set_brush(graphics.color(64, 255, 64))
 rctx:fill_rectangle(0, 0, attr_engaged_indicator.width, attr_engaged_indicator.height)
 rctx:finish_rendering()
 
 module_defs.indicators ={}
 module_defs.indicators[module.type.general] = {}
 module_defs.indicators[module.type.general][1]= {
-    caution_indicator = {x=290.501, y=87.17, attr=attr_caution_indicator, bitmaps={nil, caution_img}, rpn="(A:MASTER CAUTION ACTIVE, Boolean) (A:MASTER CAUTION ACKNOWLEDGED, Boolean) ! and (O:XMLVAR_CAUTION_1) or"},
-    warning_indicator = {x=71.636, y=87.17, attr=attr_caution_indicator, bitmaps={nil, warning_img}, rpn="(A:MASTER WARNING ACTIVE, Boolean) (A:MASTER WARNING ACKNOWLEDGED, Boolean) ! and (O:XMLVAR_WARNING_1) or"},
+    caution_indicator = {x=71.636, y=87.17, attr=attr_caution_indicator, bitmaps={nil, caution_img}, rpn="(A:MASTER CAUTION ACTIVE, Boolean) (A:MASTER CAUTION ACKNOWLEDGED, Boolean) ! and (O:XMLVAR_CAUTION_1) or"},
+    warning_indicator = {x=290.501, y=87.17, attr=attr_caution_indicator, bitmaps={nil, warning_img}, rpn="(A:MASTER WARNING ACTIVE, Boolean) (A:MASTER WARNING ACKNOWLEDGED, Boolean) ! and (O:XMLVAR_WARNING_1) or"},
+    spd_ref_indicator = {x=1117.098, y=187.254, attr=attr_toggle_indicator, bitmaps={toggle_1_img, toggle_2_img}, rpn="(L:XMLVAR_SpeedIsManuallySet)"},
     ap_indicator = {x=1569.499, y=43.734, attr=attr_engaged_indicator, bitmaps={engaged_off_img, engaged_on_img}, rpn="(A:AUTOPILOT MASTER, Bool) (L*XMLVAR_LTS_Test) max (A:CIRCUIT GENERAL PANEL ON, Bool) *"},
+    at_indicator = {x=1569.499, y=172.671, attr=attr_engaged_indicator, bitmaps={engaged_off_img, engaged_on_img}, rpn="(L:WT_Longitude_Autothrottle_Status) 0 !="},
     fd_indicator = {x=890.316, y=43.734, attr=attr_engaged_indicator, bitmaps={engaged_off_img, engaged_on_img}, rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1, Bool) (L*XMLVAR_LTS_Test) max (A:CIRCUIT GENERAL PANEL ON, Bool) *"},
     vs_indicator = {x=1108.151, y=43.734, attr=attr_engaged_indicator, bitmaps={engaged_off_img, engaged_on_img}, rpn="(A:AUTOPILOT VERTICAL HOLD, Bool) (L*XMLVAR_LTS_Test) max (A:CIRCUIT GENERAL PANEL ON, Bool) *"},
     vnav_indicator = {x=1261.933, y=43.734, attr=attr_engaged_indicator, bitmaps={engaged_off_img, engaged_on_img}, rpn="(L:XMLVAR_VNAVButtonValue) (L*XMLVAR_LTS_Test) max (A:CIRCUIT GENERAL PANEL ON, Bool) *"},

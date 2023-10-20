@@ -18,9 +18,9 @@ local attr_std_button = {width=104.112, height=104.112, rratio=0.5}
 local attr_ap_button = {width=128.332, height=82.007, rratio=0.1}
 local attr_lvl_button = {width=185.126, height=118.332, rratio=0.05}
 local buttons = {
-    warning = {x=70.012, y=49.563, attr=attr_safety_button, action=fs2020.mfwasm.rpn_executer("1 (>H:Generic_Master_Warning_Push, Number)")},
-    caution = {x=394.863, y=49.563, attr=attr_safety_button, action=fs2020.mfwasm.rpn_executer("1 (>H:Generic_Master_Caution_Push, Number)")},
-    std = {x=839.326, y=88.781, attr=attr_std_button, action=fs2020.mfwasm.rpn_executer("1 (>K:BAROMETRIC)")},
+    warning = {x=70.012, y=49.563, attr=attr_safety_button, action=fs2020.mfwasm.rpn_executer("(>K:MASTER_WARNING_ACKNOWLEDGE)")},
+    caution = {x=394.863, y=49.563, attr=attr_safety_button, action=fs2020.mfwasm.rpn_executer("(>K:MASTER_CAUTION_ACKNOWLEDGE)")},
+    std = {x=839.326, y=88.781, attr=attr_std_button, action=fs2020.mfwasm.rpn_executer("1 (>H:AS3000_PFD_1_BARO_PUSH)")},
     fd = {x= 1136.527, y=26.934, attr=attr_ap_button, action=fs2020.mfwasm.rpn_executer("1 (>K:TOGGLE_FLIGHT_DIRECTOR)")},
     bank = {x= 1136.527, y=161.713, attr=attr_ap_button, action=fs2020.mfwasm.rpn_executer("(>K:AP_MAX_BANK_INC)")},
     xfr = {x=1545.024, y=26.934, attr=attr_ap_button, action=fs2020.mfwasm.rpn_executer("(L:XMLVAR_PushXFR) ! (>L:XMLVAR_PushXFR)")},

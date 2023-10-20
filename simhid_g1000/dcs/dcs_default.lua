@@ -7,6 +7,7 @@ function module.start(config)
         identifier = config.simhid_g1000_identifier,
         modifiers = {
             {class = "relative", modtype = "incdec", modparam={pulse_mode = true}},
+            {name = "SW25", modtype = "button"},
         },
     }
     local g1000 = module.device.events
@@ -40,7 +41,8 @@ function module.start(config)
             {event=g1000.SW22.change, action=vjoy:get_button(22):value_setter()},
             {event=g1000.SW23.change, action=vjoy:get_button(23):value_setter()},
             {event=g1000.SW24.change, action=vjoy:get_button(24):value_setter()},
-            {event=g1000.SW25.change, action=vjoy:get_button(25):value_setter()},
+            -- {event=g1000.SW25.change, action=vjoy:get_button(25):value_setter()},
+            {event=g1000.SW25.down, action=mapper.keystroke{codes={"f12"}, modifiers={"VK_LSHIFT", "VK_LMENU"}, duration=300}:synthesizer()},
             {event=g1000.SW26.change, action=vjoy:get_button(26):value_setter()},
             {event=g1000.SW27.change, action=vjoy:get_button(27):value_setter()},
             {event=g1000.SW28.change, action=vjoy:get_button(28):value_setter()},

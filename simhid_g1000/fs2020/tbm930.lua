@@ -20,6 +20,8 @@ function context.start(config, aircraft)
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
             {name = "EC6P", modtype = "button", modparam={longpress = 2000}},
+            {name = "SW11", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
+            {name = "SW13", modtype = "button", modparam={repeat_interval = 150, repeat_delay = 500}},
         },
     }
     local g1000 = context.device.events
@@ -99,12 +101,9 @@ function context.start(config, aircraft)
         {event=g1000.EC4Y.increment, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_INC)")},
         {event=g1000.EC4Y.decrement, action=fs2020.mfwasm.rpn_executer("1000 (>K:AP_ALT_VAR_DEC)")},
         {event=g1000.EC4P.down, action=fs2020.mfwasm.rpn_executer("(A:INDICATED ALTITUDE, feet) (>K:AP_ALT_VAR_SET_ENGLISH) (>H:AP_KNOB)")},
-        {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_INC)")},
-        {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR1_OBI_DEC)")},
-        {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR1_SET)")},
-        {event=g1000.EC8.increment, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_INC)")},
-        {event=g1000.EC8.decrement, action=fs2020.mfwasm.rpn_executer("(>K:VOR2_OBI_DEC)")},
-        {event=g1000.EC8P.down, action=fs2020.mfwasm.rpn_executer("(A:HEADING INDICATOR,degrees) (>K:VOR2_SET)")},
+        {event=g1000.EC7X.increment, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_INC)")},
+        {event=g1000.EC7X.decrement, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_DEC)")},
+        {event=g1000.EC7P.down, action=fs2020.mfwasm.rpn_executer("(>H:AS3000_PFD_1_CRS_PUSH)")},
         {event=g1000.EC7Y.increment, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
         {event=g1000.EC7Y.decrement, action=fs2020.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
 
