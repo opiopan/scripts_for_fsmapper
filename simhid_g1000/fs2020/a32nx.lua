@@ -72,13 +72,13 @@ local function start(config)
     -- Register views to right & left viewports
     --------------------------------------------------------------------------------------
     local captured_windows = {
-        fcu = mapper.view_elements.captured_window{name="A320 FCU", avoid_touch_problems=false},
-        pfd = mapper.view_elements.captured_window{name="A320 PFD"},
-        nd = mapper.view_elements.captured_window{name="A320 ND"},
-        uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM"},
-        lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM"},
-        mcdu = mapper.view_elements.captured_window{name = "A320 MCDU"},
-        efb = mapper.view_elements.captured_window{name = "A320 EFB"},
+        fcu = mapper.view_elements.captured_window{name="A320 FCU", window_title="A320_NEO_FCU"},
+        pfd = mapper.view_elements.captured_window{name="A320 PFD", window_title="A32NX_PFD_1"},
+        nd = mapper.view_elements.captured_window{name="A320 ND", window_title="WASMINSTRUMENT"},
+        uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM", window_title="A32NX_EWD_1"},
+        lecam = mapper.view_elements.captured_window{name="A320 Lower ECAM", window_title="SD"},
+        mcdu = mapper.view_elements.captured_window{name = "A320 MCDU", window_title="A320_NEO_CDU"},
+        efb = mapper.view_elements.captured_window{name = "A320 EFB", window_title="EFB"},
     }
 
     local global_mappings = {}
@@ -124,7 +124,8 @@ local function start(config)
     -- Register EFB view
     --------------------------------------------------------------------------------------
     local efb_view = viewport_efb:register_view{
-        name = "EFB View", elements={{object=captured_windows.efb}}
+        name = "EFB View", elements={{object=captured_windows.efb}},
+        auto_reterun_focus = false,
     }
     viewport_efb:change_view(viewport_efb.empty_view)
 

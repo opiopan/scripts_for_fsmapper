@@ -119,8 +119,15 @@ end
 function module.arrange_views(viewport, viewport_mappings, captured_window_defs, views, device)
     local captured_windows ={}
     for i, def in ipairs(captured_window_defs) do
+        cwdef = {name=def.name}
+        if def.window_title ~= nil then
+            cwdef.window_title = def.window_title
+        end
+        if def.window_titles ~= nil then
+            cwdef.window_titles = def.window_titles
+        end
         captured_windows[def.key] ={
-            object = mapper.view_elements.captured_window{name=def.name}
+            object = mapper.view_elements.captured_window(cwdef)
         }
     end
 

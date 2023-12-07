@@ -48,7 +48,7 @@ function context.create_view(name)
         mappings[#mappings + 1] = {event=button.evid, action=button.action}
     end
     view_elements[#view_elements + 1] = {
-        object = mapper.view_elements.captured_window{name=name},
+        object = mapper.view_elements.captured_window{name=name, window_title='WTG3000_GTC_1'},
         x = 0, y = 0,
         width = view_width, height = view_height
     }

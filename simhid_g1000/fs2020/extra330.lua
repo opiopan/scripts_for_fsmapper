@@ -8,10 +8,10 @@ local libs = {
 }
 
 local captured_window_defs ={
-    {key="g3x_left", name="G3X Left Display"},
-    {key="g3x_right", name="G3X Right Display"},
-    {key="gns430", name="GNS430 GPS"},
-    {key="gtx330", name="GTX330 Transponder"},
+    {key="g3x_left", name="G3X Left Display", window_title="AS3X_1"},
+    {key="g3x_right", name="G3X Right Display", window_title="AS3X_2"},
+    {key="gns430", name="GNS430 GPS", window_title="AS430"},
+    {key="gtx330", name="GTX330 Transponder", window_title="AS330"},
 }
 
 local views = {

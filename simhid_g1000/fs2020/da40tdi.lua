@@ -17,8 +17,8 @@ local lib_options = {
 }
 
 local captured_window_defs ={
-    {key="gns430", name="GNS430 GPS"},
-    {key="gtx330", name="GTX330 Transponder"},
+    {key="gns430", name="GNS430 GPS", window_title="AS430"},
+    {key="gtx330", name="GTX330 Transponder", window_title="AS330"},
 }
 
 local bg_color = graphics.color(60, 60, 60)

@@ -31,7 +31,7 @@ function context.create_view(name, type)
         }
     end
     view_elements[#view_elements + 1] = {
-        object = mapper.view_elements.captured_window{name=name},
+        object = mapper.view_elements.captured_window{name=name, window_title="WTG3000_"..type},
         x = 0, y = 0,
         width = view_width, height = view_height
     }

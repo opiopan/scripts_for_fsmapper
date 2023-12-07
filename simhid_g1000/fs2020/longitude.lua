@@ -8,11 +8,11 @@ local libs = {
 local lib_options = {}
 
 local captured_window_defs ={
-    {key="pfd", name="G5000 PFD"},
-    {key="mfd", name="G5000 MFD"},
-    {key="gtc_pfd", name="GTC for PFD"},
-    {key="gtc_mfdl", name="GTC for MFD (Left)"},
-    {key="gtc_mfdr", name="GTC for MFD (Right)"},
+    {key="pfd", name="G5000 PFD", window_title="WTG3000_PFD_1"},
+    {key="mfd", name="G5000 MFD", window_title="WTG3000_MFD"},
+    {key="gtc_pfd", name="GTC for PFD", window_title="WTG3000_GTC_1"},
+    {key="gtc_mfdl", name="GTC for MFD (Left)", window_title="WTG3000_GTC_2"},
+    {key="gtc_mfdr", name="GTC for MFD (Right)", window_title="WTG3000_GTC_3"},
 }
 
 local views_fcu = {
