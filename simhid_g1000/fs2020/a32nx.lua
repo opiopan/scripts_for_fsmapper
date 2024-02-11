@@ -72,7 +72,6 @@ local function start(config)
     -- Register views to right & left viewports
     --------------------------------------------------------------------------------------
     local captured_windows = {
-        fcu = mapper.view_elements.captured_window{name="A320 FCU", window_title="A320_NEO_FCU"},
         pfd = mapper.view_elements.captured_window{name="A320 PFD", window_title="A32NX_PFD_1"},
         nd = mapper.view_elements.captured_window{name="A320 ND", window_title="WASMINSTRUMENT"},
         uecam = mapper.view_elements.captured_window{name="A320 Upper ECAM", window_title="A32NX_EWD_1"},
@@ -98,12 +97,12 @@ local function start(config)
     global_mappings[#global_mappings + 1] = engine_panel.mappings
     local mcdu_panel = require("a32nx/cdu")
 
-    local viewdef_left_pfd = fcu_panel.viewdef("l-pfd", captured_windows.fcu, captured_windows.pfd)
+    local viewdef_left_pfd = fcu_panel.viewdef("l-pfd", captured_windows.pfd)
     local viewdef_left_nd = efis_panel.viewdef("l-nd", captured_windows.nd)
     local viewdef_left_uecam = engine_panel.viewdef("l-uecam", captured_windows.uecam)
     local viewdef_left_lecam = ecam_panel.viewdef("l-uecam", captured_windows.lecam)
     local viewdef_left_mcdu = mcdu_panel.viewdef("l-mcdu", captured_windows.mcdu)
-    local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_windows.fcu, captured_windows.pfd)
+    local viewdef_right_pfd = fcu_panel.viewdef("r-pfd", captured_windows.pfd)
     local viewdef_right_nd = efis_panel.viewdef("r-nd", captured_windows.nd)
     local viewdef_right_uecam = engine_panel.viewdef("r-uecam", captured_windows.uecam)
     local viewdef_right_lecam = ecam_panel.viewdef("r-lecam", captured_windows.lecam)
