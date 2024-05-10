@@ -99,16 +99,10 @@ local views = {
 
 function module.start(config, aircraft)
     local display = config.simhid_g1000_display
-    local scale = 1.0
-    if config.debug then
-        display = 1
-        scale = 0.5
-    end
+    local scale = config.simhid_g1000_display_scale
 
-    module.device = mapper.device{
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    module.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},

@@ -1,10 +1,10 @@
 local g1000_context ={}
 
+local common = require('lib/common')
+
 local function start(config)
-    g1000_context.device = mapper.device({
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    g1000_context.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
@@ -15,7 +15,7 @@ local function start(config)
             {name = "EC8R", modtype = "button", modparam={repeat_interval = 80}},
             {name = "EC8L", modtype = "button", modparam={repeat_interval = 80}},
         },
-    })
+    }
     local g1000 = g1000_context.device.events
 
     local pfd_maps = {
@@ -175,12 +175,8 @@ local function start(config)
     }
 
     local displayno = config.simhid_g1000_display
-    local scale = 1
-    if config.debug then
-        displayno = 1
-        scale = 0.5
-    end
-
+    local scale = config.simhid_g1000_display_scale
+    
     local viewport = mapper.viewport({
         name = "G1000 Viewport",
         displayno = displayno,

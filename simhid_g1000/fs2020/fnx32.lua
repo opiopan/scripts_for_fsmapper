@@ -9,6 +9,7 @@ local vratio_panel = height_panel / height_total
 
 local a320_context = {}
 
+local common = require('lib/common')
 
 local events = {
     -- dc_bus_change = mapper.register_event("A32NX:DC_BUS:change"),
@@ -24,11 +25,7 @@ local function start(config)
     -- Create viewports
     --------------------------------------------------------------------------------------
     local display = config.simhid_g1000_display
-    local scale = 1
-    if config.debug then
-        display = 1
-        scale = 0.5
-    end
+    local scale = config.simhid_g1000_display_scale
     
     local viewport_left = mapper.viewport{
         name = "A320 left Viewport",
@@ -353,10 +350,8 @@ local function start(config)
         menu_bar:set_value(make_renderer_value())
     end
 
-    a320_context.device = mapper.device{
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    a320_context.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},

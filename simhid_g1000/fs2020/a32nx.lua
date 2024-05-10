@@ -25,11 +25,7 @@ local function start(config)
     -- Create viewports
     --------------------------------------------------------------------------------------
     local display = config.simhid_g1000_display
-    local scale = 1
-    if config.debug then
-        display = 1
-        scale = 0.5
-    end
+    local scale = config.simhid_g1000_display_scale
     
     local viewport_left = mapper.viewport{
         name = "A320 left Viewport",
@@ -400,17 +396,15 @@ local function start(config)
         menu_bar:set_value(make_renderer_value())
     end
 
-    a320_context.device = mapper.device{
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    a320_context.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},
-            {name = "EC1P", modtype = "button", modparam={longpress = 800}},
-            {name = "EC3P", modtype = "button", modparam={longpress = 800}},
-            {name = "EC4P", modtype = "button", modparam={longpress = 800}},
-            {name = "EC5P", modtype = "button", modparam={longpress = 800}},
+            {name = "EC1P", modtype = "button", modparam={longpress = 500}},
+            {name = "EC3P", modtype = "button", modparam={longpress = 500}},
+            {name = "EC4P", modtype = "button", modparam={longpress = 500}},
+            {name = "EC5P", modtype = "button", modparam={longpress = 500}},
         },
     }
     local g1000 = a320_context.device.events

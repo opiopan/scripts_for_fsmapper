@@ -2,6 +2,7 @@ local context = {
     g3x_touch_view = require("lib/g3x_touch_view")
 }
 
+local common = require('lib/common')
 local assets = require("lib/g3x_touch_assets")
 
 --------------------------------------------------------------------------------------
@@ -80,11 +81,7 @@ aircraft_fallback = {views={"G3X Touch PFD"}, aptype=3}
 --------------------------------------------------------------------------------------
 function context.start(config, aircraft)
     local display = config.simhid_g1000_display
-    local scale = 1.0
-    if config.debug then
-        display = 1
-        scale = 0.5
-    end
+    local scale = config.simhid_g1000_display_scale
     
     local viewport = mapper.viewport{
         name = "G3X Touch",
@@ -93,10 +90,8 @@ function context.start(config, aircraft)
         aspect_ratio = 4 / 3,
     }
 
-    context.device = mapper.device{
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    context.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},

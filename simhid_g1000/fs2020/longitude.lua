@@ -83,11 +83,7 @@ local views_main = {
 
 function module.start(config, aircraft)
     local display = config.simhid_g1000_display
-    local scale = 1.0
-    if config.debug then
-        display = 1
-        scale = 0.5
-    end
+    local scale = config.simhid_g1000_display_scale
 
     local gtc_selector_width = 948
     local gtc_selector_height = 126
@@ -95,10 +91,8 @@ function module.start(config, aircraft)
     views_main[4].components[2].options.bg_image = gtc_selector_image:create_partial_bitmap(0, 0, gtc_selector_width, gtc_selector_height)
     views_main[5].components[2].options.bg_image = gtc_selector_image:create_partial_bitmap(0, 127, gtc_selector_width, gtc_selector_height)
 
-    module.device = mapper.device{
-        name = "SimHID G1000",
-        type = "simhid",
-        identifier = config.simhid_g1000_identifier,
+    module.device = common.open_simhid_g1000{
+        config = config,
         modifiers = {
             {class = "binary", modtype = "button"},
             {class = "relative", modtype = "incdec"},

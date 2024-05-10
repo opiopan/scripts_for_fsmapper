@@ -1,6 +1,11 @@
 local x56_context ={}
 
 local function init(config)
+    x56_context.config = config
+    if x56_context.config.disable_hotas then
+        return
+    end
+
     x56_context.throttle = mapper.device{
         name = "X-56 Throttle",
         type = "dinput",
@@ -373,6 +378,14 @@ local function init(config)
 end
 
 local function change(host, aircraft, simhid_g1000)
+    if x56_context.config.disable_hotas then
+        mapper.set_secondary_mappings{}
+        for i, mappings in ipairs(simhid_g1000.global_mappings) do
+            mapper.add_secondary_mappings(mappings)
+        end
+        return
+    end
+
     mapper.set_secondary_mappings({})
     x56_context.reset()
 

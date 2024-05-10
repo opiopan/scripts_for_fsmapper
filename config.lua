@@ -1,15 +1,17 @@
 local config = {
-    -- debug = true,
     simhid_g1000_identifier = {path = "COM3"},
     simhid_g1000_display = 2,
     x56_stick_identifier = {name = "Saitek Pro Flight X-56 Rhino Stick"},
     x56_throttle_identifier = {name = "Saitek Pro Flight X-56 Rhino Throttle"},
 }
 
-if debug_config ~= nil then
-    config.debug = debug_config.enabled
-    config.initial_sim = debug_config.initial_sim
-    config.initial_aircraft = debug_config.initial_aircraft
+if override_config ~= nil then
+    for key, value in pairs(override_config) do
+        config[key] = value
+    end
+end
+if config.simhid_g1000_display_scale == nil then
+    config.simhid_g1000_display_scale = 1
 end
 
 package.path = package.path .. 
@@ -69,7 +71,7 @@ mapper.add_primary_mappings({
     end},
 })
 
-if config.debug then
+if config.initial_sim ~= nil and config.initial_aircraft ~= nil then
     change_aircraft(config.initial_sim, config.initial_aircraft)
 else
     change_aircraft("", "")
