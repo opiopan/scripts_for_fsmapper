@@ -500,8 +500,10 @@ local function start(config)
 end
 
 local function stop()
-    a320_context.device:close()
-    a320_context.device = nil
+    if a320_context.device then
+        a320_context.device:close()
+        a320_context.device = nil
+    end
     fs2020.mfwasm.clear_observed_data()
 end
 
