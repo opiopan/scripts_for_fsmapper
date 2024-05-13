@@ -61,7 +61,7 @@ The above script needs to be customized to match your environment. Here is the m
     If you are not using [SimHID G1000](https://github.com/opiopan/simhid-g1000), you can assign the switching operation to another device using this parameter.<br>
 
     Specify the device to use for this purpose in the `identifier` parameter.
-    Refer to [this guide](https://opiopan.github.io/fsmapper/getting-started/tutorial#handle-an-input-device) for descriptions of the 'identifier' parameters corresponding to the devices you own.
+    Refer to [this guide](https://opiopan.github.io/fsmapper/getting-started/tutorial#handle-an-input-device) for descriptions of the `identifier` parameters corresponding to the devices you own.
 
     Specify which buttons of the device identified by `identifier` to use for switching virtual instrument panels using `aux_up`, `aux_down`, and `aux_push` parameters.
 
