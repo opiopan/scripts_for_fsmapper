@@ -120,7 +120,10 @@ function context.create_view(name, num)
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.captured_window{
             name=name,
-            window_title="AS3X_TOUCH_" .. num
+            window_titles={
+                "AS3X_TOUCH_" .. num,
+                "G3XTOUCH_" .. num,
+            },
         },
         x = 0, y = g3x_window_y_pos,
         width = view_width, height = frame_height * 10

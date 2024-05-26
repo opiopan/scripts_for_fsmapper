@@ -1,6 +1,7 @@
 local fs2020_map = {}
 fs2020_map["SR22 Asobo"] = require("fs2020/g1000")
 fs2020_map["SR 22"] = require("fs2020/g1000")
+fs2020_map["SR22T Working Title"] = require("fs2020/g1000abs")
 fs2020_map["DA40-NG Asobo"] = require("fs2020/g1000")
 fs2020_map["DA 40 NG"] = require("fs2020/g1000")
 fs2020_map["DA62 Asobo"] = require("fs2020/g1000")
