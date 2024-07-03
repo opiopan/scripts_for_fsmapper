@@ -40,6 +40,9 @@ local function normalize_fs2020_aircraft_name(name)
         if string.find(name, "FenixA320") == 1 then
             return "FenixA320"
         end
+        if string.find(name, "Fenix A320") == 1 then
+            return "FenixA320"
+        end
         if string.find(name, "PMDG 737") == 1 then
             return "PMDG 737"
         end

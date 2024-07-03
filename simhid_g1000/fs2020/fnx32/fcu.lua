@@ -2,6 +2,7 @@ local view_width = 1084
 local view_height = 1541
 
 local assets = require("a32nx/assets")
+local fcu_disp = require('fnx32/fcu_disp')
 
 local mod_context = {}
 
@@ -29,10 +30,6 @@ local events = {
     ls_push = mapper.register_event("FCU:LS:push"),
     ls_change = mapper.register_event("FCU:LS:push"),
     hghpa_push = mapper.register_event("FCU:inHg_hPa:push"),
-    baro_mode_change = mapper.register_event("FCU:BARO Mode:change"),
-    baro_unit_change = mapper.register_event("FCU:BARO Unit:change"),
-    baro_inhg_change = mapper.register_event("FCU:BARO InHg:change"),
-    baro_hpa_change = mapper.register_event("FCU:BARO hPa:change"),
 }
 
 --------------------------------------------------------------------------------------
@@ -47,11 +44,10 @@ local observed_data = {
     {rpn="(L:I_FCU_APPR)", event=events.appr_change},
     {rpn="(L:I_FCU_EFIS1_FD)", event=events.fd_change},
     {rpn="(L:I_FCU_EFIS1_LS)", event=events.ls_change},
-    {rpn="(L:S_FCU_EFIS1_BARO_STD)", event=events.baro_mode_change},
-    {rpn="(L:S_FCU_EFIS1_BARO_MODE)", event=events.baro_unit_change},
-    {rpn="(A:KOHLSMAN SETTING HG:1,Inches of Mercury)", event=events.baro_inhg_change},
-    {rpn="(A:KOHLSMAN SETTING MB:1,Millibars)", event=events.baro_hpa_change},
 }
+for i, def in ipairs(fcu_disp.observed_data) do
+    observed_data[#observed_data + 1] = def
+end
 
 --------------------------------------------------------------------------------------
 -- event-action mappings
@@ -73,6 +69,9 @@ local view_mappings = {
 
 local global_mappings = {
 }
+for i, def in ipairs(fcu_disp.global_mappings) do
+    global_mappings[#global_mappings + 1] = def
+end
 
 --------------------------------------------------------------------------------------
 -- button definitions
@@ -110,6 +109,9 @@ local function button_renderer(ctx, value)
 end
 
 local view_elements={}
+for i, element in ipairs(fcu_disp.view_elements) do
+    view_elements[#view_elements + 1] = element
+end
 for key, button in pairs(buttons) do
     view_elements[#view_elements + 1] = {
         object = mapper.view_elements.operable_area{
@@ -140,116 +142,15 @@ for key, button in pairs(buttons) do
 end
 
 --------------------------------------------------------------------------------------
--- create view element definition for baro display
---------------------------------------------------------------------------------------
-local mode_bitmaps = {
-    assets.baro_mode_images[2],
-}
-local baro_context = {
-    inhg = 29.92,
-    hpa = 1013.2,
-    mode = -1,
-    unit = 0,
-}
-
-local canvas_digits = mapper.view_elements.canvas{
-    logical_width = 4 * assets.sseg.width,
-    logical_height = assets.sseg.height,
-    value = 0,
-    renderer = function (ctx, value)
-        ctx:set_font(assets.sseg_font)
-        if baro_context.mode == 1 then
-            ctx:draw_string(" 5td")
-        elseif baro_context.mode >= 0 then
-            if baro_context.unit == 0 then
-                ctx:draw_number{
-                    value = baro_context.inhg,
-                    precision = 4,
-                    fraction_precision = 2,
-                    leading_zero = true,
-                }
-            else
-                ctx:draw_number{
-                    value = baro_context.hpa,
-                    precision = 4,
-                    fraction_precision = 0,
-                    leading_zero = true,
-                }
-            end
-        end
-    end
-}
-
-local canvas_mode = mapper.view_elements.canvas{
-    logical_width = 2 * assets.baro_mode.width,
-    logical_height = assets.baro_mode.height,
-    value = 0,
-    renderer = function (ctx, value)
-        local bitmap = mode_bitmaps[baro_context.mode + 1]
-        if bitmap then
-            ctx:draw_bitmap(bitmap)
-        end
-    end
-}
-
-view_elements[#view_elements + 1] = {
-    object = canvas_digits,
-    x = 760, y = 354,
-    width = 120, height = 39.474
-}
-view_elements[#view_elements + 1] = {
-    object = canvas_mode,
-    x = 768, y = 324,
-    width = assets.baro_mode.width * 2, height = assets.baro_mode.height
-}
-
-global_mappings[#global_mappings + 1] = {
-    event=events.baro_inhg_change, action=function (evid, value)
-        baro_context.inhg = value
-        if baro_context.unit == 0 and baro_context.mode ~= 2 then
-            canvas_digits:set_value(baro_context)
-            canvas_mode:set_value(baro_context)
-        end
-    end
-}
-global_mappings[#global_mappings + 1] = {
-    event=events.baro_hpa_change, action=function (evid, value)
-        baro_context.hpa = value
-        if baro_context.unit == 1 and baro_context.mode ~= 2 then
-            canvas_digits:set_value(baro_context)
-            canvas_mode:set_value(baro_context)
-        end
-    end
-}
-global_mappings[#global_mappings + 1] = {
-    event=events.baro_mode_change, action=function (evid, value)
-        baro_context.mode = value
-        canvas_digits:set_value(baro_context)
-        canvas_mode:set_value(baro_context)
-    end
-}
-global_mappings[#global_mappings + 1] = {
-    event=events.baro_unit_change, action=function (evid, value)
-        baro_context.unit = value
-        canvas_mode:set_value(baro_context)
-        canvas_digits:set_value(baro_context)
-    end
-}
-
---------------------------------------------------------------------------------------
--- create background image
---------------------------------------------------------------------------------------
-local bg_image = graphics.bitmap(assets.fcu.width, assets.fcu.height)
-local ctx = graphics.rendering_context(bg_image)
-ctx:draw_bitmap(assets.fcu)
-ctx:set_brush(graphics.color("black"))
-ctx:fill_rectangle(0, 0, assets.fcu.width, 87)
-ctx:finish_rendering()
-
---------------------------------------------------------------------------------------
 -- view definition generator
 --------------------------------------------------------------------------------------
 local function create_view_def(name, main_window)
+    local bgimage = graphics.bitmap(assets.fcu.width, assets.fcu.height)
+    local ctx = graphics.rendering_context(bgimage)
+    fcu_disp.render_base_image(ctx)
+    ctx:draw_bitmap(assets.fcu)
+    ctx:finish_rendering()
+
     local elements = {}
     for i, element in ipairs(view_elements) do
         elements[#elements + 1] = element
@@ -262,7 +163,7 @@ local function create_view_def(name, main_window)
         name = name,
         logical_width = view_width,
         logical_height = view_height,
-        background = bg_image,
+        background = bgimage,
         elements = elements,
         mappings = view_mappings,
     }

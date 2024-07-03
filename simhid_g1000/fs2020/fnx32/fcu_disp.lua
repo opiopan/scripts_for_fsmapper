@@ -11,6 +11,7 @@ local segdisp = require('lib/segdisp')
 -- Image assets definition
 --------------------------------------------------------------------------------------
 local segfont = segdisp.create_font{type=segdisp.seg7_type2, height=100, width=96.253, color=assets.sseg_font_color}
+local baro_segfont = assets.sseg_font
 local parts = {
     vstatic = assets.fcu_parts:create_partial_bitmap(0, 0, 206.54, 28.623),
     spd = assets.fcu_parts:create_partial_bitmap(0, 28.623, 45.096, 27),
@@ -21,6 +22,8 @@ local parts = {
     vs = assets.fcu_parts:create_partial_bitmap(45.096, 57.479, 45.22, 27),
     fpa = assets.fcu_parts:create_partial_bitmap(95.015, 57.479, 40.004, 27),
     managed = assets.fcu_parts:create_partial_bitmap(141.708, 57.479, 22, 22),
+    baro_qfe = assets.baro_mode_images[1],
+    baro_qnh = assets.baro_mode_images[2],
 }
 
 --------------------------------------------------------------------------------------
@@ -94,20 +97,16 @@ local canvas_defs = {
         renderer = function (rctx, value)
             rctx.font = segfont
             if disp_context.power == 1 then
-                if value > 1 then
+                if value >= 100 then
                     rctx:draw_number{
                         value = value,
                         precision = 3,
                         fraction_precision = 0,
                     }
-                elseif value < 0 then
-                    rctx:draw_string('---')
+                elseif value > 0 then
+                    rctx:draw_string(string.format('0.%02i', value))
                 else
-                    rctx:draw_number{
-                        value = value,
-                        precision = 3,
-                        fraction_precision = 2,
-                    }
+                    rctx:draw_string('---')
                 end
             elseif disp_context.power == 2 then
                 rctx:draw_string('8.8.8')
@@ -173,7 +172,7 @@ local canvas_defs = {
                     if disp_context.vs_mode == 0 then
                         rctx:draw_string('--.-')
                     elseif disp_context.vs_mode == 1 then
-                        rctx:draw_string('+0.0')
+                        rctx:draw_string('+00')
                     else
                         rctx:draw_string(string.format('%+2.1f', disp_context.fpa))
                     end
@@ -187,7 +186,7 @@ local canvas_defs = {
     spd_managed = {
         rect = {147.136, 43.677, 22, 22}, value = 0,
         renderer = function (rctx, value)
-            if disp_context.power == 1 then
+            if disp_context.power ~= 0 then
                 if value == 1 or disp_context.power == 2 then
                     rctx:draw_bitmap(parts.managed)
                 end
@@ -198,7 +197,7 @@ local canvas_defs = {
     hdg_managed = {
         rect = {363.726, 43.677, 22, 22}, value = 0,
         renderer = function (rctx, value)
-            if disp_context.power == 1 then
+            if disp_context.power ~= 0 then
                 if value == 1 or disp_context.power == 2 then
                     rctx:draw_bitmap(parts.managed)
                 end
@@ -209,13 +208,58 @@ local canvas_defs = {
     alt_managed = {
         rect = {869.891, 43.677, 22, 22}, value = 0,
         renderer = function (rctx, value)
-            if disp_context.power == 1 then
+            if disp_context.power ~= 0 then
                 if value == 1 or disp_context.power == 2 then
                     rctx:draw_bitmap(parts.managed)
                 end
             end
         end
     },
+
+    baro_digits = {
+        rect = {760, 354, 120, 39.474}, value = -1,
+        logical_size = {4 * assets.sseg.width, assets.sseg.height},
+        renderer = function (rctx, value)
+            rctx.font = baro_segfont
+            if disp_context.power == 1 then
+                if value > 100 then
+                    rctx:draw_number{
+                        value = value,
+                        precision = 4,
+                        fraction_precision = 0,
+                        leading_zero = true,
+                    }
+                elseif value > 0 then
+                    rctx:draw_number{
+                        value = value,
+                        precision = 4,
+                        fraction_precision = 2,
+                        leading_zero = true,
+                    }
+                else
+                    rctx:draw_string('5td ')
+                end
+            elseif disp_context.power == 2 then
+                rctx:draw_string('88.88')
+            end
+        end
+    },
+
+    baro_mode = {
+        rect = {768, 324, assets.baro_mode.width * 2, assets.baro_mode.height}, value = 1,
+        renderer = function (rctx, value)
+            if disp_context.power == 1 then
+                if value == 1 then
+                    rctx:draw_bitmap(parts.baro_qfe)
+                elseif value == 0 then
+                    rctx:draw_bitmap(parts.baro_qnh)
+                end
+            elseif disp_context.power == 2 then
+                rctx:draw_bitmap(parts.baro_qfe)
+                rctx:draw_bitmap(parts.baro_qnh)
+            end
+        end
+    }
 }
 
 local canvases = {}
@@ -240,7 +284,7 @@ end
 --------------------------------------------------------------------------------------
 local mapping_defs = {
     power = {
-        rpn = '(A:ELECTRICAL MAIN BUS VOLTAGE:1, Volts) 28 < if{ 0 } els{ (L:A32NX_OVHD_INTLT_ANN) if{ 1 } els{ 2 } }',
+        rpn = '(L:B_FCU_POWER) ! if{ 0 } els{ (L:S_OH_IN_LT_ANN_LT) 2 == if{ 2 } els{ 1 } }',
         action = function (evid, value)
             disp_context.power = value
             for name, canvas in pairs(canvases) do
@@ -250,7 +294,7 @@ local mapping_defs = {
     },
 
     nav_mode = {
-        rpn = '(L:A32NX_TRK_FPA_MODE_ACTIVE)',
+        rpn = '(L:I_FCU_TRACK_FPA_MODE)',
         action = function (evid, value)
             disp_context.nav_mode = value
             canvases.nav_mode1:refresh()
@@ -260,7 +304,7 @@ local mapping_defs = {
     },
 
     vs_mode = {
-        rpn = '(L:A320_NE0_FCU_STATE)',
+        rpn = '(L:B_FCU_VERTICALSPEED_DASHED) 1 -',
         action = function (evid, value)
             disp_context.vs_mode = value
             canvases.vs:refresh()
@@ -268,54 +312,57 @@ local mapping_defs = {
     },
 
     vs = {
-        rpn = '(L:A32NX_AUTOPILOT_VS_SELECTED) 100 /',
+        rpn = '(L:N_FCU_VS) 1000 /',
         action = function (evid, value)
-            disp_context.vs = value
-            canvases.vs:refresh()
-        end
-    },
-
-    fpa = {
-        rpn = '(L:A32NX_AUTOPILOT_FPA_SELECTED)',
-        action = function (evid, value)
+            disp_context.vs = value * 10
             disp_context.fpa = value
             canvases.vs:refresh()
         end
     },
 
     spd_mode = {
-        rpn = '(A:AUTOPILOT MANAGED SPEED IN MACH:1, Bool)',
+        rpn = '(L:B_FCU_SPEED_MACH)',
         action = canvases.spd_mode:value_setter()
     },
 
     spd = {
-        rpn = '(L:A32NX_AUTOPILOT_SPEED_SELECTED)',
+        rpn = '(L:B_FCU_SPEED_DASHED) if{ -1 } else{ (L:N_FCU_SPEED) }',
         action = canvases.spd:value_setter()
     },
 
     spd_managed = {
-        rpn = '(L:A32NX_FCU_SPD_MANAGED_DOT)',
+        rpn = '(L:I_FCU_SPEED_MANAGED)',
         action = canvases.spd_managed:value_setter()
     },
 
     hdg = {
-        rpn = '(L:A32NX_FCU_HDG_MANAGED_DASHES) if{ -1 } els{ (L:A32NX_AUTOPILOT_HEADING_SELECTED) }',
+        rpn = '(L:B_FCU_HEADING_DASHED) if{ -1 } els{ (L:N_FCU_HEADING) }',
         action = canvases.hdg:value_setter()
     },
 
     hdg_managed = {
-        rpn = '(L:A32NX_FCU_HDG_MANAGED_DOT)',
+        rpn = '(L:I_FCU_HEADING_MANAGED)',
         action = canvases.hdg_managed:value_setter()
     },
 
     alt = {
-        rpn = '(A:AUTOPILOT ALTITUDE LOCK VAR:3, Feet)',
+        rpn = '(L:N_FCU_ALTITUDE)',
         action = canvases.alt:value_setter()
     },
 
     alt_managed = {
-        rpn = '(L:A32NX_FCU_ALT_MANAGED)',
+        rpn = '(L:I_FCU_ALTITUDE_MANAGED)',
         action = canvases.alt_managed:value_setter()
+    },
+
+    baro_digits = {
+        rpn = '(L:B_FCU_EFIS1_BARO_STD) if{ -1 } els{ (L:B_FCU_EFIS1_BARO_INCH) if{ (L:N_FCU_EFIS1_BARO_INCH) } els{ (L:N_FCU_EFIS1_BARO_HPA) } }',
+        action = canvases.baro_digits:value_setter()
+    },
+
+    baro_mode = {
+        rpn = '(L:B_FCU_EFIS1_BARO_STD) -1 *',
+        action = canvases.baro_mode:value_setter()
     },
 }
 

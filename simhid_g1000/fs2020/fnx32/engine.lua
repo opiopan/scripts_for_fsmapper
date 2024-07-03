@@ -65,8 +65,8 @@ local observed_data = {
     {rpn="(L:I_OH_ELEC_BAT2_U)", event=events.bat2u_change},
     {rpn="(L:I_OH_ELEC_EXT_PWR_L)", event=events.extpwrl_change},
     {rpn="(L:I_OH_ELEC_EXT_PWR_U)", event=events.extpwru_change},
-    -- {rpn="(A:ELECTRICAL BATTERY VOLTAGE:1, Volts)", event=events.bat1v_change, epsilon=0.05},
-    -- {rpn="(A:ELECTRICAL BATTERY VOLTAGE:2, Volts)", event=events.bat2v_change, epsilon=0.05},
+    {rpn="(L:N_ELEC_VOLT_BAT_1)", event=events.bat1v_change, epsilon=0.05},
+    {rpn="(L:N_ELEC_VOLT_BAT_2)", event=events.bat2v_change, epsilon=0.05},
 }
 
 --------------------------------------------------------------------------------------
