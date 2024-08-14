@@ -370,9 +370,9 @@ local function init(config)
 
     x56_context.joymap.base = x56_context.joymap_dcs
 
-    x56_context.fs2020_maps = {}
-    x56_context.fs2020_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_airbus
-    x56_context.fs2020_maps["FenixA320"] = x56_context.joymap_airbus2
+    x56_context.msfs_maps = {}
+    x56_context.msfs_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_airbus
+    x56_context.msfs_maps["FenixA320"] = x56_context.joymap_airbus2
 
     return static_mappings
 end
@@ -394,13 +394,13 @@ local function change(host, aircraft, simhid_g1000)
     x56_context.joymap.move_previous_view = simhid_g1000.move_previous_view
     x56_context.joymap.change_zoom = nil
     
-    if host ~= "fs2020" then
+    if host ~= "msfs" then
         x56_context.joymap.base = x56_context.joymap_dcs
         x56_context.joymap.move_next_view = function () end
         x56_context.joymap.move_previous_view = function () end
         x56_context.joymap.change_zoom = x56_context.toggle_zoom
     else
-        local map = x56_context.fs2020_maps[aircraft]
+        local map = x56_context.msfs_maps[aircraft]
         if map then
             x56_context.joymap.base = map
         else
