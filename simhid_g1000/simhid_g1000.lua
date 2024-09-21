@@ -50,6 +50,9 @@ local msfs_fallback={
     stop = function () end,
 }
 
+local dcs_map = {}
+dcs_map["F-16C_50"] = require("dcs/f16")
+
 local dcs_config = require("dcs/dcs_default")
 
 local global_config = nil
