@@ -64,7 +64,7 @@ layout_defs[1] = {
     ['STEERPOINT NUMBER Asteriscs_both'] = {11, 1, 15, true, nil},
     ['STEERPOINT SEQUENCE Asteriscs_both'] = {17, 1, 22, true, nil},
 
-    -- STPT MGRS
+    --STPT MGRS
     ['STEERPOINT UTM LABEL'] = {2, 3, 0, false, nil},
 
     --TIME
@@ -120,7 +120,7 @@ layout_defs[1] = {
     ['MODE Selected Steerpoint'] = {20, 3, 0, false, nil},
     ['MODE WPT IncDecSymbol'] = {23, 1, 0, false, nil},
 
-    -- DLNK
+    --DLNK
     ['TNDL LINK16 lbl'] = {9, 4, 0, false, nil},
     ['TNDL Selected Steerpoint'] = {20, 3, 0, false, nil},
     ['TNDL WPT IncDecSymbol'] = {23, 1, 0, false, nil},
@@ -161,13 +161,21 @@ layout_defs[1] = {
     ['HARM T1_code'] = {18, 3, 0, false, nil},
     ['HARM Asterisks_T1_both'] = {17, 1, 21, true, nil},
 
-    -- VIP
-    ['Visual initial point to TGT Label'] = {6, 10, 0, false, nil},
-    ['VIP to TGT Label Asteriscs_both'] = {5, 1, 16, true, nil},
+    --VIP
+    ['VIP-TO-TGT Visual initial point to TGT Label'] = {6, 10, 0, false, nil},
+    ['VIP-TO-TGT VIP to TGT Label Asteriscs_both'] = {5, 1, 16, true, nil},
 
-    -- VRP
-    ['Target to VRP Label'] = {6, 10, 0, false, nil},
-    ['Target to VRP Label Asteriscs_both'] = {5, 1, 16, true, nil},
+    --VIP PUP
+    ['VIP-TO-PUP Visual initial point to TGT Label'] = {6, 10, 0, false, nil},
+    ['VIP-TO-PUP VIP to TGT Label Asteriscs_both'] = {5, 1, 16, true, nil},
+
+    --VRP
+    ['TGT-TO-VRP Target to VRP Label'] = {6, 10, 0, false, nil},
+    ['TGT-TO-VRP Target to VRP Label Asteriscs_both'] = {5, 1, 16, true, nil},
+
+    --VRP PUP
+    ['TGT-TO-PUP Target to VRP Label'] = {6, 10, 0, false, nil},
+    ['TGT-TO-PUP Target to VRP Label Asteriscs_both'] = {5, 1, 16, true, nil},
 
     --HMCS
     ['HMCS DISPLAY HMCS_DISPLAY_label'] = {7, 12, 0, false, nil},
@@ -190,29 +198,31 @@ layout_defs[1] = {
     ['MARK Number Asteriscs_both'] = {13, 1, 18, true, nil},
     ['STPT'] = {19, 4, 0, false, nil},
 
-    --DEST DIR
-    ['DEST_DIR'] = {2, 8, 0, false, nil},
-    ['DEST_DIR_SelectedSteerpoint'] = {12, 3, 0, false, nil},
-    ['DEST_DIR_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
-    ['Asterisks_NUM_STEERPOINT_both'] = {11, 1, 14, true, nil},
+    --DEST_DIR
+    ['DEST DIR DEST_DIR'] = {2, 8, 0, false, nil},
+    ['DEST DIR DEST_DIR_SelectedSteerpoint'] = {12, 3, 0, false, nil},
+    ['DEST DIR DEST_DIR_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
+    ['DEST DIR Asterisks_NUM_STEERPOINT_both'] = {11, 1, 15, true, nil},
 
-    --UMT DIR
-    ['UTM_DEST'] = {2, 8, 0, false, nil},
-    ['UTM_DEST_SelectedSteerpoint'] = {12, 3, 0, false, nil},
-    ['UTM_DEST_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
-    ['Asterisks_NUM_STEERPOINT_both'] = {11, 1, 15, true, nil},
+    --UTM DEST
+    ['UTM DEST UTM_DEST'] = {2, 8, 0, false, nil},
+    ['UTM DEST UTM_DEST_SelectedSteerpoint'] = {12, 3, 0, false, nil},
+    ['UTM DEST UTM_DEST_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
+    ['UTM DEST Asterisks_NUM_STEERPOINT_both'] = {11, 1, 15, true, nil},
 
-    --DEST OA1
-    ['DEST_OA1'] = {2, 8, 0, false, nil},
-    ['DEST_OA1_SelectedSteerpoint'] = {10, 3, 0, false, nil},
-    ['DEST_OA1_STPT_IncDecSymbol'] = {15, 1, 0, false, nil},
-    ['Asterisks_NUM_STEERPOINT'] = {10, 1, 14, true, nil},
+    --DEST_OA1
+    ['DEST OA1 DEST_OA1'] = {2, 8, 0, false, nil},
+    ['DEST OA1 DEST_OA1_SelectedSteerpoint'] = {11, 3, 0, false, nil},
+    ['DEST OA1 DEST_OA1_STPT_IncDecSymbol'] = {15, 1, 0, false, nil},
+    ['DEST OA1 Asterisks_NUM_STEERPOINT'] = {10, 1, 14, true, nil},
+    ['DEST OA1 Asterisks_NUM_STEERPOINT_both'] = {10, 1, 14, true, nil},
 
-    --DEST OA2
-    ['DEST_OA2'] = {2, 8, 0, false, nil},
-    ['DEST_OA2_SelectedSteerpoint'] = {10, 3, 0, false, nil},
-    ['DEST_OA2_STPT_IncDecSymbol'] = {15, 1, 0, false, nil},
-    ['Asterisks_NUM_STEERPOINT'] = {10, 1, 14, true, nil},
+    --DEST_OA2
+    ['DEST OA2 DEST_OA2'] = {2, 8, 0, false, nil},
+    ['DEST OA2 DEST_OA2_SelectedSteerpoint'] = {11, 3, 0, false, nil},
+    ['DEST OA2 DEST_OA2_STPT_IncDecSymbol'] = {15, 1, 0, false, nil},
+    ['DEST OA2 Asterisks_NUM_STEERPOINT'] = {10, 1, 14, true, nil},
+    ['DEST OA2 Asterisks_NUM_STEERPOINT_both'] = {10, 1, 14, true, nil},
 
     --CRUS TOS
     ['CRUS_MODE'] = {7, 4, 0, false, nil},
@@ -240,10 +250,10 @@ layout_defs[1] = {
     ['FIX Asterisks_FIX_SENSORS_both'] = {10, 1, 15, true, nil},
 
     --A CAL MAN
-    ['ACAL_SENSORS'] = {1, 4, 0, false, nil},
-    ['ACAL_SelectedSensors'] = {8, 4, 0, false, nil},
-    ['Asterisks_ACAL_SENSORS_both'] = {7, 1, 12, true, nil},
-    ['ACAL_ALT_label'] = {14, 4, 0, false, nil},
+    ['ACAL ACAL_SENSORS'] = {1, 4, 0, false, nil},
+    ['ACAL ACAL_SelectedSensors'] = {8, 4, 0, false, nil},
+    ['ACAL Asterisks_ACAL_SENSORS_both'] = {7, 1, 12, true, nil},
+    ['ACAL ACAL_ALT_label'] = {14, 4, 0, false, nil},
 
     --A CAL AUTO
     ['INS_SelectedSteerpoint'] = {20, 3, 0, false, nil},
@@ -254,6 +264,8 @@ layout_defs[1] = {
 
     --HTS MAN
     ['HTS MAN HTS'] = {8, 7, 0, false, nil},
+    ['HTS MAN INS_SelectedSteerpoint'] = {20, 3, 0, false, nil},
+    ['HTS MAN INS_STPT_IncDecSymbol'] = {23, 1, 0, false, nil},
 
     --HTS SEAD
     ['HTS'] = {4, 4, 0, false, nil},
@@ -275,21 +287,21 @@ layout_defs[2] = {
     ['STAT Mode Scratchpad'] = {18, 5, 0, false, nil},
 
     --List
-    ['List Item 1 Number'] = {0, 1, 0, true, nil},
-    ['List Item 1 Name'] = {1, 4, 0, false, nil},
-    ['List Item 2 Number'] = {6, 1, 0, true, nil},
-    ['List Item 2 Name'] = {7, 4, 0, false, nil},
-    ['List Item 3 Number'] = {12, 1, 0, true, nil},
-    ['List Item 3 Name'] = {13, 4, 0, false, nil},
-    ['List Item R Number'] = {18, 1, 0, true, nil},
-    ['List Item R Name'] = {19, 4, 0, false, nil},
+    ['LIST List Item 1 Number'] = {0, 1, 0, true, nil},
+    ['LIST List Item 1 Name'] = {1, 4, 0, false, nil},
+    ['LIST List Item 2 Number'] = {6, 1, 0, true, nil},
+    ['LIST List Item 2 Name'] = {7, 4, 0, false, nil},
+    ['LIST List Item 3 Number'] = {12, 1, 0, true, nil},
+    ['LIST List Item 3 Name'] = {13, 4, 0, false, nil},
+    ['LIST List Item R Number'] = {18, 1, 0, true, nil},
+    ['LIST List Item R Name'] = {19, 4, 0, false, nil},
 
     --STPT
     ['STEERPOINT Latitude'] = {3, 3, 0, false, nil},
     ['STEERPOINT Latitude Value'] = {8, 12, 0, false, nil},
     ['STEERPOINT Latitude Asteriscs_both'] = {7, 1, 20, true, nil},
 
-    -- STPT MGRS
+    --STPT MGRS
     ['STEERPOINT GRID'] = {6, 4, 0, false, nil},
     ['STEERPOINT GRID DIGIT Value'] = {12, 2, 0, false, nil},
     ['STEERPOINT GRID SYMBOL Value'] = {14, 1, 0, false, nil},
@@ -322,34 +334,34 @@ layout_defs[2] = {
     ['CMDS_BQ_lbl'] = {6, 2, 0, false, nil},
     ['CMDS_BQ_Scratchpad'] = {10, 2, 0, false, nil},
     ['CMDS_BQ_Asterisks_both'] = {9, 1, 12, true, nil},
-    ['CMDS_CH_lbl'] = {2, 2, 0, false, nil},
-    ['CMDS_CH_Scratchpad'] = {7, 2, 0, false, nil},
-    ['CMDS_CH_Asterisks_both'] = {6, 1, 9, true, nil},
+    ['CMDS  BINGO CMDS_CH_lbl'] = {2, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_CH_Scratchpad'] = {7, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_CH_Asterisks_both'] = {6, 1, 9, true, nil},
 
-    -- DLNK
-    ['FC lbl'] = {3, 2, 0, false, nil},
-    ['FC value'] = {6, 3, 0, false, nil},
-    ['Asterisks on FC_both'] = {5, 1, 9, true, nil},
-    ['CallSign Name char1'] = {11, 1, 0, false, nil},
-    ['CallSign Name char2'] = {12, 1, 0, false, nil},
-    ['Asterisks on CS Name_both'] = {10, 1, 13, true, nil},
-    ['VCS IncDecSymbol'] = {14, 1, 0, false, nil},
-    ['CallSign Number'] = {16, 2, 0, false, nil},
-    ['Asterisks on CS Number_both'] = {15, 1, 18, true, nil},
-    ['STN id lbl_1'] = {0, 1, 0, false, nil},
-    ['STN TDOA value_1'] = {2, 1, 0, false, nil},
-    ['STN value_1'] = {4, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_1_both'] = {1, 1, 3, true, nil},
-    ['Asterisks on STN_1_both'] = {3, 1, 9, true, nil},
-    ['STN id lbl_5'] = {10, 2, 0, false, nil},
-    ['STN TDOA value_5'] = {12, 1, 0, false, nil},
-    ['STN value_5'] = {14, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_5_both'] = {11, 1, 13, true, nil},
-    ['Asterisks on STN_5_both'] = {13, 1, 19, true, nil},
-    ['OWN lbl'] = {20, 3, 0, false, nil},
-    ['GPS TIME lbl'] = {0, 8, 0, false, nil},
-    ['GPS TIME status'] = {9, 3, 0, false, nil},
-    ['Asterisks on ETR_both'] = {8, 1, 12, true, nil},
+    --DLNK
+    ['TNDL FC lbl'] = {3, 2, 0, false, nil},
+    ['TNDL FC value'] = {6, 3, 0, false, nil},
+    ['TNDL Asterisks on FC_both'] = {5, 1, 9, true, nil},
+    ['TNDL CallSign Name char1'] = {11, 1, 0, false, nil},
+    ['TNDL CallSign Name char2'] = {12, 1, 0, false, nil},
+    ['TNDL Asterisks on CS Name_both'] = {10, 1, 13, true, nil},
+    ['TNDL VCS IncDecSymbol'] = {14, 1, 0, false, nil},
+    ['TNDL CallSign Number'] = {16, 2, 0, false, nil},
+    ['TNDL Asterisks on CS Number_both'] = {15, 1, 18, true, nil},
+    ['TNDL   STN STN id lbl_1'] = {0, 1, 0, false, nil},
+    ['TNDL   STN STN TDOA value_1'] = {2, 1, 0, false, nil},
+    ['TNDL   STN STN value_1'] = {4, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_1_both'] = {1, 1, 3, true, nil},
+    ['TNDL   STN Asterisks on STN_1_both'] = {3, 1, 9, true, nil},
+    ['TNDL   STN STN id lbl_5'] = {10, 2, 0, false, nil},
+    ['TNDL   STN STN TDOA value_5'] = {12, 1, 0, false, nil},
+    ['TNDL   STN STN value_5'] = {14, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_5_both'] = {11, 1, 13, true, nil},
+    ['TNDL   STN Asterisks on STN_5_both'] = {13, 1, 19, true, nil},
+    ['TNDL   STN OWN lbl'] = {20, 3, 0, false, nil},
+    ['NET STATUS GPS TIME lbl'] = {0, 8, 0, false, nil},
+    ['NET STATUS GPS TIME status'] = {9, 3, 0, false, nil},
+    ['NET STATUS Asterisks on ETR_both'] = {8, 1, 12, true, nil},
     ['IPF Reset lbl'] = {14, 9, 0, false, nil},
     ['Asterisks on IPF_both'] = {13, 1, 23, true, nil},
     ['A-G DL XMT lbl'] = {3, 3, 0, false, nil},
@@ -364,36 +376,48 @@ layout_defs[2] = {
     ['INTRAFLIGHT COMM status'] = {18, 3, 0, false, nil},
 
     --Misc
-    ['Misc Item 1 Number'] = {0, 1, 0, true, nil},
-    ['Misc Item 1 Name'] = {1, 4, 0, false, nil},
-    ['Misc Item 2 Number'] = {6, 1, 0, true, nil},
-    ['Misc Item 2 Name'] = {7, 4, 0, false, nil},
-    ['Misc Item 3 Number'] = {12, 1, 0, true, nil},
-    ['Misc Item 3 Name'] = {13, 4, 0, false, nil},
-    ['Misc Item R Number'] = {18, 1, 0, true, nil},
-    ['Misc Item R Name'] = {19, 4, 0, false, nil},
+    ['MISC Misc Item 1 Number'] = {0, 1, 0, true, nil},
+    ['MISC Misc Item 1 Name'] = {1, 4, 0, false, nil},
+    ['MISC Misc Item 2 Number'] = {6, 1, 0, true, nil},
+    ['MISC Misc Item 2 Name'] = {7, 4, 0, false, nil},
+    ['MISC Misc Item 3 Number'] = {12, 1, 0, true, nil},
+    ['MISC Misc Item 3 Name'] = {13, 4, 0, false, nil},
+    ['MISC Misc Item R Number'] = {18, 1, 0, true, nil},
+    ['MISC Misc Item R Name'] = {19, 4, 0, false, nil},
 
     --LASER
-    ['TGP CODE LABEL'] = {1, 8, 0, false, nil},
-    ['TGP CODE VALUE'] = {13, 4, 0, false, nil},
-    ['TGP CODE Asteriscs_both'] = {12, 1, 17, true, nil},
+    ['LASR TGP CODE LABEL'] = {1, 8, 0, false, nil},
+    ['LASR TGP CODE VALUE'] = {13, 4, 0, false, nil},
+    ['LASR TGP CODE Asteriscs_both'] = {12, 1, 17, true, nil},
 
     --HARM
     ['HARM T2'] = {14, 2, 0, false, nil},
     ['HARM T2_code'] = {18, 3, 0, false, nil},
     ['HARM Asterisks_T2_both'] = {17, 1, 21, true, nil},
 
-    -- VIP
-    ['Visual initial point number'] = {5, 3, 0, false, nil},
-    ['VIP number value'] = {10, 3, 0, false, nil},
-    ['VIP number up down arrows'] = {14, 1, 0, false, nil},
-    ['VIP number Asteriscs_both'] = {9, 1, 13, true, nil},
+    --VIP
+    ['VIP-TO-TGT Visual initial point number'] = {5, 3, 0, false, nil},
+    ['VIP-TO-TGT VIP number value'] = {10, 3, 0, false, nil},
+    ['VIP-TO-TGT VIP number up down arrows'] = {14, 1, 0, false, nil},
+    ['VIP-TO-TGT VIP number Asteriscs_both'] = {9, 1, 13, true, nil},
 
-    -- VRP
-    ['Target number'] = {5, 3, 0, false, nil},
-    ['Target number value'] = {10, 3, 0, false, nil},
-    ['Target number up down arrows'] = {14, 1, 0, false, nil},
-    ['Target number Asteriscs_both'] = {9, 1, 13, true, nil},
+    --VIP PUP
+    ['VIP-TO-PUP Visual initial point number'] = {5, 3, 0, false, nil},
+    ['VIP-TO-PUP VIP number value'] = {10, 3, 0, false, nil},
+    ['VIP-TO-PUP VIP number up down arrows'] = {14, 1, 0, false, nil},
+    ['VIP-TO-PUP VIP number Asteriscs_both'] = {9, 1, 13, true, nil},
+
+    --VRP
+    ['TGT-TO-VRP Target number'] = {5, 3, 0, false, nil},
+    ['TGT-TO-VRP Target number value'] = {10, 3, 0, false, nil},
+    ['TGT-TO-VRP Target number up down arrows'] = {14, 1, 0, false, nil},
+    ['TGT-TO-VRP Target number Asteriscs_both'] = {9, 1, 13, true, nil},
+
+    --VRP PUP
+    ['TGT-TO-PUP Target number'] = {5, 3, 0, false, nil},
+    ['TGT-TO-PUP Target number value'] = {10, 3, 0, false, nil},
+    ['TGT-TO-PUP Target number up down arrows'] = {14, 1, 0, false, nil},
+    ['TGT-TO-PUP Target number Asteriscs_both'] = {9, 1, 13, true, nil},
 
     --HMCS
     ['HMCS DISPLAY HMCS_HUD_BLANK'] = {3, 8, 0, false, nil},
@@ -412,10 +436,10 @@ layout_defs[2] = {
     ['MARK Latitude Value'] = {6, 12, 0, false, nil},
     ['MARK Latitude Asteriscs_both'] = {5, 1, 18, true, nil},
 
-    --DEST DIR
-    ['DEST_LAT'] = {3, 3, 0, false, nil},
-    ['LAT'] = {8, 12, 0, false, nil},
-    ['Asterisks_LAT_both'] = {7, 1, 20, true, nil},
+    --DEST_DIR
+    ['DEST DIR DEST_LAT'] = {3, 3, 0, false, nil},
+    ['DEST DIR LAT'] = {8, 12, 0, false, nil},
+    ['DEST DIR Asterisks_LAT_both'] = {7, 1, 20, true, nil},
 
     --CRUS TOS
     ['TOS_SYSTEM_TIME_label'] = {7, 4, 0, false, nil},
@@ -427,10 +451,10 @@ layout_defs[2] = {
     ['EDR_INS_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
 
     --CRUS HOME
-    ['HOME_STPT_NUM'] = {7, 4, 0, false, nil},
-    ['Asterisks_HOME_STPT_NUM_both'] = {11, 1, 17, true, nil},
-    ['HOME_INS_SelectedSteerpoint'] = {12, 3, 0, false, nil},
-    ['HOME_INS_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
+    ['HOME HOME_STPT_NUM'] = {7, 4, 0, false, nil},
+    ['HOME Asterisks_HOME_STPT_NUM_both'] = {11, 1, 17, true, nil},
+    ['HOME HOME_INS_SelectedSteerpoint'] = {12, 3, 0, false, nil},
+    ['HOME HOME_INS_STPT_IncDecSymbol'] = {16, 1, 0, false, nil},
 
     --CRUS RNG
     ['RNG_STPT_NUM'] = {7, 4, 0, false, nil},
@@ -444,20 +468,20 @@ layout_defs[2] = {
     ['FIX INS_STPT_IncDecSymbol'] = {14, 1, 0, false, nil},
 
     --A CAL MAN
-    ['ACAL_MODE'] = {8, 4, 0, false, nil},
-    ['Asterisks_ACAL_SelectedMode_both'] = {7, 1, 12, true, nil},
+    ['ACAL ACAL_MODE'] = {8, 4, 0, false, nil},
+    ['ACAL Asterisks_ACAL_SelectedMode_both'] = {7, 1, 12, true, nil},
 
     --A CAL AUTO
     ['NAV_FILTER_label'] = {2, 10, 0, false, nil},
     ['NAV_FILTER_mode'] = {14, 4, 0, false, nil},
 
     --HTS MAN
-    ['T1'] = {1, 1, 0, false, nil},
-    ['T1_code'] = {3, 4, 0, false, nil},
-    ['Asterisks_T1_both'] = {2, 1, 7, true, nil},
-    ['T5'] = {10, 1, 0, false, nil},
-    ['T5_code'] = {12, 4, 0, false, nil},
-    ['Asterisks_T5_both'] = {11, 1, 16, true, nil},
+    ['HTS MAN T1'] = {1, 1, 0, false, nil},
+    ['HTS MAN T1_code'] = {3, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T1_both'] = {2, 1, 7, true, nil},
+    ['HTS MAN T5'] = {10, 1, 0, false, nil},
+    ['HTS MAN T5_code'] = {12, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T5_both'] = {11, 1, 16, true, nil},
 
     --HTS SEAD
     ['HTS_LAT_lbl'] = {2, 3, 0, false, nil},
@@ -467,13 +491,13 @@ layout_defs[2] = {
     ['TODO remove lbl'] = {4, 20, 0, false, nil},
 
     --UTM DEST
-    ['UTM_DEST_GRID'] = {6, 4, 0, false, nil},
-    ['GRID_DIGIT'] = {12, 2, 0, false, nil},
-    ['GRID_SYMBOL'] = {14, 1, 0, false, nil},
-    ['Asterisks_GRID_DIGIT_both'] = {11, 1, 15, true, nil},
-    ['Asterisks_GRID_SYMBOL_both'] = {11, 1, 15, true, nil},
-    ['UTM_DEST_CNVRT'] = {18, 5, 0, false, nil},
-    ['Asterisks_CNVRT_both'] = {17, 1, 23, true, nil},
+    ['UTM DEST UTM_DEST_GRID'] = {6, 4, 0, false, nil},
+    ['UTM DEST GRID_DIGIT'] = {12, 2, 0, false, nil},
+    ['UTM DEST GRID_SYMBOL'] = {14, 1, 0, false, nil},
+    ['UTM DEST Asterisks_GRID_DIGIT_both'] = {11, 1, 15, true, nil},
+    ['UTM DEST Asterisks_GRID_SYMBOL_both'] = {11, 1, 15, true, nil},
+    ['UTM DEST UTM_DEST_CNVRT'] = {18, 5, 0, false, nil},
+    ['UTM DEST Asterisks_CNVRT_both'] = {17, 1, 23, true, nil},
 }
 
 layout_defs[3] = {
@@ -519,14 +543,14 @@ layout_defs[3] = {
     ['BACKUP label'] = {9, 6, 0, false, nil},
 
     --List
-    ['List Item 4 Number'] = {0, 1, 0, true, nil},
-    ['List Item 4 Name'] = {1, 4, 0, false, nil},
-    ['List Item 5 Number'] = {6, 1, 0, true, nil},
-    ['List Item 5 Name'] = {7, 4, 0, false, nil},
-    ['List Item 6 Number'] = {12, 1, 0, true, nil},
-    ['List Item 6 Name'] = {13, 4, 0, false, nil},
-    ['List Item E Number'] = {18, 1, 0, true, nil},
-    ['List Item E Name'] = {19, 4, 0, false, nil},
+    ['LIST List Item 4 Number'] = {0, 1, 0, true, nil},
+    ['LIST List Item 4 Name'] = {1, 4, 0, false, nil},
+    ['LIST List Item 5 Number'] = {6, 1, 0, true, nil},
+    ['LIST List Item 5 Name'] = {7, 4, 0, false, nil},
+    ['LIST List Item 6 Number'] = {12, 1, 0, true, nil},
+    ['LIST List Item 6 Name'] = {13, 4, 0, false, nil},
+    ['LIST List Item E Number'] = {18, 1, 0, true, nil},
+    ['LIST List Item E Name'] = {19, 4, 0, false, nil},
 
     --T-ILS
     ['TILS Scratchpad'] = {8, 6, 0, false, nil},
@@ -536,16 +560,16 @@ layout_defs[3] = {
     ['TCN BCN ID'] = {4, 3, 0, false, nil},
 
     --ALOW
-    ['CARA ALOW label'] = {3, 9, 0, false, nil},
-    ['CARA ALOW Scratchpad'] = {15, 7, 0, false, nil},
-    ['CARA ALOW Asterisks_both'] = {14, 1, 22, true, nil},
+    ['ALOW CARA ALOW label'] = {3, 9, 0, false, nil},
+    ['ALOW CARA ALOW Scratchpad'] = {15, 7, 0, false, nil},
+    ['ALOW CARA ALOW Asterisks_both'] = {14, 1, 22, true, nil},
 
     --STPT
     ['STEERPOINT Longitude'] = {3, 3, 0, false, nil},
     ['STEERPOINT Longitude Value'] = {8, 12, 0, false, nil},
     ['STEERPOINT Longitude Asteriscs_both'] = {7, 1, 20, true, nil},
 
-    -- STPT MGRS
+    --STPT MGRS
     ['STEERPOINT SQUARE'] = {4, 6, 0, false, nil},
     ['STEERPOINT SQUARE Value1'] = {12, 1, 0, false, nil},
     ['STEERPOINT SQUARE Value2'] = {13, 1, 0, false, nil},
@@ -585,36 +609,36 @@ layout_defs[3] = {
     ['CMDS_BI_lbl'] = {6, 2, 0, false, nil},
     ['CMDS_BI_Scratchpad'] = {10, 6, 0, false, nil},
     ['CMDS_BI_Asterisks_both'] = {9, 1, 16, true, nil},
-    ['CMDS_FL_lbl'] = {2, 2, 0, false, nil},
-    ['CMDS_FL_Scratchpad'] = {7, 2, 0, false, nil},
-    ['CMDS_FL_Asterisks_both'] = {6, 1, 9, true, nil},
-    ['CMDS_FDBK_lbl'] = {11, 4, 0, false, nil},
-    ['CMDS_FDBK_value'] = {19, 3, 0, false, nil},
-    ['CMDS_FDBK_Asterisks_both'] = {18, 1, 22, true, nil},
+    ['CMDS  BINGO CMDS_FL_lbl'] = {2, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_FL_Scratchpad'] = {7, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_FL_Asterisks_both'] = {6, 1, 9, true, nil},
+    ['CMDS  BINGO CMDS_FDBK_lbl'] = {11, 4, 0, false, nil},
+    ['CMDS  BINGO CMDS_FDBK_value'] = {19, 3, 0, false, nil},
+    ['CMDS  BINGO CMDS_FDBK_Asterisks_both'] = {18, 1, 22, true, nil},
 
-    -- DLNK
-    ['MC lbl'] = {3, 2, 0, false, nil},
-    ['MC value'] = {6, 3, 0, false, nil},
-    ['Asterisks on MC_both'] = {5, 1, 9, true, nil},
-    ['FL lbl'] = {12, 2, 0, false, nil},
-    ['FL status'] = {16, 3, 0, false, nil},
-    ['Asterisks on FL_both'] = {15, 1, 19, true, nil},
-    ['NUM lbl'] = {20, 1, 0, false, nil},
-    ['Own num value'] = {22, 1, 0, false, nil},
-    ['Asterisks on Own_both'] = {21, 1, 23, true, nil},
-    ['TIME lbl'] = {4, 4, 0, false, nil},
-    ['TIME value'] = {9, 8, 0, false, nil},
-    ['Asterisks on TIME_both'] = {8, 1, 17, true, nil},
-    ['STN id lbl_2'] = {0, 1, 0, false, nil},
-    ['STN TDOA value_2'] = {2, 1, 0, false, nil},
-    ['STN value_2'] = {4, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_2_both'] = {1, 1, 3, true, nil},
-    ['Asterisks on STN_2_both'] = {3, 1, 9, true, nil},
-    ['STN id lbl_6'] = {10, 2, 0, false, nil},
-    ['STN TDOA value_6'] = {12, 1, 0, false, nil},
-    ['STN value_6'] = {14, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_6_both'] = {11, 1, 13, true, nil},
-    ['Asterisks on STN_6_both'] = {13, 1, 19, true, nil},
+    --DLNK
+    ['TNDL MC lbl'] = {3, 2, 0, false, nil},
+    ['TNDL MC value'] = {6, 3, 0, false, nil},
+    ['TNDL Asterisks on MC_both'] = {5, 1, 9, true, nil},
+    ['TNDL FL lbl'] = {12, 2, 0, false, nil},
+    ['TNDL FL status'] = {16, 3, 0, false, nil},
+    ['TNDL Asterisks on FL_both'] = {15, 1, 19, true, nil},
+    ['TNDL   STN NUM lbl'] = {20, 1, 0, false, nil},
+    ['TNDL   STN Own num value'] = {22, 1, 0, false, nil},
+    ['TNDL   STN Asterisks on Own_both'] = {21, 1, 23, true, nil},
+    ['NET STATUS TIME lbl'] = {4, 4, 0, false, nil},
+    ['NET STATUS TIME value'] = {9, 8, 0, false, nil},
+    ['NET STATUS Asterisks on TIME_both'] = {8, 1, 17, true, nil},
+    ['TNDL   STN STN id lbl_2'] = {0, 1, 0, false, nil},
+    ['TNDL   STN STN TDOA value_2'] = {2, 1, 0, false, nil},
+    ['TNDL   STN STN value_2'] = {4, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_2_both'] = {1, 1, 3, true, nil},
+    ['TNDL   STN Asterisks on STN_2_both'] = {3, 1, 9, true, nil},
+    ['TNDL   STN STN id lbl_6'] = {10, 2, 0, false, nil},
+    ['TNDL   STN STN TDOA value_6'] = {12, 1, 0, false, nil},
+    ['TNDL   STN STN value_6'] = {14, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_6_both'] = {11, 1, 13, true, nil},
+    ['TNDL   STN Asterisks on STN_6_both'] = {13, 1, 19, true, nil},
     ['OWN value'] = {7, 2, 0, false, nil},
     ['DATA lbl'] = {12, 4, 0, false, nil},
     ['DATA value'] = {7, 3, 0, false, nil},
@@ -626,23 +650,23 @@ layout_defs[3] = {
     ['INTRAFLIGHT DATA value'] = {18, 3, 0, false, nil},
 
     --Misc
-    ['Misc Item 4 Number'] = {0, 1, 0, true, nil},
-    ['Misc Item 4 Name'] = {1, 4, 0, false, nil},
-    ['Misc Item 5 Number'] = {6, 1, 0, true, nil},
-    ['Misc Item 5 Name'] = {7, 4, 0, false, nil},
-    ['Misc Item 6 Number'] = {12, 1, 0, true, nil},
-    ['Misc Item 6 Name'] = {13, 4, 0, false, nil},
-    ['Misc Item E Number'] = {18, 1, 0, true, nil},
-    ['Misc Item E Name'] = {19, 4, 0, false, nil},
+    ['MISC Misc Item 4 Number'] = {0, 1, 0, true, nil},
+    ['MISC Misc Item 4 Name'] = {1, 4, 0, false, nil},
+    ['MISC Misc Item 5 Number'] = {6, 1, 0, true, nil},
+    ['MISC Misc Item 5 Name'] = {7, 4, 0, false, nil},
+    ['MISC Misc Item 6 Number'] = {12, 1, 0, true, nil},
+    ['MISC Misc Item 6 Name'] = {13, 4, 0, false, nil},
+    ['MISC Misc Item E Number'] = {18, 1, 0, true, nil},
+    ['MISC Misc Item E Name'] = {19, 4, 0, false, nil},
 
     --MAGV
     ['INS_MAGV_Scratchpad'] = {9, 6, 0, false, nil},
     ['Asterisks_on_MAGV_Scratchpad_both'] = {8, 1, 15, true, nil},
 
     --LASER
-    ['LST CODE LABEL'] = {1, 8, 0, false, nil},
-    ['LST CODE VALUE'] = {13, 4, 0, false, nil},
-    ['LST CODE Asteriscs_both'] = {12, 1, 17, true, nil},
+    ['LASR LST CODE LABEL'] = {1, 8, 0, false, nil},
+    ['LASR LST CODE VALUE'] = {13, 4, 0, false, nil},
+    ['LASR LST CODE Asteriscs_both'] = {12, 1, 17, true, nil},
 
     --INTG
     ['INTG M1 Mode'] = {0, 2, 0, false, nil},
@@ -658,15 +682,25 @@ layout_defs[3] = {
     ['HARM T3_code'] = {18, 3, 0, false, nil},
     ['HARM Asterisks_T3_both'] = {17, 1, 21, true, nil},
 
-    -- VIP
-    ['VIP bearing'] = {4, 4, 0, false, nil},
-    ['VIP bearing value'] = {10, 6, 0, false, nil},
-    ['VIP bearing Asteriscs_both'] = {9, 1, 16, true, nil},
+    --VIP
+    ['VIP-TO-TGT VIP bearing'] = {4, 4, 0, false, nil},
+    ['VIP-TO-TGT VIP bearing value'] = {10, 6, 0, false, nil},
+    ['VIP-TO-TGT VIP bearing Asteriscs_both'] = {9, 1, 16, true, nil},
 
-    -- VRP
-    ['Target bearing'] = {4, 4, 0, false, nil},
-    ['Target bearing value'] = {10, 6, 0, false, nil},
-    ['Target bearing Asteriscs_both'] = {9, 1, 16, true, nil},
+    --VIP PUP
+    ['VIP-TO-PUP VIP bearing'] = {4, 4, 0, false, nil},
+    ['VIP-TO-PUP VIP bearing value'] = {10, 6, 0, false, nil},
+    ['VIP-TO-PUP VIP bearing Asteriscs_both'] = {9, 1, 16, true, nil},
+
+    --VRP
+    ['TGT-TO-VRP Target bearing'] = {4, 4, 0, false, nil},
+    ['TGT-TO-VRP Target bearing value'] = {10, 6, 0, false, nil},
+    ['TGT-TO-VRP Target bearing Asteriscs_both'] = {9, 1, 16, true, nil},
+
+    --VRP PUP
+    ['TGT-TO-PUP Target bearing'] = {4, 4, 0, false, nil},
+    ['TGT-TO-PUP Target bearing value'] = {10, 6, 0, false, nil},
+    ['TGT-TO-PUP Target bearing Asteriscs_both'] = {9, 1, 16, true, nil},
 
     --HMCS
     ['HMCS DISPLAY HMCS_CKPT_BLANK'] = {3, 9, 0, false, nil},
@@ -689,8 +723,8 @@ layout_defs[3] = {
     ['EDR_TO_BINGO_value'] = {13, 8, 0, false, nil},
 
     --CRUS HOME
-    ['HOME_FUEL_REMANING'] = {7, 4, 0, false, nil},
-    ['HOME_FUEL_REMANING_Value'] = {12, 8, 0, false, nil},
+    ['HOME HOME_FUEL_REMANING'] = {7, 4, 0, false, nil},
+    ['HOME HOME_FUEL_REMANING_Value'] = {12, 8, 0, false, nil},
 
     --CRUS RNG
     ['RNG_FUEL_REMANING'] = {7, 4, 0, false, nil},
@@ -710,35 +744,38 @@ layout_defs[3] = {
     ['GPS_ACCURACY_value'] = {14, 4, 0, false, nil},
 
     --HTS MAN
-    ['T2'] = {1, 1, 0, false, nil},
-    ['T2_code'] = {3, 4, 0, false, nil},
-    ['Asterisks_T2_both'] = {2, 1, 7, true, nil},
-    ['T6'] = {10, 1, 0, false, nil},
-    ['T6_code'] = {12, 4, 0, false, nil},
-    ['Asterisks_T6_both'] = {11, 1, 16, true, nil},
+    ['HTS MAN T2'] = {1, 1, 0, false, nil},
+    ['HTS MAN T2_code'] = {3, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T2_both'] = {2, 1, 7, true, nil},
+    ['HTS MAN T6'] = {10, 1, 0, false, nil},
+    ['HTS MAN T6_code'] = {12, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T6_both'] = {11, 1, 16, true, nil},
 
     --HTS SEAD
     ['HTS_LNG_lbl'] = {2, 3, 0, false, nil},
     ['HTS_LNG'] = {7, 10, 0, false, nil},
 
     --DEST_DIR
-    ['DEST_LON'] = {3, 3, 0, false, nil},
-    ['LON'] = {8, 12, 0, false, nil},
-    ['Asterisks_LON_both'] = {7, 1, 20, true, nil},
+    ['DEST DIR DEST_LON'] = {3, 3, 0, false, nil},
+    ['DEST DIR LON'] = {8, 12, 0, false, nil},
+    ['DEST DIR Asterisks_LON_both'] = {7, 1, 20, true, nil},
 
-    --UMT DEST
-    ['UTM_DEST_SQUARE'] = {4, 6, 0, false, nil},
-    ['SQUARE'] = {12, 1, 0, false, nil},
-    ['SQUARE2'] = {13, 1, 0, false, nil},
-    ['Asterisks_SQUARE_both'] = {11, 1, 14, true, nil},
-    ['Asterisks_SQUARE2_both'] = {11, 1, 14, true, nil},
+    --UTM DEST
+    ['UTM DEST UTM_DEST_SQUARE'] = {4, 6, 0, false, nil},
+    ['UTM DEST SQUARE'] = {12, 1, 0, false, nil},
+    ['UTM DEST SQUARE2'] = {13, 1, 0, false, nil},
+    ['UTM DEST Asterisks_SQUARE_both'] = {11, 1, 14, true, nil},
+    ['UTM DEST Asterisks_SQUARE2_both'] = {11, 1, 14, true, nil},
 
-    --DEST 0A1
-    ['DEST_OA1_RNG'] = {3, 3, 0, false, nil},
-    ['RNG'] = {8, 8, 0, false, nil},
-    ['Asterisks_RNG_both'] = {7, 1, 16, true, nil},
-    ['DEST_OA2_RNG'] = {3, 3, 0, false, nil},
-    ['RNG'] = {8, 8, 0, false, nil},
+    --DEST_OA1
+    ['DEST OA1 DEST_OA1_RNG'] = {3, 3, 0, false, nil},
+    ['DEST OA1 RNG'] = {8, 8, 0, false, nil},
+    ['DEST OA1 Asterisks_RNG_both'] = {7, 1, 16, true, nil},
+
+    --DEST_OA2
+    ['DEST OA2 DEST_OA2_RNG'] = {3, 3, 0, false, nil},
+    ['DEST OA2 RNG'] = {8, 8, 0, false, nil},
+    ['DEST OA2 Asterisks_RNG_both'] = {7, 1, 16, true, nil},
 }
 
 layout_defs[4] = {
@@ -784,14 +821,14 @@ layout_defs[4] = {
     ['TIM EVENT - Time'] = {18, 5, 0, false, nil},
 
     --List
-    ['List Item 7 Number'] = {0, 1, 0, true, nil},
-    ['List Item 7 Name'] = {1, 4, 0, false, nil},
-    ['List Item 8 Number'] = {6, 1, 0, true, nil},
-    ['List Item 8 Name'] = {7, 4, 0, false, nil},
-    ['List Item 9 Number'] = {12, 1, 0, true, nil},
-    ['List Item 9 Name'] = {13, 4, 0, false, nil},
-    ['List Item 0 Number'] = {18, 1, 0, true, nil},
-    ['List Item 0 Name'] = {19, 4, 0, false, nil},
+    ['LIST List Item 7 Number'] = {0, 1, 0, true, nil},
+    ['LIST List Item 7 Name'] = {1, 4, 0, false, nil},
+    ['LIST List Item 8 Number'] = {6, 1, 0, true, nil},
+    ['LIST List Item 8 Name'] = {7, 4, 0, false, nil},
+    ['LIST List Item 9 Number'] = {12, 1, 0, true, nil},
+    ['LIST List Item 9 Name'] = {13, 4, 0, false, nil},
+    ['LIST List Item 0 Number'] = {18, 1, 0, true, nil},
+    ['LIST List Item 0 Name'] = {19, 4, 0, false, nil},
 
     --T-ILS
     ['ILS FRQ Label'] = {12, 3, 0, false, nil},
@@ -803,16 +840,16 @@ layout_defs[4] = {
     ['BACKUP lbl'] = {2, 6, 0, false, nil},
 
     --ALOW
-    ['MSL FLOOR label'] = {3, 9, 0, false, nil},
-    ['MSL FLOOR Scratchpad'] = {15, 7, 0, false, nil},
-    ['MSL FLOOR Asterisks_both'] = {14, 1, 22, true, nil},
+    ['ALOW MSL FLOOR label'] = {3, 9, 0, false, nil},
+    ['ALOW MSL FLOOR Scratchpad'] = {15, 7, 0, false, nil},
+    ['ALOW MSL FLOOR Asterisks_both'] = {14, 1, 22, true, nil},
 
     --STPT
     ['STEERPOINT Elevation'] = {2, 3, 0, false, nil},
     ['STEERPOINT Elevation Value'] = {8, 8, 0, false, nil},
     ['STEERPOINT Elevation Asteriscs_both'] = {7, 1, 16, true, nil},
 
-    -- STPT MGRS
+    --STPT MGRS
     ['STEERPOINT EAST NORTH'] = {0, 10, 0, false, nil},
     ['STEERPOINT EAST NORTH Value'] = {12, 11, 0, false, nil},
     ['STEERPOINT EAST NORTH Asteriscs_both'] = {11, 1, 23, true, nil},
@@ -850,33 +887,33 @@ layout_defs[4] = {
     ['CMDS_SQ_lbl'] = {6, 2, 0, false, nil},
     ['CMDS_SQ_Scratchpad'] = {10, 2, 0, false, nil},
     ['CMDS_SQ_Asterisks_both'] = {9, 1, 12, true, nil},
-    ['CMDS_O1_lbl'] = {2, 2, 0, false, nil},
-    ['CMDS_O1_Scratchpad'] = {7, 2, 0, false, nil},
-    ['CMDS_O1_Asterisks_both'] = {6, 1, 9, true, nil},
-    ['CMDS_REQCTR_lbl'] = {11, 6, 0, false, nil},
-    ['CMDS_REQCTR_value'] = {19, 3, 0, false, nil},
-    ['CMDS_REQCTR_Asterisks_both'] = {18, 1, 22, true, nil},
+    ['CMDS  BINGO CMDS_O1_lbl'] = {2, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_O1_Scratchpad'] = {7, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_O1_Asterisks_both'] = {6, 1, 9, true, nil},
+    ['CMDS  BINGO CMDS_REQCTR_lbl'] = {11, 6, 0, false, nil},
+    ['CMDS  BINGO CMDS_REQCTR_value'] = {19, 3, 0, false, nil},
+    ['CMDS  BINGO CMDS_REQCTR_Asterisks_both'] = {18, 1, 22, true, nil},
 
-    -- DLNK
-    ['SC lbl'] = {3, 2, 0, false, nil},
-    ['SC value'] = {6, 3, 0, false, nil},
-    ['Asterisks on SC_both'] = {5, 1, 9, true, nil},
-    ['XMT lbl'] = {11, 3, 0, false, nil},
-    ['XMT status'] = {16, 2, 0, false, nil},
-    ['Asterisks on XMT_both'] = {15, 1, 20, true, nil},
-    ['NTR lbl'] = {5, 3, 0, false, nil},
-    ['NTR status'] = {9, 3, 0, false, nil},
-    ['Asterisks on NTR_both'] = {8, 1, 12, true, nil},
-    ['STN id lbl_3'] = {0, 1, 0, false, nil},
-    ['STN TDOA value_3'] = {2, 1, 0, false, nil},
-    ['STN value_3'] = {4, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_3_both'] = {1, 1, 3, true, nil},
-    ['Asterisks on STN_3_both'] = {3, 1, 9, true, nil},
-    ['STN id lbl_7'] = {10, 2, 0, false, nil},
-    ['STN TDOA value_7'] = {12, 1, 0, false, nil},
-    ['STN value_7'] = {14, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_7_both'] = {11, 1, 13, true, nil},
-    ['Asterisks on STN_7_both'] = {13, 1, 19, true, nil},
+    --DLNK
+    ['TNDL SC lbl'] = {3, 2, 0, false, nil},
+    ['TNDL SC value'] = {6, 3, 0, false, nil},
+    ['TNDL Asterisks on SC_both'] = {5, 1, 9, true, nil},
+    ['TNDL XMT lbl'] = {11, 3, 0, false, nil},
+    ['TNDL XMT status'] = {16, 2, 0, false, nil},
+    ['TNDL Asterisks on XMT_both'] = {15, 1, 20, true, nil},
+    ['NET STATUS NTR lbl'] = {5, 3, 0, false, nil},
+    ['NET STATUS NTR status'] = {9, 3, 0, false, nil},
+    ['NET STATUS Asterisks on NTR_both'] = {8, 1, 12, true, nil},
+    ['TNDL   STN STN id lbl_3'] = {0, 1, 0, false, nil},
+    ['TNDL   STN STN TDOA value_3'] = {2, 1, 0, false, nil},
+    ['TNDL   STN STN value_3'] = {4, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_3_both'] = {1, 1, 3, true, nil},
+    ['TNDL   STN Asterisks on STN_3_both'] = {3, 1, 9, true, nil},
+    ['TNDL   STN STN id lbl_7'] = {10, 2, 0, false, nil},
+    ['TNDL   STN STN TDOA value_7'] = {12, 1, 0, false, nil},
+    ['TNDL   STN STN value_7'] = {14, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_7_both'] = {11, 1, 13, true, nil},
+    ['TNDL   STN Asterisks on STN_7_both'] = {13, 1, 19, true, nil},
     ['FILL lbl'] = {2, 4, 0, false, nil},
     ['FILL status'] = {7, 3, 0, false, nil},
     ['PRTL lbl'] = {12, 4, 0, false, nil},
@@ -889,14 +926,14 @@ layout_defs[4] = {
     ['INTRAFLIGHT Own value'] = {18, 2, 0, false, nil},
 
     --Misc
-    ['Misc Item 7 Number'] = {0, 1, 0, true, nil},
-    ['Misc Item 7 Name'] = {1, 4, 0, false, nil},
-    ['Misc Item 8 Number'] = {6, 1, 0, true, nil},
-    ['Misc Item 8 Name'] = {7, 4, 0, false, nil},
-    ['Misc Item 9 Number'] = {12, 1, 0, true, nil},
-    ['Misc Item 9 Name'] = {13, 4, 0, false, nil},
-    ['Misc Item 0 Number'] = {18, 1, 0, true, nil},
-    ['Misc Item 0 Name'] = {19, 4, 0, false, nil},
+    ['MISC Misc Item 7 Number'] = {0, 1, 0, true, nil},
+    ['MISC Misc Item 7 Name'] = {1, 4, 0, false, nil},
+    ['MISC Misc Item 8 Number'] = {6, 1, 0, true, nil},
+    ['MISC Misc Item 8 Name'] = {7, 4, 0, false, nil},
+    ['MISC Misc Item 9 Number'] = {12, 1, 0, true, nil},
+    ['MISC Misc Item 9 Name'] = {13, 4, 0, false, nil},
+    ['MISC Misc Item 0 Number'] = {18, 1, 0, true, nil},
+    ['MISC Misc Item 0 Name'] = {19, 4, 0, false, nil},
 
     --INTG
     ['INTG M2 Mode'] = {0, 2, 0, false, nil},
@@ -910,17 +947,29 @@ layout_defs[4] = {
     ['HARM T4_code'] = {18, 3, 0, false, nil},
     ['HARM Asterisks_T4_both'] = {17, 1, 21, true, nil},
 
-    -- VIP
+    --VIP
     ['VIP-TO-TGT Range'] = {5, 3, 0, false, nil},
     ['VIP-TO-TGT Range value'] = {12, 4, 0, false, nil},
     ['VIP-TO-TGT Range Asteriscs_both'] = {11, 1, 16, true, nil},
     ['VIP-TO-TGT Range NM'] = {17, 2, 0, false, nil},
 
-    -- VRP
+    --VIP PUP
+    ['VIP-TO-PUP Range'] = {5, 3, 0, false, nil},
+    ['VIP-TO-PUP Range value'] = {12, 4, 0, false, nil},
+    ['VIP-TO-PUP Range Asteriscs_both'] = {11, 1, 16, true, nil},
+    ['VIP-TO-PUP Range NM'] = {17, 2, 0, false, nil},
+
+    --VRP
     ['TGT-TO-VRP Range'] = {5, 3, 0, false, nil},
     ['TGT-TO-VRP Range value'] = {10, 8, 0, false, nil},
     ['TGT-TO-VRP Range Asteriscs_both'] = {9, 1, 18, true, nil},
     ['TGT-TO-VRP Range NM'] = {17, 2, 0, false, nil},
+
+    --VRP PUP
+    ['TGT-TO-PUP Range'] = {5, 3, 0, false, nil},
+    ['TGT-TO-PUP Range value'] = {10, 8, 0, false, nil},
+    ['TGT-TO-PUP Range Asteriscs_both'] = {9, 1, 18, true, nil},
+    ['TGT-TO-PUP Range NM'] = {17, 2, 0, false, nil},
 
     --HMCS
     ['HMCS DISPLAY HMCS_DECLUTTER'] = {3, 14, 0, false, nil},
@@ -943,31 +992,31 @@ layout_defs[4] = {
     ['EDR_OPT_MACH_value'] = {13, 8, 0, false, nil},
 
     --CRUS HOME
-    ['HOME_OPT_ALT_label'] = {4, 7, 0, false, nil},
-    ['HOME_OPT_ALT_value'] = {13, 8, 0, false, nil},
+    ['HOME HOME_OPT_ALT_label'] = {4, 7, 0, false, nil},
+    ['HOME HOME_OPT_ALT_value'] = {13, 8, 0, false, nil},
 
     --FIX
     ['FIX SYS ACCURACY label'] = {4, 9, 0, false, nil},
     ['FIX SYS ACCURACY value'] = {14, 4, 0, false, nil},
 
     --A CAL MAN
-    ['ACAL_ALT_DELTA'] = {8, 5, 0, false, nil},
-    ['ACAL_ALT_DELTA_label'] = {2, 8, 0, false, nil},
-    ['DELTA_ALT'] = {16, 7, 0, false, nil},
+    ['ACAL ACAL_ALT_DELTA'] = {8, 5, 0, false, nil},
+    ['ACAL ACAL_ALT_DELTA_label'] = {2, 8, 0, false, nil},
+    ['ACAL DELTA_ALT'] = {16, 7, 0, false, nil},
 
     --A CAL AUTO
-    ['DTS_STATUS_label'] = {3, 3, 0, false, nil},
+    ['DTS_STATUS_label'] = {9, 3, 0, false, nil},
     ['DTS_STATUS_value'] = {14, 3, 0, false, nil},
     ['DTS_ACCURACY_HPU_label'] = {21, 2, 0, false, nil},
     ['DTS_ACCURACY_HPU_value'] = {23, 1, 0, false, nil},
 
     --HTS MAN
-    ['T3'] = {1, 1, 0, false, nil},
-    ['T3_code'] = {3, 4, 0, false, nil},
-    ['Asterisks_T3_both'] = {2, 1, 7, true, nil},
-    ['T7'] = {10, 1, 0, false, nil},
-    ['T7_code'] = {12, 4, 0, false, nil},
-    ['Asterisks_T7_both'] = {11, 1, 16, true, nil},
+    ['HTS MAN T3'] = {1, 1, 0, false, nil},
+    ['HTS MAN T3_code'] = {3, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T3_both'] = {2, 1, 7, true, nil},
+    ['HTS MAN T7'] = {10, 1, 0, false, nil},
+    ['HTS MAN T7_code'] = {12, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T7_both'] = {11, 1, 16, true, nil},
 
     --HTS SEAD
     ['HTS_ELEV_lbl'] = {2, 3, 0, false, nil},
@@ -977,36 +1026,24 @@ layout_defs[4] = {
     ['TODO remove label'] = {4, 20, 0, false, nil},
 
     --UTM DEST
-    ['UTM_DEST_EAST/NORTH'] = {0, 10, 0, false, nil},
-    ['EAST/NORTH'] = {12, 11, 0, false, nil},
-    ['Asterisks_EAST/NORTH_both'] = {11, 1, 23, true, nil},
+    ['UTM DEST UTM_DEST_EAST/NORTH'] = {0, 10, 0, false, nil},
+    ['UTM DEST EAST/NORTH'] = {12, 11, 0, false, nil},
+    ['UTM DEST Asterisks_EAST/NORTH_both'] = {11, 1, 23, true, nil},
 
     --DEST_DIR
     ['DEST DIR DEST_ELEV'] = {2, 4, 0, false, nil},
     ['DEST DIR ELEV'] = {8, 7, 0, false, nil},
     ['DEST DIR Asterisks_ELEV_both'] = {7, 1, 15, true, nil},
 
-    -- VRP PUP - VRP next page ... due to duplicate key names with VIP, VRP is usig Feet (FT) and VIP NM with different input lenght
-    ['TGT-TO-PUP Range'] = {5, 3, 0, false, nil},
-    ['TGT-TO-PUP Range value'] = {10, 8, 0, false, nil},
-    ['TGT-TO-PUP Range Asteriscs_both'] = {9, 1, 18, true, nil},
-    ['TGT-TO-PUP Range NM'] = {17, 2, 0, false, nil},
-
-    -- VIP PUP - VIP next page ... due to duplicate key names with VRP
-    ['VIP-TO-PUP Range'] = {5, 3, 0, false, nil},
-    ['VIP-TO-PUP Range value'] = {12, 4, 0, false, nil},
-    ['VIP-TO-PUP Range Asteriscs_both'] = {11, 1, 16, true, nil},
-    ['VIP-TO-PUP Range NM'] = {17, 2, 0, false, nil},
-
     --DEST_OA1
-    ['DEST_OA1_BRG'] = {3, 3, 0, false, nil},
-    ['BRG'] = {8, 6, 0, false, nil},
-    ['Asterisks_BRG_both'] = {7, 1, 14, true, nil},
+    ['DEST OA1 DEST_OA1_BRG'] = {3, 3, 0, false, nil},
+    ['DEST OA1 BRG'] = {8, 6, 0, false, nil},
+    ['DEST OA1 Asterisks_BRG_both'] = {7, 1, 14, true, nil},
 
     --DEST_OA2
-    ['DEST_OA2_BRG'] = {3, 3, 0, false, nil},
-    ['BRG'] = {8, 6, 0, false, nil},
-    ['Asterisks_BRG_both'] = {7, 1, 14, true, nil},
+    ['DEST OA2 DEST_OA2_BRG'] = {3, 3, 0, false, nil},
+    ['DEST OA2 BRG'] = {8, 6, 0, false, nil},
+    ['DEST OA2 Asterisks_BRG_both'] = {7, 1, 14, true, nil},
 }
 
 layout_defs[5] = {
@@ -1067,7 +1104,7 @@ layout_defs[5] = {
     ['STEERPOINT TOS Value'] = {8, 8, 0, false, nil},
     ['STEERPOINT TOS Asteriscs_both'] = {7, 1, 16, true, nil},
 
-    -- STPT MGRS
+    --STPT MGRS
     ['STEERPOINT ElevationMGRS'] = {6, 4, 0, false, nil},
     ['STEERPOINT ElevationMGRS Value'] = {11, 8, 0, false, nil},
     ['STEERPOINT ElevationMGRS Asteriscs_both'] = {11, 1, 20, true, nil},
@@ -1098,30 +1135,30 @@ layout_defs[5] = {
     ['CMDS_SI_lbl'] = {6, 2, 0, false, nil},
     ['CMDS_SI_Scratchpad'] = {10, 6, 0, false, nil},
     ['CMDS_SI_Asterisks_both'] = {9, 1, 16, true, nil},
-    ['CMDS_O2_lbl'] = {2, 2, 0, false, nil},
-    ['CMDS_O2_Scratchpad'] = {7, 2, 0, false, nil},
-    ['CMDS_O2_Asterisks_both'] = {6, 1, 9, true, nil},
-    ['CMDS_BINGO_lbl'] = {11, 5, 0, false, nil},
-    ['CMDS_BINGO_value'] = {19, 3, 0, false, nil},
-    ['CMDS_BINGO_Asterisks_both'] = {18, 1, 22, true, nil},
+    ['CMDS  BINGO CMDS_O2_lbl'] = {2, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_O2_Scratchpad'] = {7, 2, 0, false, nil},
+    ['CMDS  BINGO CMDS_O2_Asterisks_both'] = {6, 1, 9, true, nil},
+    ['CMDS  BINGO CMDS_BINGO_lbl'] = {11, 5, 0, false, nil},
+    ['CMDS  BINGO CMDS_BINGO_value'] = {19, 3, 0, false, nil},
+    ['CMDS  BINGO CMDS_BINGO_Asterisks_both'] = {18, 1, 22, true, nil},
 
-    -- DLNK
-    ['P2 lbl'] = {21, 3, 0, false, nil},
-    ['P3 lbl'] = {21, 3, 0, false, nil},
-    ['SYNC lbl'] = {4, 4, 0, false, nil},
-    ['SYNC status'] = {9, 4, 0, false, nil},
-    ['Asterisks on SYNC_both'] = {8, 1, 15, true, nil},
-    ['P1 lbl'] = {21, 3, 0, false, nil},
-    ['STN id lbl_4'] = {0, 1, 0, false, nil},
-    ['STN TDOA value_4'] = {2, 1, 0, false, nil},
-    ['STN value_4'] = {4, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_4_both'] = {1, 1, 3, true, nil},
-    ['Asterisks on STN_4_both'] = {3, 1, 9, true, nil},
-    ['STN id lbl_8'] = {10, 2, 0, false, nil},
-    ['STN TDOA value_8'] = {12, 1, 0, false, nil},
-    ['STN value_8'] = {14, 5, 0, false, nil},
-    ['Asterisks on STN TDOA_8_both'] = {11, 1, 13, true, nil},
-    ['Asterisks on STN_8_both'] = {13, 1, 19, true, nil},
+    --DLNK
+    ['TNDL P2 lbl'] = {21, 3, 0, false, nil},
+    ['NET STATUS SYNC lbl'] = {4, 4, 0, false, nil},
+    ['NET STATUS SYNC status'] = {9, 4, 0, false, nil},
+    ['NET STATUS Asterisks on SYNC_both'] = {8, 1, 15, true, nil},
+    ['NET STATUS P1 lbl'] = {21, 3, 0, false, nil},
+    ['TNDL   STN STN id lbl_4'] = {0, 1, 0, false, nil},
+    ['TNDL   STN STN TDOA value_4'] = {2, 1, 0, false, nil},
+    ['TNDL   STN STN value_4'] = {4, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_4_both'] = {1, 1, 3, true, nil},
+    ['TNDL   STN Asterisks on STN_4_both'] = {3, 1, 9, true, nil},
+    ['TNDL   STN STN id lbl_8'] = {10, 2, 0, false, nil},
+    ['TNDL   STN STN TDOA value_8'] = {12, 1, 0, false, nil},
+    ['TNDL   STN STN value_8'] = {14, 5, 0, false, nil},
+    ['TNDL   STN Asterisks on STN TDOA_8_both'] = {11, 1, 13, true, nil},
+    ['TNDL   STN Asterisks on STN_8_both'] = {13, 1, 19, true, nil},
+    ['TNDL   STN P3 lbl'] = {21, 3, 0, false, nil},
     ['P5 lbl'] = {21, 3, 0, false, nil},
     ['INTRAFLIGHT STN id lbl4'] = {1, 2, 0, false, nil},
     ['INTRAFLIGHT STN value4'] = {4, 5, 0, false, nil},
@@ -1132,9 +1169,9 @@ layout_defs[5] = {
     ['INTRAFLIGHT P6 lbl'] = {21, 3, 0, false, nil},
 
     --LASER
-    ['Laser ST Time LABEL'] = {1, 13, 0, false, nil},
-    ['Laser ST Time VALUE'] = {16, 3, 0, false, nil},
-    ['Laser ST Time Asteriscs_both'] = {15, 1, 19, true, nil},
+    ['LASR Laser ST Time LABEL'] = {1, 13, 0, false, nil},
+    ['LASR Laser ST Time VALUE'] = {16, 3, 0, false, nil},
+    ['LASR Laser ST Time Asteriscs_both'] = {15, 1, 19, true, nil},
 
     --INTG
     ['INTG M3 Mode'] = {0, 2, 0, false, nil},
@@ -1170,26 +1207,38 @@ layout_defs[5] = {
     ['RNG_WIND_AT_ALTITUDE'] = {7, 4, 0, false, nil},
     ['RNG_WIND_AT_ALTITUDE_Value'] = {13, 10, 0, false, nil},
 
+    --CRUS TOS
+    ['TOS_REQ_GS_label'] = {4, 7, 0, false, nil},
+    ['TOS_REQ_GS_value'] = {13, 7, 0, false, nil},
+
+    --CRUS EDR
+    ['EDR_WIND_AT_ALTITUDE'] = {7, 4, 0, false, nil},
+    ['EDR_WIND_AT_ALTITUDE_Value'] = {13, 10, 0, false, nil},
+
+    --CRUS HOME
+    ['HOME HOME_WIND_AT_ALTITUDE'] = {7, 4, 0, false, nil},
+    ['HOME HOME_WIND_AT_ALTITUDE_Value'] = {13, 10, 0, false, nil},
+
     --FIX
     ['FIX GPS ACCURACY label'] = {4, 9, 0, false, nil},
     ['FIX GPS ACCURACY value'] = {14, 4, 0, false, nil},
 
     --A CAL MAN
-    ['ACAL_POS_DELTA'] = {8, 5, 0, false, nil},
-    ['ACAL_POS_DELTA_label'] = {2, 3, 0, false, nil},
-    ['DELTA_POS'] = {16, 7, 0, false, nil},
+    ['ACAL ACAL_POS_DELTA'] = {8, 5, 0, false, nil},
+    ['ACAL ACAL_POS_DELTA_label'] = {2, 3, 0, false, nil},
+    ['ACAL DELTA_POS'] = {16, 7, 0, false, nil},
 
     --A CAL AUTO
     ['DTS_ACCURACY_VPU_label'] = {21, 2, 0, false, nil},
     ['DTS_ACCURACY_VPU_value'] = {23, 1, 0, false, nil},
 
     --HTS MAN
-    ['T4'] = {1, 1, 0, false, nil},
-    ['T4_code'] = {3, 4, 0, false, nil},
-    ['Asterisks_T4_both'] = {2, 1, 7, true, nil},
-    ['T8'] = {10, 1, 0, false, nil},
-    ['T8_code'] = {12, 4, 0, false, nil},
-    ['Asterisks_T8_both'] = {11, 1, 16, true, nil},
+    ['HTS MAN T4'] = {1, 1, 0, false, nil},
+    ['HTS MAN T4_code'] = {3, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T4_both'] = {2, 1, 7, true, nil},
+    ['HTS MAN T8'] = {10, 1, 0, false, nil},
+    ['HTS MAN T8_code'] = {12, 4, 0, false, nil},
+    ['HTS MAN Asterisks_T8_both'] = {11, 1, 16, true, nil},
 
     --HTS SEAD
     ['HTS_TOT_lbl'] = {2, 3, 0, false, nil},
@@ -1202,10 +1251,10 @@ layout_defs[5] = {
     ['UTM DEST P1 lbl'] = {21, 3, 0, false, nil},
 
     --DEST_DIR
-    ['DEST_TOS'] = {3, 3, 0, false, nil},
-    ['TOS'] = {8, 8, 0, false, nil},
-    ['Asterisks_TOS_both'] = {7, 1, 16, true, nil},
-    ['P2lbl'] = {21, 3, 0, false, nil},
+    ['DEST DIR DEST_TOS'] = {3, 3, 0, false, nil},
+    ['DEST DIR TOS'] = {8, 8, 0, false, nil},
+    ['DEST DIR Asterisks_TOS_both'] = {7, 1, 16, true, nil},
+    ['DEST DIR P2lbl'] = {21, 3, 0, false, nil},
 
     --DEST_OA1
     ['DEST OA1 DEST_OA1_ELEV'] = {2, 3, 0, false, nil},
@@ -1214,27 +1263,30 @@ layout_defs[5] = {
     ['DEST OA1 P3lbl'] = {21, 3, 0, false, nil},
 
     --DEST_OA2
-    ['DEST OA2 DEST_OA2_BRG'] = {2, 3, 0, false, nil},
+    ['DEST OA2 DEST_OA2_ELEV'] = {2, 3, 0, false, nil},
     ['DEST OA2 ELEV'] = {8, 8, 0, false, nil},
     ['DEST OA2 Asterisks_ELEV_both'] = {7, 1, 16, true, nil},
     ['DEST OA2 P4lbl'] = {21, 3, 0, false, nil},
 
-    -- VIP & VRP
-    ['Elevation'] = {4, 4, 0, false, nil},
-    ['Elevation value'] = {10, 8, 0, false, nil},
-    ['Elevation Asteriscs_both'] = {9, 1, 18, true, nil},
+    --VIP
+    ['VIP-TO-TGT Elevation'] = {4, 4, 0, false, nil},
+    ['VIP-TO-TGT Elevation value'] = {10, 8, 0, false, nil},
+    ['VIP-TO-TGT Elevation Asteriscs_both'] = {9, 1, 18, true, nil},
 
-    --CRUS-TOS
-    ['TOS_REQ_GS_label'] = {4, 7, 0, false, nil},
-    ['TOS_REQ_GS_value'] = {13, 7, 0, false, nil},
+    --VIP PUP
+    ['VIP-TO-PUP Elevation'] = {4, 4, 0, false, nil},
+    ['VIP-TO-PUP Elevation value'] = {10, 8, 0, false, nil},
+    ['VIP-TO-PUP Elevation Asteriscs_both'] = {9, 1, 18, true, nil},
 
-    --CRUS-EDR
-    ['EDR_WIND_AT_ALTITUDE'] = {7, 4, 0, false, nil},
-    ['EDR_WIND_AT_ALTITUDE_Value'] = {13, 10, 0, false, nil},
+    --VRP
+    ['TGT-TO-VRP Elevation'] = {4, 4, 0, false, nil},
+    ['TGT-TO-VRP Elevation value'] = {10, 8, 0, false, nil},
+    ['TGT-TO-VRP Elevation Asteriscs_both'] = {9, 1, 18, true, nil},
 
-    --CRUS-HOME
-    ['HOME_WIND_AT_ALTITUDE'] = {7, 4, 0, false, nil},
-    ['HOME_WIND_AT_ALTITUDE_Value'] = {13, 10, 0, false, nil},
+    --VRP PUP
+    ['TGT-TO-PUP Elevation'] = {4, 4, 0, false, nil},
+    ['TGT-TO-PUP Elevation value'] = {10, 8, 0, false, nil},
+    ['TGT-TO-PUP Elevation Asteriscs_both'] = {9, 1, 18, true, nil},
 }
 
 local function parse_indication(indication_text)
@@ -1257,136 +1309,57 @@ local function merge_string(original_string, new_string, location)
 	local new_string_length = new_string:len()
 	local before = original_string:sub(1, location)
 	local after = original_string:sub(location + new_string_length + 1)
-	return before .. new_string .. after
+    local merged = {}
+
+	for i = 1, new_string_length do
+		local current = original_string:sub(location + i, location + i)
+		if current ~= ' ' then
+			merged[i] = current
+		else
+			merged[i] = new_string:sub(i, i)
+		end
+	end
+	return before .. table.concat(merged) .. after
 end
 
-local blank_line = "                             "
+local blank_line = "                        "
 
 local function format_ded_line(ded_data, line)
     local text = blank_line
 
     -- Check for present of Objects that indicate Duplicate Key Names that need resolving
-	local guard = ded_data["Guard Label"]
-	local mode = ded_data["Mode label"]
-	local event = ded_data["Event Occured"]
-	local alow = ded_data["ALOW label"]
-	local bingo = ded_data["CMDS_BINGO_label"]
-	local inflt_algn = ded_data["INS_INFLT_ALGN_lbl"]
-	local intraflight = ded_data["INTRAFLIGHT lbl"]
-	local dlnk_A_G = ded_data["A-G DL lbl"]
-	local nav_status = ded_data["NAV Status lbl"]
-	local hmcs_display = ded_data["HMCS_DISPLAY_label"]
-	local hmcs_align = ded_data["HMCS_ALIGN_label"]
-	local utm_dest = ded_data["UTM_DEST"]
-	local dest_dir = ded_data["DEST_DIR"]
-	local dest_oa1 = ded_data["DEST_OA1"]
-	local dest_oa2 = ded_data["DEST_OA2"]
-	local vrp = ded_data["Target to VRP Label"] or ded_data["Target to VRP Label_inv"]
-	local vip = ded_data["Visual initial point to TGT Label"] or ded_data["Visual initial point to TGT Label_inv"]
-	local crus_home = ded_data["HOME_MODE"] or ded_data["HOME_MODE_inv"]
-	local fix = ded_data["FIX_SENSORS"]
-	local acal = ded_data["ACAL_SENSORS"]
-	local harm = ded_data["HARM"]
-	local hts = ded_data["HTS"]
-	local modality = ded_data["Master_mode_label"]
-	local netStatus = ded_data["NET STATUS lbl"]
-	local link16stn = ded_data["LINK16 STN lbl"]
-	local link16 = ded_data["LINK16 lbl"]
-	local misc = ded_data["MISC Label"]
-	local list = ded_data["LIST Label"]
-	local lasr = ded_data["LASR LABEL"]
+	local key_prefix =  ded_data["Guard Label"] or
+	                    ded_data["Mode label"] or
+	                    ded_data["Event Occured"] or
+	                    ded_data["ALOW label"] or
+	                    ded_data["CMDS_BINGO_label"] or
+	                    ded_data["INS_INFLT_ALGN_lbl"] or
+	                    ded_data["INTRAFLIGHT lbl"] or
+	                    ded_data["A-G DL lbl"] or -- DLNK A-G page: further action might be necessary
+	                    ded_data["NAV Status lbl"] or
+	                    ded_data["HMCS_DISPLAY_label"] or
+	                    ded_data["HMCS_ALIGN_label"] or
+	                    ded_data["UTM_DEST"] or
+	                    ded_data["DEST_DIR"] or
+	                    ded_data["DEST_OA1"] or
+	                    ded_data["DEST_OA2"] or
+	                    ded_data["Target to VRP Label"] or ded_data["Target to VRP Label_inv"] or
+	                    ded_data["Visual initial point to TGT Label"] or ded_data["Visual initial point to TGT Label_inv"] or
+	                    ded_data["HOME_MODE"] or ded_data["HOME_MODE_inv"] or
+	                    ded_data["FIX_SENSORS"] or
+	                    ded_data["ACAL_SENSORS"] or
+	                    ded_data["HARM"] or
+	                    (ded_data["HTS"] == "HTS MAN" and "HTS MAN") or
+	                    ded_data["Master_mode_label"] or
+	                    ded_data["NET STATUS lbl"] or
+	                    ded_data["LINK16 STN lbl"] or
+	                    ded_data["LINK16 lbl"] or
+	                    ded_data["MISC Label"] or
+	                    ded_data["LIST Label"] or
+	                    ded_data["LASR LABEL"]
 
     for k, v in pairs(ded_data) do
-		local label = k
-		-- Handle Duplicate Key Names on COM2 Guard page items
-		if guard ~= nil then
-			label = guard .. " " .. k
-		-- Handle Duplicate Key Names on IFF STAT page items
-		elseif mode ~= nil then
-			label = mode .. " " .. k
-		-- Handle Duplicate Key Names on IFF POS & TIM page items
-		elseif event ~= nil then
-			label = event .. " " .. k
-		-- Handle Duplicate Key Names on ALOW page Line 1 items
-		elseif alow ~= nil and line == 1 then
-			label = alow .. " " .. k
-		-- Handle Duplicate Key Names on CMDS Bingo page Line 1 items
-		elseif bingo ~= nil and line == 1 then
-			label = bingo .. " " .. k
-		-- Handle Duplicate Key Names on INS INFL ALGN page Lines 1 & 3 items
-		elseif inflt_algn ~= nil and (line == 1 or line == 3) then
-			label = inflt_algn .. " " .. k
-		-- Handle Duplicate Key Names on DLNK INTRAFLIGHT page
-		elseif intraflight ~= nil then
-			label = intraflight .. " " .. k
-		-- Handle Duplicate Key Names on DLNK A-G page Line 2 items
-		elseif dlnk_A_G ~= nil and line == 2 then
-			label = dlnk_A_G .. " " .. k
-		-- Handle Duplicate Key Names on NAV page
-		elseif nav_status ~= nil then
-			label = nav_status .. " " .. k
-		-- Handle Duplicate Key Names on HMCS Display page
-		elseif hmcs_display ~= nil then
-			label = hmcs_display .. " " .. k
-		-- Handle Duplicate Key Names on HMCS Align page
-		elseif hmcs_align ~= nil then
-			label = hmcs_align .. " " .. k
-		-- Handle Duplicate Key Names on DEST first page (UTM_DEST)	line 5 items
-		elseif utm_dest ~= nil and line == 5 then
-			label = utm_dest .. " " .. k
-		-- Handle Duplicate Key Names on DEST first page (DEST_DIR) line 4 items
-		elseif dest_dir ~= nil and line == 4 then
-			label = dest_dir .. " " .. k
-		-- Handle Duplicate Key Names on DEST first page (DEST_OA1) line 5 items
-		elseif dest_oa1 ~= nil and line == 5 then
-			label = dest_oa1 .. " " .. k
-		-- Handle Duplicate Key Names on DEST first page (DEST_OA2) line 5 items
-		elseif dest_oa2 ~= nil and line == 5 then
-			label = dest_oa2 .. " " .. k
-		-- Handle Duplicate Key Names on VRP first page  line 4 items
-		elseif vrp ~= nil and line == 4 then
-			label = vrp .. " " .. k
-		-- Handle Duplicate Key Names on VIP first page line 4 items
-		elseif vip ~= nil and line == 4 then
-			label = vip .. " " .. k
-		-- Handle Duplicate Key Names on CRUS first page line 1 items Asterisc
-		elseif crus_home ~= nil and line == 1 then
-			label = crus_home .. " " .. k
-		-- Handle Duplicate Key Names on FIX first page line 2 items
-		elseif fix ~= nil then
-			label = fix .. " " .. k
-		-- Handle Duplicate Key Names on ACAL first page line 1 items Asterisc
-		elseif acal ~= nil and line == 3 then
-			label = acal .. " " .. k
-		-- Handle Duplicate Key Names on HARM
-		elseif harm ~= nil then
-			label = harm .. " " .. k
-		-- Handle Duplicate Key Names on HTS
-		elseif hts ~= nil and line == 1 and v == "HTS MAN" then
-			label = hts .. " " .. k
-		-- Handle Duplicate Key Names on MODE in LIST page
-		elseif modality ~= nil then
-			label = modality .. " " .. k
-		-- Handle Duplicate Key Names on NET STATUS
-		elseif netStatus ~= nil and line == 1 then
-			label = netStatus .. " " .. k
-		-- Handle Duplicate Key Names on LINK16 STN lbl
-		elseif link16stn ~= nil and line == 1 then
-			label = link16stn .. " " .. k
-		-- Handle Duplicate Key Names on LINK16 lbl
-		elseif link16 ~= nil and line == 1 then
-			label = link16 .. " " .. k
-		-- Handle Duplicate Key Names on MISC Label
-		elseif misc ~= nil and line == 1 then
-			label = misc .. " " .. k
-		-- Handle Duplicate Key Names on LIST Label
-		elseif list ~= nil and line == 1 then
-			label = list .. " " .. k
-		-- Handle Duplicate Key Names on LASR LABEL
-		elseif lasr ~= nil and line == 1 then
-			label = lasr .. " " .. k
-		end
-
+		local label = key_prefix and key_prefix .. ' ' .. k or k
         local layout = layout_defs[line][label:gsub('_inv', '', 1):gsub('_lhs', '_both', 1)]
         if layout then
             v = layout[5] or v
