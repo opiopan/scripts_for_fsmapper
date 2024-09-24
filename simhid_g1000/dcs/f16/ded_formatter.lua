@@ -1,4 +1,4 @@
-layout_defs = {
+local layout_defs = {
     -- TODO
     ['TODO remove lbl'] = {2, 4, 20, 0, false, nil},
     ['TODO remove label'] = {4, 4, 20, 0, false, nil},
