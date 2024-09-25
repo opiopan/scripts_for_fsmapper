@@ -1009,20 +1009,20 @@ local function inverse_text(text)
 end
 
 local function merge_string(original_string, new_string, location)
-	local new_string_length = new_string:len()
-	local before = original_string:sub(1, location)
-	local after = original_string:sub(location + new_string_length + 1)
+    local new_string_length = new_string:len()
+    local before = original_string:sub(1, location)
+    local after = original_string:sub(location + new_string_length + 1)
     local merged = {}
 
-	for i = 1, new_string_length do
-		local current = original_string:sub(location + i, location + i)
-		if current ~= ' ' then
-			merged[i] = current
-		else
-			merged[i] = new_string:sub(i, i)
-		end
-	end
-	return before .. table.concat(merged) .. after
+    for i = 1, new_string_length do
+        local current = original_string:sub(location + i, location + i)
+        if current ~= ' ' then
+            merged[i] = current
+        else
+            merged[i] = new_string:sub(i, i)
+        end
+    end
+    return before .. table.concat(merged) .. after
 end
 
 local ded_formatter = {}
@@ -1032,39 +1032,39 @@ function ded_formatter.format_ded_lines(indication_text)
     local lines = {blank_line, blank_line, blank_line, blank_line, blank_line}
     local ded_data = parse_indication(indication_text)
 
-    -- Check for present of Objects that indicate Duplicate Key Names that need resolving
-	local key_prefix =  ded_data["Guard Label"] or
-	                    ded_data["Mode label"] or
-	                    ded_data["Event Occured"] or
-	                    ded_data["ALOW label"] or
-	                    ded_data["CMDS_BINGO_label"] or
-	                    ded_data["INS_INFLT_ALGN_lbl"] or
-	                    ded_data["INTRAFLIGHT lbl"] or
-	                    ded_data["A-G DL lbl"] or -- DLNK A-G page: further action might be necessary
-	                    ded_data["NAV Status lbl"] or
-	                    ded_data["HMCS_DISPLAY_label"] or
-	                    ded_data["HMCS_ALIGN_label"] or
-	                    ded_data["UTM_DEST"] or
-	                    ded_data["DEST_DIR"] or
-	                    ded_data["DEST_OA1"] or
-	                    ded_data["DEST_OA2"] or
-	                    ded_data["Target to VRP Label"] or ded_data["Target to VRP Label_inv"] or
-	                    ded_data["Visual initial point to TGT Label"] or ded_data["Visual initial point to TGT Label_inv"] or
-	                    ded_data["HOME_MODE"] or ded_data["HOME_MODE_inv"] or
-	                    ded_data["FIX_SENSORS"] or
-	                    ded_data["ACAL_SENSORS"] or
-	                    ded_data["HARM"] or
-	                    (ded_data["HTS"] == "HTS MAN" and "HTS MAN") or
-	                    ded_data["Master_mode_label"] or
-	                    ded_data["NET STATUS lbl"] or
-	                    ded_data["LINK16 STN lbl"] or
-	                    ded_data["LINK16 lbl"] or
-	                    ded_data["MISC Label"] or
-	                    ded_data["LIST Label"] or
-	                    ded_data["LASR LABEL"]
+    -- Determine the prefix assigned to each key to prevent the key conflict issue
+    local key_prefix =  ded_data["Guard Label"] or
+                        ded_data["Mode label"] or
+                        ded_data["Event Occured"] or
+                        ded_data["ALOW label"] or
+                        ded_data["CMDS_BINGO_label"] or
+                        ded_data["INS_INFLT_ALGN_lbl"] or
+                        ded_data["INTRAFLIGHT lbl"] or
+                        ded_data["A-G DL lbl"] or -- DLNK A-G page: further action might be necessary
+                        ded_data["NAV Status lbl"] or
+                        ded_data["HMCS_DISPLAY_label"] or
+                        ded_data["HMCS_ALIGN_label"] or
+                        ded_data["UTM_DEST"] or
+                        ded_data["DEST_DIR"] or
+                        ded_data["DEST_OA1"] or
+                        ded_data["DEST_OA2"] or
+                        ded_data["Target to VRP Label"] or ded_data["Target to VRP Label_inv"] or
+                        ded_data["Visual initial point to TGT Label"] or ded_data["Visual initial point to TGT Label_inv"] or
+                        ded_data["HOME_MODE"] or ded_data["HOME_MODE_inv"] or
+                        ded_data["FIX_SENSORS"] or
+                        ded_data["ACAL_SENSORS"] or
+                        ded_data["HARM"] or
+                        (ded_data["HTS"] == "HTS MAN" and "HTS MAN") or
+                        ded_data["Master_mode_label"] or
+                        ded_data["NET STATUS lbl"] or
+                        ded_data["LINK16 STN lbl"] or
+                        ded_data["LINK16 lbl"] or
+                        ded_data["MISC Label"] or
+                        ded_data["LIST Label"] or
+                        ded_data["LASR LABEL"]
 
     for key, value in pairs(ded_data) do
-		local label = key_prefix and key_prefix .. ' ' .. key or key
+        local label = key_prefix and key_prefix .. ' ' .. key or key
         local layout = layout_defs[label:gsub('_inv', '', 1):gsub('_lhs', '_both', 1)]
         if layout then
             value = layout[6] or value
