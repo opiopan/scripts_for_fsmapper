@@ -61,7 +61,7 @@ local glyphs = {
 
 local v_units = 11
 local h_units = 8
-local oratio = 0.9
+local oratio
 
 local function draw_glyph(rctx, unit, patterns, offset, inverted)
     local length = unit * oratio
@@ -78,7 +78,7 @@ end
 
 function module.generate_font(height, ocupancy_ratio, color)
     color = color or graphics.color(171, 205, 83)
-    oratio = ocupancy_ratio or 0.9
+    oratio = math.sqrt(ocupancy_ratio or 0.9)
     local font = {}
     font .unit = height / v_units
     font.height = height
