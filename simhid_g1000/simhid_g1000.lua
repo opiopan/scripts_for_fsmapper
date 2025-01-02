@@ -4,7 +4,7 @@ msfs_map["SR 22"] = require("msfs/g1000")
 msfs_map["SR22T Working Title"] = require("msfs/g1000abs")
 msfs_map["DA40-NG Asobo"] = require("msfs/g1000")
 msfs_map["DA 40 NG"] = require("msfs/g1000")
-msfs_map["DA62 Asobo"] = require("msfs/g1000")
+msfs_map["DA62"] = require("msfs/g1000")
 msfs_map["DA 62"] = require("msfs/g1000")
 msfs_map["Baron G58"] = require("msfs/g1000")
 msfs_map["Bonanza G36"] = require("msfs/g1000")
@@ -17,8 +17,8 @@ msfs_map["Airbus A320 Neo FlyByWire"] = require("msfs/a32nx")
 msfs_map["FenixA320"] = require("msfs/fnx32")
 msfs_map["PMDG 737"] = require("msfs/pmdg737")
 msfs_map["Beechcraft King Air 350"] = require("msfs/g3x_touch")
-msfs_map["Asobo NXCub"] = require("msfs/g3x_touch")
-msfs_map["Asobo XCub"] = require("msfs/g3x_touch")
+msfs_map["NXCub"] = require("msfs/g3x_touch")
+msfs_map["XCub"] = require("msfs/g3x_touch")
 msfs_map["Xcub"] = require("msfs/g3x_touch")
 msfs_map["VL3"] = require("msfs/g3x_touch")
 msfs_map["Volocity Microsoft"] = require("msfs/g3x_touch")
@@ -30,11 +30,14 @@ msfs_map["Cessna Skyhawk Asobo"] = require("msfs/c172")
 msfs_map["Cessna Skyhawk Floaters Asobo"] = require("msfs/c172")
 msfs_map["Cessna Skyhawk Skis Asobo"] = require("msfs/c172")
 msfs_map["Cessna Skyhawk 172Sp Classic"] = require("msfs/c172")
+msfs_map["C172SP Classic"] = require("msfs/c172")
 msfs_map["DA40 TDI Asobo"] = require("msfs/da40tdi")
+msfs_map["DA40  TDI"] = require("msfs/da40tdi")
 msfs_map["DA 40 TDI"] = require("msfs/da40tdi")
 msfs_map["DV20 Asobo"] = require("msfs/da40tdi")
 msfs_map["DV 20"] = require("msfs/da40tdi")
 msfs_map["Cessna Longitude"] = require("msfs/longitude")
+msfs_map["Cessna Citation Longitude"] = require("msfs/longitude")
 msfs_map["Blackbird Simulations DHC-2"] = require("msfs/dhc2")
 msfs_map["Cessna 152"] = require("msfs/c152")
 
@@ -53,10 +56,10 @@ local msfs_fallback={
 local dcs_map = {}
 dcs_map["F-16C_50"] = require("dcs/f16")
 
-local dcs_config = require("dcs/dcs_default")
+local def_config = require("dcs/dcs_default")
 
 local global_config = nil
-local current = dcs_config
+local current = def_config
 
 local function init(config)
     global_config = config
@@ -79,7 +82,7 @@ local function change(sim_type, aircraft)
             end
         end
     else
-        current = dcs_config
+        current = def_config
     end
     return current.start(global_config, aircraft)
 end

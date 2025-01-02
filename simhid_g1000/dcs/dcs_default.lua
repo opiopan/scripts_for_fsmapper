@@ -15,6 +15,14 @@ function module.start(config)
     module.vjoy = mapper.virtual_joystick(2)
     local vjoy = module.vjoy
 
+    local chunks = {}
+    chunks.fly_to_tanker = dcs.register_chunk([[
+        if not fsmapper.fly_to_tanker then
+            fsmapper.fly_to_tanker = sendMessage.new(Message.wMsgLeaderGoRefueling)
+        end
+        fsmapper.fly_to_tanker:perform()
+    ]])
+
     local mappings = {
         {
             {event=g1000.SW1.change, action=vjoy:get_button(1):value_setter()},
@@ -42,7 +50,8 @@ function module.start(config)
             {event=g1000.SW23.change, action=vjoy:get_button(23):value_setter()},
             {event=g1000.SW24.change, action=vjoy:get_button(24):value_setter()},
             -- {event=g1000.SW25.change, action=vjoy:get_button(25):value_setter()},
-            {event=g1000.SW25.down, action=mapper.keystroke{codes={"f12"}, modifiers={"VK_LSHIFT", "VK_LMENU"}, duration=300}:synthesizer()},
+            -- {event=g1000.SW25.down, action=mapper.keystroke{codes={"f12"}, modifiers={"VK_LSHIFT", "VK_LMENU"}, duration=300}:synthesizer()},
+            {event=g1000.SW25.down, action=dcs.chunk_executer(chunks.fly_to_tanker)},
             {event=g1000.SW26.change, action=vjoy:get_button(26):value_setter()},
             {event=g1000.SW27.change, action=vjoy:get_button(27):value_setter()},
             {event=g1000.SW28.change, action=vjoy:get_button(28):value_setter()},
@@ -116,6 +125,7 @@ function module.stop()
     end
     module.device = nil
     module.vjoy = nil
+    dcs.clear_chunks()
 end
 
 return module

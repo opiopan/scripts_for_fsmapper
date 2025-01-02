@@ -35,6 +35,7 @@ local function start(config)
         aspect_ratio = 2 / 3 / (vratio_panel + vratio_display),
         horizontal_alignment = "right",
         vertical_alignment = "bottom",
+        ignore_transparent_touches = true,
     }
 
     local viewport_right = mapper.viewport{
@@ -45,6 +46,7 @@ local function start(config)
         aspect_ratio = 2 / 3 / (vratio_panel + vratio_display),
         horizontal_alignment = "left",
         vertical_alignment = "bottom",
+        ignore_transparent_touches = true,
     }
 
     local viewport_menu = mapper.viewport{

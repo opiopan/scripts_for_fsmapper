@@ -15,4 +15,15 @@ function common.parse_indication(indication_text)
     return parsed_data
 end
 
+function common.exported_instruments(path, unit)
+    local env = {}
+    setmetatable(env, {__index=_ENV})
+    local chunk = loadfile(path, 'bt', env)
+    chunk()
+    if env.reconfigure_for_unit then
+        env.reconfigure_for_unit(unit)
+    end
+    return env
+end
+
 return common

@@ -75,6 +75,7 @@ mapper.add_primary_mappings({
 })
 
 if config.initial_sim ~= nil and config.initial_aircraft ~= nil then
+    mapper.print('Emulating: [' .. config.initial_sim .. '] ' .. config.initial_aircraft)
     change_aircraft(config.initial_sim, config.initial_aircraft)
 else
     change_aircraft("", "")
