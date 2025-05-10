@@ -1,6 +1,20 @@
 -- local g1000lib = require("msfs/g1000")
 local g1000lib = require("msfs/g1000abs")
 
+-- Configurations for default
+local def_config = {
+    start = function ()
+        return {
+            move_next_view = function () end,
+            move_previous_view = function () end,
+            global_mappings = {},
+            need_to_start_viewports = false,
+        }
+    end,
+    stop = function () end,
+}
+
+-- Configurations for MSFS
 local msfs_map = {}
 msfs_map["SR22 Asobo"] = g1000lib
 msfs_map["SR 22"] = g1000lib
@@ -44,23 +58,14 @@ msfs_map["Cessna Citation Longitude"] = require("msfs/longitude")
 msfs_map["Blackbird Simulations DHC-2"] = require("msfs/dhc2")
 msfs_map["Cessna 152"] = require("msfs/c152")
 
-local msfs_fallback={
-    start = function ()
-        return {
-            move_next_view = function () end,
-            move_previous_view = function () end,
-            global_mappings = {},
-            need_to_start_viewports = false,
-        }
-    end,
-    stop = function () end,
-}
+local msfs_fallback = def_config
 
+-- Configurations for DCS
 local dcs_map = {}
 dcs_map["F-16C_50"] = require("dcs/f16")
+dcs_fallback = require("dcs/dcs_default")
 
-local def_config = require("dcs/dcs_default")
-
+-- Configuration switching 
 local global_config = nil
 local current = def_config
 
@@ -83,6 +88,11 @@ local function change(sim_type, aircraft)
             if not current then
                 current = msfs_fallback
             end
+        end
+    elseif sim_type == "dcs" then
+        current = dcs_map[aircraft]
+        if not current then
+            current = dcs_fallback
         end
     else
         current = def_config
