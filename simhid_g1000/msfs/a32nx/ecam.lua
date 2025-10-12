@@ -156,7 +156,10 @@ local function change_ecam_page(pgid)
 end
 
 local view_mappings = {
-    {event=events.toconfig_push, action=msfs.mfwasm.rpn_executer("1 (>L:A32NX_BTN_TOCONFIG)")},
+    {event=events.toconfig_push, action=filter.duplicator(
+        msfs.mfwasm.rpn_executer("1 (>L:A32NX_BTN_TOCONFIG)"),
+        filter.delay(200, msfs.mfwasm.rpn_executer("0 (>L:A32NX_BTN_TOCONFIG)"))
+    )},
     {event=events.eng_push, action=function () change_ecam_page(0) end},
     {event=events.bleed_push, action=function () change_ecam_page(1) end},
     {event=events.press_push, action=function () change_ecam_page(2) end},
