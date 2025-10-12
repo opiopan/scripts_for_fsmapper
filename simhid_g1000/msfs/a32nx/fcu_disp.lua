@@ -235,7 +235,7 @@ end
 --------------------------------------------------------------------------------------
 local mapping_defs = {
     power = {
-        rpn = '(A:ELECTRICAL MAIN BUS VOLTAGE:1, Volts) 28 < if{ 0 } els{ (L:A32NX_OVHD_INTLT_ANN) if{ 1 } els{ 2 } }',
+        rpn = '(A:ELECTRICAL MAIN BUS VOLTAGE:1, Volts) 28 < (L:A32NX_OVHD_ELEC_EXT_PWR_PB_IS_ON) ! and if{ 0 } els{ (L:A32NX_OVHD_INTLT_ANN) if{ 1 } els{ 2 } }',
         action = function (evid, value)
             disp_context.power = value
             for name, canvas in pairs(canvases) do

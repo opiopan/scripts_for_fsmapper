@@ -47,7 +47,7 @@ local observed_data = {
     {rpn="(L:A32NX_FCU_EXPED_LIGHT_ON)", event=events.exped_change},
     {rpn="(L:A32NX_FCU_APPR_LIGHT_ON)", event=events.appr_change},
     {rpn="(A:AUTOPILOT FLIGHT DIRECTOR ACTIVE:1,Bool) (L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or and", event=events.fd_change},
-    {rpn="(L:BTN_LS_1_FILTER_ACTIVE)", event=events.ls_change},
+    {rpn="(L:A32NX_FCU_EFIS_L_LS_LIGHT_ON)", event=events.ls_change},
     {rpn="(L:A32NX_ELEC_DC_1_BUS_IS_POWERED) (L:A32NX_ELEC_DC_2_BUS_IS_POWERED) or not -5 * (L:A32NX_FCU_EFIS_L_DISPLAY_BARO_MODE) -1 * 2 + +", event=events.baro_mode_change},
     {rpn="(L:A32NX_FCU_EFIS_L_BARO_IS_INHG)", event=events.baro_unit_change},
     {rpn="(A:KOHLSMAN SETTING HG:1,Inches of Mercury)", event=events.baro_inhg_change},
