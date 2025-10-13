@@ -62,7 +62,7 @@ local function change_aircraft(sim_type, aircraft)
     end
     
     local controller = context.simhid_g1000.change(sim_type, aircraft)
-    context.hotas.change(host, aircraft, controller)
+    context.hotas.change(sim_type, aircraft, controller)
     if controller.need_to_start_viewports then
         mapper.start_viewports()
     end
