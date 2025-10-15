@@ -297,12 +297,12 @@ local function init(config)
 
     x56_context.throttle_map_normal2 ={
         {-50000, -50000},
-        {50000, 0},
+        {50000, 25000},
     }
     x56_context.throttle_map_reverse2 ={
         {-50000, 50000},
         {-29500, 50000},
-        {50000, 2500},
+        {50000, 30000},
     }
     x56_context.throttle_map2 = x56_context.throttle_map_normal2
 
@@ -371,7 +371,7 @@ local function init(config)
     x56_context.joymap.base = x56_context.joymap_dcs
 
     x56_context.msfs_maps = {}
-    x56_context.msfs_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_airbus
+    x56_context.msfs_maps["Airbus A320 Neo FlyByWire"] = x56_context.joymap_airbus2
     x56_context.msfs_maps["FenixA320"] = x56_context.joymap_airbus2
 
     return static_mappings
