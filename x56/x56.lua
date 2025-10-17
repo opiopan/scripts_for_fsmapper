@@ -12,7 +12,7 @@ local function init(config)
         identifier = config.x56_throttle_identifier,
         options = {denylist = {"z", "rx", "ry", "rz", "slider1"}},
         modifiers = {
-            {name = "button33", modtype = "button", modparam={follow_down = 200}},
+            {name = "button33", modtype = "button"},
             {name = "button34", modtype = "button"},
             {name = "button35", modtype = "button"},
             {name = "button36", modtype = "button"},
@@ -177,6 +177,32 @@ local function init(config)
         end
     end
 
+    local airbrake = {
+        count = 0,
+    }
+    function airbrake.on(self)
+        self.count = self.count + 1
+        local last_count = self.count
+        airbrake_close:set_value(false)
+        airbrake_open:set_value(true)
+        mapper.delay(4000, function ()
+            if self.count == last_count then
+                airbrake_open:set_value(false)
+            end
+        end)
+    end
+    function airbrake.off(self)
+        self.count = self.count + 1
+        local last_count = self.count
+        airbrake_open:set_value(false)
+        airbrake_close:set_value(true)
+        mapper.delay(200, function ()
+            if self.count == last_count then
+                airbrake_close:set_value(false)
+            end
+        end)
+    end
+
     x56_context.joymap_dcs = {
         {event=x56throttle.x.change, action=filter.duplicator(
             filter.lerp(throttle1a:value_setter(),{
@@ -212,12 +238,8 @@ local function init(config)
                 {condition="exceeded", value=-39000, action=ab2:value_setter(false)}
             )
         )},
-        {event=x56throttle.button33.up, action=airbrake_open:value_setter(true)},
-        {event=x56throttle.button33.down, action=filter.duplicator(
-            airbrake_open:value_setter(false),
-            airbrake_close:value_setter(true)
-        )},
-        {event=x56throttle.button33.following_down, action=airbrake_close:value_setter(false)},
+        {event=x56throttle.button33.up, action=function () airbrake:on() end},
+        {event=x56throttle.button33.down, action=function () airbrake:off() end},
         {event=x56throttle.slider2.change, action=set_zoom_level},
         {event=x56stick.vpov1.change, action=reflect_cms},
         {event=x56throttle.button21.down, action=mapper.keystroke{codes={"f1"}}:synthesizer()},
