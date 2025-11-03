@@ -12,7 +12,7 @@ local function init(config)
         identifier = config.x56_throttle_identifier,
         options = {denylist = {"z", "rx", "ry", "rz", "slider1"}},
         modifiers = {
-            {name = "button33", modtype = "button"},
+            {name = "button33", modtype = "button", modparam={follow_down = 200}},
             {name = "button34", modtype = "button"},
             {name = "button35", modtype = "button"},
             {name = "button36", modtype = "button"},
