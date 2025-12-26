@@ -123,6 +123,7 @@ function context.create_view(name, num)
             window_titles={
                 "AS3X_TOUCH_" .. num,
                 "G3XTOUCH_" .. num,
+                "G3XTOUCH_" .. (num + 2),
             },
         },
         x = 0, y = g3x_window_y_pos,

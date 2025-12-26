@@ -72,6 +72,7 @@ aircraft_defs["Asobo NXCub"] = {views={"G3X Touch PFD"}, aptype=1}
 aircraft_defs["Asobo XCub"] = {views={"G3X Touch PFD"}, aptype=1}
 aircraft_defs["Xcub"] = {views={"G3X Touch PFD"}, aptype=1}
 aircraft_defs["Beechcraft King Air 350"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=2}
+aircraft_defs["Beechcraft King Air"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=2}
 aircraft_defs["VL3"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=3}
 aircraft_defs["Volocity Microsoft"] = {views={"G3X Touch PFD"}, aptype=3}
 aircraft_fallback = {views={"G3X Touch PFD"}, aptype=3}
