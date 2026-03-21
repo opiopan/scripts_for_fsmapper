@@ -77,106 +77,19 @@ aircraft_defs["VL3"] = {views={"G3X Touch PFD","G3X Touch MFD"}, aptype=3}
 aircraft_defs["Volocity Microsoft"] = {views={"G3X Touch PFD"}, aptype=3}
 aircraft_fallback = {views={"G3X Touch PFD"}, aptype=3}
 
+local modifiers = {
+    {class = "binary", modtype = "button"},
+    {class = "relative", modtype = "incdec"},
+}
+
 --------------------------------------------------------------------------------------
--- Initialize function
+-- Build viewport-level AP control mappings for a given device and AP panel type.
+-- Called once per viewport so each device's physical knobs/buttons are wired up.
 --------------------------------------------------------------------------------------
-function context.start(config, aircraft)
-    local display = config.simhid_g1000_display
-    local scale = config.simhid_g1000_display_scale
-    
-    local viewport = mapper.viewport{
-        name = "G3X Touch",
-        displayno = display,
-        x = 0, y = 0, width = scale, height = scale,
-        aspect_ratio = 4 / 3,
-    }
-
-    context.device = common.open_simhid_g1000{
-        config = config,
-        modifiers = {
-            {class = "binary", modtype = "button"},
-            {class = "relative", modtype = "incdec"},
-        },
-    }
-    local g1000 = context.device.events
-
-    local aircraft_def = aircraft_defs[aircraft]
-    if not aircraft_def then
-        for name, def in pairs(aircraft_defs) do
-            if string.find(aircraft, name) ~= nil then
-                aircraft_def = def
-                break
-            end
-        end
-        if not aircraft_def then
-            aircraft_def = aircraft_fallback
-        end
-    end
-
-    context.g3x_touch_view.init(context.device, aircraft_def.aptype ~= 2)
-    context.views = {}
-    context.canvases = {}
-    local global_mappings = {}
-    local observed_data = {}
-    local ap_panel_def = ap_panel_defs[aircraft_def.aptype]
-    if ap_panel_def.background then
-        context.background = graphics.bitmap(ap_panel_def.background)
-    end
-
-    for name, indicator in pairs(ap_panel_def.indicators) do
-        context.canvases[name] = {}
-        observed_data[#observed_data + 1] = {rpn=indicator.rpn, event=indicator.evid}
-        global_mappings[#global_mappings + 1] = {event=indicator.evid, action=function(evid, value)
-            for i, canvas in ipairs(context.canvases[name]) do
-                canvas:set_value(value)
-            end
-        end}
-    end
-    msfs.mfwasm.add_observed_data(observed_data)
-
-    for i, name in ipairs(aircraft_def.views) do
-        local view_def = context.g3x_touch_view.create_view(name, i)
-        if context.background then
-            view_def.background = context.background
-        end
-        for name, button in pairs(ap_panel_def.buttons) do
-            view_def.elements[#view_def.elements + 1] = {
-                object = mapper.view_elements.operable_area{round_ratio = button.attr.rratio, event_tap = button.evid},
-                x = button.x, y = button.y,
-                width = button.attr.width, height = button.attr.height
-            }
-            view_def.mappings[#view_def.mappings + 1] = {event = button.evid, action = button.action}
-            if button.image then
-                local rctx = graphics.rendering_context(view_def.background)
-                rctx:draw_bitmap(button.image, button.x, button.y)
-                rctx:finish_rendering()
-            end
-        end
-        for name, indicator in pairs(ap_panel_def.indicators) do
-            local canvas = mapper.view_elements.canvas{
-                logical_width = indicator.attr.width,
-                logical_height = indicator.attr.height,
-                value = 0,
-                renderer = function (ctx, value)
-                    local image = indicator.bitmaps[value + 1]
-                    if image then
-                        ctx:draw_bitmap(image, 0, 0)
-                    end
-                end
-            }
-            view_def.elements[#view_def.elements + 1] = {
-                object = canvas,
-                x = indicator.x, y = indicator.y,
-                width = indicator.attr.width, height = indicator.attr.height
-            }
-            context.canvases[name][#context.canvases[name] + 1] = canvas
-        end
-        context.views[i] = viewport:register_view(view_def)
-    end
-
-    if aircraft_def.aptype == 1 then
-        -- Airecraft which install GMC 307 control panel
-        viewport:set_mappings{
+local function make_ap_viewport_mappings(g1000, aptype)
+    if aptype == 1 then
+        -- Aircraft with GMC 307 control panel
+        return {
             {event=g1000.SW2.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }")},
             {event=g1000.SW3.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT MASTER, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) }")},
             {event=g1000.SW4.down, action=msfs.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)")},
@@ -197,8 +110,9 @@ function context.start(config, aircraft)
             {event=g1000.EC7Y.increment, action=msfs.mfwasm.rpn_executer("1 (>K:KOHLSMAN_INC) (>H:AP_BARO_Up)")},
             {event=g1000.EC7Y.decrement, action=msfs.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }
-    elseif aircraft_def.aptype == 2 then
-        viewport:set_mappings{
+    elseif aptype == 2 then
+        -- King Air 350
+        return {
             {event=g1000.SW2.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT DISENGAGED, Bool) ! if{ (>K:AP_MASTER) (A:AUTOPILOT MASTER, Bool) ! if{ (>H:Generic_Autopilot_Manual_Off) } els{ (A:AUTOPILOT FLIGHT DIRECTOR ACTIVE, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) } } }")},
             {event=g1000.SW3.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT MASTER, Bool) ! if{ 1 (>K:TOGGLE_FLIGHT_DIRECTOR) }")},
             {event=g1000.SW4.down, action=msfs.mfwasm.rpn_executer("(>K:AP_PANEL_HEADING_HOLD)")},
@@ -229,8 +143,8 @@ function context.start(config, aircraft)
             {event=g1000.EC7Y.decrement, action=msfs.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }
     else
-        -- No auto pilot system is enabled
-        viewport:set_mappings{
+        -- No autopilot system
+        return {
             {event=g1000.EC3.increment, action=msfs.mfwasm.rpn_executer("1 (>K:HEADING_BUG_INC)")},
             {event=g1000.EC3.decrement, action=msfs.mfwasm.rpn_executer("1 (>K:HEADING_BUG_DEC)")},
             {event=g1000.EC2X.increment, action=msfs.mfwasm.rpn_executer("100 (>K:AP_ALT_VAR_INC)")},
@@ -241,31 +155,204 @@ function context.start(config, aircraft)
             {event=g1000.EC7Y.decrement, action=msfs.mfwasm.rpn_executer("1 (>K:KOHLSMAN_DEC) (>H:AP_BARO_Down)")},
         }
     end
+end
 
-    context.current_view = 1
-    local function change_view(d)
-        context.current_view = context.current_view + d
-        if context.current_view > #context.views then
-            context.current_view = 1
-        elseif context.current_view < 1 then
-            context.current_view = #context.views
+--------------------------------------------------------------------------------------
+-- Add AP panel button operable areas and indicator canvases to a view definition.
+-- Indicator canvases are appended to context.canvases so all instances are updated
+-- together when the observed RPN value changes.
+--------------------------------------------------------------------------------------
+local function add_ap_elements_to_view(view_def, ap_panel_def)
+    for name, button in pairs(ap_panel_def.buttons) do
+        view_def.elements[#view_def.elements + 1] = {
+            object = mapper.view_elements.operable_area{round_ratio = button.attr.rratio, event_tap = button.evid},
+            x = button.x, y = button.y,
+            width = button.attr.width, height = button.attr.height
+        }
+        view_def.mappings[#view_def.mappings + 1] = {event = button.evid, action = button.action}
+        if button.image then
+            local rctx = graphics.rendering_context(view_def.background)
+            rctx:draw_bitmap(button.image, button.x, button.y)
+            rctx:finish_rendering()
         end
-        viewport:change_view(context.views[context.current_view])
+    end
+    for name, indicator in pairs(ap_panel_def.indicators) do
+        local canvas = mapper.view_elements.canvas{
+            logical_width = indicator.attr.width,
+            logical_height = indicator.attr.height,
+            value = 0,
+            renderer = function (ctx, value)
+                local image = indicator.bitmaps[value + 1]
+                if image then
+                    ctx:draw_bitmap(image, 0, 0)
+                end
+            end
+        }
+        view_def.elements[#view_def.elements + 1] = {
+            object = canvas,
+            x = indicator.x, y = indicator.y,
+            width = indicator.attr.width, height = indicator.attr.height
+        }
+        context.canvases[name][#context.canvases[name] + 1] = canvas
+    end
+end
+
+--------------------------------------------------------------------------------------
+-- Initialize function
+--------------------------------------------------------------------------------------
+function context.start(config, aircraft)
+    local display = config.simhid_g1000_display
+    local scale = config.simhid_g1000_display_scale
+
+    context.device = common.open_simhid_g1000{config = config, modifiers = modifiers}
+    context.device2 = common.try_open_simhid_g1000_2{config = config, modifiers = modifiers}
+    local g1000 = context.device.events
+
+    local aircraft_def = aircraft_defs[aircraft]
+    if not aircraft_def then
+        for name, def in pairs(aircraft_defs) do
+            if string.find(aircraft, name) ~= nil then
+                aircraft_def = def
+                break
+            end
+        end
+        if not aircraft_def then
+            aircraft_def = aircraft_fallback
+        end
     end
 
-    viewport:add_mappings{
-        {event=g1000.AUX1D.down, action=function () change_view(1) end},
-        {event=g1000.AUX1U.down, action=function () change_view(-1) end},
-        {event=g1000.AUX2D.down, action=function () change_view(1) end},
-        {event=g1000.AUX2U.down, action=function () change_view(-1) end},
-    }
+    local has_buttons = aircraft_def.aptype ~= 2
+    local ap_panel_def = ap_panel_defs[aircraft_def.aptype]
 
-    return {
-        move_next_view = function () change_view(1) end,
-        move_previous_view = function () change_view(-1) end,
-        global_mappings = {global_mappings},
-        need_to_start_viewports = true,
-    }
+    context.views = {}
+    context.canvases = {}
+    local global_mappings = {}
+    local observed_data = {}
+
+    if ap_panel_def.background then
+        context.background = graphics.bitmap(ap_panel_def.background)
+    end
+
+    for name, indicator in pairs(ap_panel_def.indicators) do
+        context.canvases[name] = {}
+        observed_data[#observed_data + 1] = {rpn=indicator.rpn, event=indicator.evid}
+        global_mappings[#global_mappings + 1] = {event=indicator.evid, action=function(evid, value)
+            for i, canvas in ipairs(context.canvases[name]) do
+                canvas:set_value(value)
+            end
+        end}
+    end
+    msfs.mfwasm.add_observed_data(observed_data)
+
+    if context.device2 and #aircraft_def.views >= 2 then
+        --------------------------------------------------------------------------------------
+        -- Two-device mode: view 1 on display 1 / device 1, remaining views on display 2 / device 2.
+        -- Each viewport shows its assigned view(s) without needing to cycle.
+        --------------------------------------------------------------------------------------
+        local g1000_2 = context.device2.events
+        local display2 = common.get_simhid_g1000_2_display(config)
+
+        -- Viewport 1: device 1, view 1
+        local viewport1 = mapper.viewport{
+            name = "G3X Touch PFD",
+            displayno = display,
+            x = 0, y = 0, width = scale, height = scale,
+            aspect_ratio = 4 / 3,
+        }
+        context.g3x_touch_view.init(context.device, has_buttons)
+        local view1_def = context.g3x_touch_view.create_view(aircraft_def.views[1], 1)
+        if context.background then view1_def.background = context.background end
+        add_ap_elements_to_view(view1_def, ap_panel_def)
+        context.views[1] = viewport1:register_view(view1_def)
+        viewport1:set_mappings(make_ap_viewport_mappings(g1000, aircraft_def.aptype))
+
+        -- Viewport 2: device 2, views 2 through N
+        local viewport2 = mapper.viewport{
+            name = "G3X Touch MFD",
+            displayno = display2,
+            x = 0, y = 0, width = scale, height = scale,
+            aspect_ratio = 4 / 3,
+        }
+        -- Re-initialise with device 2 so create_view uses its events for view-level knob mappings.
+        context.g3x_touch_view.init(context.device2, has_buttons)
+        for i = 2, #aircraft_def.views do
+            local view_def = context.g3x_touch_view.create_view(aircraft_def.views[i], i)
+            if context.background then view_def.background = context.background end
+            add_ap_elements_to_view(view_def, ap_panel_def)
+            context.views[i] = viewport2:register_view(view_def)
+        end
+        viewport2:set_mappings(make_ap_viewport_mappings(g1000_2, aircraft_def.aptype))
+
+        -- If viewport 2 holds more than one view, let device 2's AUX buttons cycle them.
+        if #aircraft_def.views > 2 then
+            local vp2_view_count = #aircraft_def.views - 1
+            local vp2_current = 1
+            local function change_vp2_view(d)
+                vp2_current = vp2_current + d
+                if vp2_current > vp2_view_count then vp2_current = 1
+                elseif vp2_current < 1 then vp2_current = vp2_view_count
+                end
+                viewport2:change_view(context.views[vp2_current + 1])
+            end
+            viewport2:add_mappings{
+                {event=g1000_2.AUX1D.down, action=function() change_vp2_view(1) end},
+                {event=g1000_2.AUX1U.down, action=function() change_vp2_view(-1) end},
+                {event=g1000_2.AUX2D.down, action=function() change_vp2_view(1) end},
+                {event=g1000_2.AUX2U.down, action=function() change_vp2_view(-1) end},
+            }
+        end
+
+        return {
+            move_next_view = function() end,
+            move_previous_view = function() end,
+            global_mappings = {global_mappings},
+            need_to_start_viewports = true,
+        }
+    else
+        --------------------------------------------------------------------------------------
+        -- Single-device mode: all views in one viewport, AUX buttons cycle through them.
+        --------------------------------------------------------------------------------------
+        local viewport = mapper.viewport{
+            name = "G3X Touch",
+            displayno = display,
+            x = 0, y = 0, width = scale, height = scale,
+            aspect_ratio = 4 / 3,
+        }
+
+        context.g3x_touch_view.init(context.device, has_buttons)
+        for i, name in ipairs(aircraft_def.views) do
+            local view_def = context.g3x_touch_view.create_view(name, i)
+            if context.background then view_def.background = context.background end
+            add_ap_elements_to_view(view_def, ap_panel_def)
+            context.views[i] = viewport:register_view(view_def)
+        end
+        viewport:set_mappings(make_ap_viewport_mappings(g1000, aircraft_def.aptype))
+
+        context.current_view = 1
+        local function change_view(d)
+            context.current_view = context.current_view + d
+            if context.current_view > #context.views then
+                context.current_view = 1
+            elseif context.current_view < 1 then
+                context.current_view = #context.views
+            end
+            viewport:change_view(context.views[context.current_view])
+        end
+
+        viewport:add_mappings{
+            {event=g1000.AUX1D.down, action=function () change_view(1) end},
+            {event=g1000.AUX1U.down, action=function () change_view(-1) end},
+            {event=g1000.AUX2D.down, action=function () change_view(1) end},
+            {event=g1000.AUX2U.down, action=function () change_view(-1) end},
+        }
+
+        return {
+            move_next_view = function () change_view(1) end,
+            move_previous_view = function () change_view(-1) end,
+            global_mappings = {global_mappings},
+            need_to_start_viewports = true,
+        }
+    end
 end
 
 
@@ -278,6 +365,10 @@ function context.stop()
     context.g3x_touch_view.term()
     context.device:close()
     context.device = nil
+    if context.device2 then
+        context.device2:close()
+        context.device2 = nil
+    end
     context.background = nil
     msfs.mfwasm.clear_observed_data()
 end

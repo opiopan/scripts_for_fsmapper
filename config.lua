@@ -1,6 +1,11 @@
 local config = {
     simhid_g1000_identifier = {path = "COM3"},
     simhid_g1000_display = 2,
+    -- Optional: second SimHID G1000 for dual-panel mode (PFD + MFD on separate displays).
+    -- Set simhid_g1000_2_identifier to enable; simhid_g1000_2_display defaults to
+    -- simhid_g1000_display when nil.
+    simhid_g1000_2_identifier = nil,    -- e.g. {path = "COM4"}
+    simhid_g1000_2_display = nil,       -- e.g. 3
     x56_stick_identifier = {name = "Saitek Pro Flight X-56 Rhino Stick"},
     x56_throttle_identifier = {name = "Saitek Pro Flight X-56 Rhino Throttle"},
 }

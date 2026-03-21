@@ -516,6 +516,37 @@ function module.open_simhid_g1000(args)
     end
 end
 
+-- Try to open a second SimHID G1000. Returns nil if not configured or if the device is
+-- not found (allowing graceful fallback to single-device mode).
+function module.try_open_simhid_g1000_2(args)
+    if args.config.simhid_g1000_2_identifier == nil then
+        return nil
+    end
+    if args.config.simhid_g1000_mock then
+        return module.simhid_g1000_mock(args.config)
+    end
+    local ok, device = pcall(function()
+        return mapper.device{
+            name = "SimHID G1000 #2",
+            type = "simhid",
+            identifier = args.config.simhid_g1000_2_identifier,
+            modifiers = args.modifiers,
+        }
+    end)
+    if ok then
+        mapper.print("Second SimHID G1000 connected")
+        return device
+    else
+        mapper.print("Second SimHID G1000 not available: " .. tostring(device))
+        return nil
+    end
+end
+
+-- Returns the display number for the second SimHID, falling back to the primary display.
+function module.get_simhid_g1000_2_display(config)
+    return config.simhid_g1000_2_display or config.simhid_g1000_display
+end
+
 local simhid_g1000_units = {
     'AUX1U', 'AUX1D', 'AUX1P',
     'AUX2U', 'AUX2D', 'AUX2P',

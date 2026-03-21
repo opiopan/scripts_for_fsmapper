@@ -1,24 +1,20 @@
-local g1000_context ={}
+local g1000_context = {}
 
 local common = require('lib/common')
 
-local function start(config)
-    g1000_context.device = common.open_simhid_g1000{
-        config = config,
-        modifiers = {
-            {class = "binary", modtype = "button"},
-            {class = "relative", modtype = "incdec"},
-            {name = "SW26", modtype = "button", modparam={longpress = 2000}},
-            {name = "SW31", modtype = "button", modparam={longpress = 2000}},
-            {name = "EC8U", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8D", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8R", modtype = "button", modparam={repeat_interval = 80}},
-            {name = "EC8L", modtype = "button", modparam={repeat_interval = 80}},
-        },
-    }
-    local g1000 = g1000_context.device.events
+local modifiers = {
+    {class = "binary", modtype = "button"},
+    {class = "relative", modtype = "incdec"},
+    {name = "SW26", modtype = "button", modparam={longpress = 2000}},
+    {name = "SW31", modtype = "button", modparam={longpress = 2000}},
+    {name = "EC8U", modtype = "button", modparam={repeat_interval = 80}},
+    {name = "EC8D", modtype = "button", modparam={repeat_interval = 80}},
+    {name = "EC8R", modtype = "button", modparam={repeat_interval = 80}},
+    {name = "EC8L", modtype = "button", modparam={repeat_interval = 80}},
+}
 
-    local pfd_maps = {
+local function make_pfd_maps(g1000)
+    return {
         {event=g1000.EC1.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_VOL_1_INC)")},
         {event=g1000.EC1.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_VOL_1_DEC)")},
         {event=g1000.EC2X.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_NAV_Small_INC)")},
@@ -46,7 +42,6 @@ local function start(config)
         {event=g1000.SW11.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT VERTICAL HOLD, Bool) if{ (>K:AP_VS_VAR_INC) (>H:AP_DN) } (A:AUTOPILOT FLIGHT LEVEL CHANGE, Bool) if{ (>K:AP_SPD_VAR_DEC) } (A:AUTOPILOT PITCH HOLD, Bool) if{ (>K:AP_PITCH_REF_INC_UP) }")},
         {event=g1000.SW12.down, action=msfs.mfwasm.rpn_executer("(>K:FLIGHT_LEVEL_CHANGE) (A:AIRSPEED INDICATED, knots) (>K:AP_SPD_VAR_SET)")},
         {event=g1000.SW13.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT VERTICAL HOLD, Bool) if{ (>K:AP_VS_VAR_DEC) (>H:AP_UP) } (A:AUTOPILOT FLIGHT LEVEL CHANGE, Bool) if{ (>K:AP_SPD_VAR_INC) } (A:AUTOPILOT PITCH HOLD, Bool) if{ (>K:AP_PITCH_REF_INC_DN) }")},
-
         {event=g1000.SW14.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_1)")},
         {event=g1000.SW15.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_2)")},
         {event=g1000.SW16.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_3)")},
@@ -59,7 +54,6 @@ local function start(config)
         {event=g1000.SW23.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_10)")},
         {event=g1000.SW24.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_11)")},
         {event=g1000.SW25.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_SOFTKEYS_12)")},
-
         {event=g1000.EC5.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_VOL_2_INC)")},
         {event=g1000.EC5.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_VOL_2_DEC)")},
         {event=g1000.EC6X.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_COM_Small_INC)")},
@@ -84,7 +78,6 @@ local function start(config)
         {event=g1000.EC9Y.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_FMS_Lower_INC)")},
         {event=g1000.EC9Y.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_FMS_Lower_DEC)")},
         {event=g1000.EC9P.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_FMS_Upper_PUSH)")},
-
         {event=g1000.SW26.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_COM_Switch)")},
         {event=g1000.SW26.longpressed, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_COM_Switch_Long)")},
         {event=g1000.SW27.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_DIRECTTO)")},
@@ -95,8 +88,10 @@ local function start(config)
         {event=g1000.SW31.longpressed, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_CLR_Long)")},
         {event=g1000.SW32.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_PFD_ENT_Push)")},
     }
+end
 
-    local mfd_maps = {
+local function make_mfd_maps(g1000)
+    return {
         {event=g1000.EC1.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_VOL_1_INC)")},
         {event=g1000.EC1.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_VOL_1_DEC)")},
         {event=g1000.EC2X.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_NAV_Small_INC)")},
@@ -124,7 +119,6 @@ local function start(config)
         {event=g1000.SW11.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT VERTICAL HOLD, Bool) if{ (>K:AP_VS_VAR_INC) (>H:AP_DN) } (A:AUTOPILOT FLIGHT LEVEL CHANGE, Bool) if{ (>K:AP_SPD_VAR_DEC) } (A:AUTOPILOT PITCH HOLD, Bool) if{ (>K:AP_PITCH_REF_INC_UP) }")},
         {event=g1000.SW12.down, action=msfs.mfwasm.rpn_executer("(>K:FLIGHT_LEVEL_CHANGE) (A:AIRSPEED INDICATED, knots) (>K:AP_SPD_VAR_SET)")},
         {event=g1000.SW13.down, action=msfs.mfwasm.rpn_executer("(A:AUTOPILOT VERTICAL HOLD, Bool) if{ (>K:AP_VS_VAR_DEC) (>H:AP_UP) } (A:AUTOPILOT FLIGHT LEVEL CHANGE, Bool) if{ (>K:AP_SPD_VAR_INC) } (A:AUTOPILOT PITCH HOLD, Bool) if{ (>K:AP_PITCH_REF_INC_DN) }")},
-
         {event=g1000.SW14.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_1)")},
         {event=g1000.SW15.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_2)")},
         {event=g1000.SW16.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_3)")},
@@ -137,7 +131,6 @@ local function start(config)
         {event=g1000.SW23.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_10)")},
         {event=g1000.SW24.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_11)")},
         {event=g1000.SW25.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_SOFTKEYS_12)")},
-
         {event=g1000.EC5.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_VOL_2_INC)")},
         {event=g1000.EC5.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_VOL_2_DEC)")},
         {event=g1000.EC6X.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_COM_Small_INC)")},
@@ -162,7 +155,6 @@ local function start(config)
         {event=g1000.EC9Y.increment, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_FMS_Lower_INC)")},
         {event=g1000.EC9Y.decrement, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_FMS_Lower_DEC)")},
         {event=g1000.EC9P.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_FMS_Upper_PUSH)")},
-
         {event=g1000.SW26.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_COM_Switch)")},
         {event=g1000.SW26.longpressed, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_COM_Switch_Long)")},
         {event=g1000.SW27.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_DIRECTTO)")},
@@ -173,55 +165,96 @@ local function start(config)
         {event=g1000.SW31.longpressed, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_CLR_Long)")},
         {event=g1000.SW32.down, action=msfs.mfwasm.rpn_executer("(>H:AS1000_MFD_ENT_Push)")},
     }
+end
 
-    local displayno = config.simhid_g1000_display
-    local scale = config.simhid_g1000_display_scale
-    
-    local viewport = mapper.viewport({
-        name = "G1000 Viewport",
+local function make_viewport(name, displayno, scale)
+    return mapper.viewport({
+        name = name,
         displayno = displayno,
         x = 0, y = 0,
         width = scale, height = scale,
         bgcolor = "Black",
         aspect_ratio = 4.0 / 3.0,
     })
-    local pfd = viewport:register_view({
-        name = "PFD",
-        elements = {{object = mapper.captured_window({name = "G1000 PFD", window_title="AS1000_PFD"})}},
-        mappings = pfd_maps,
-    })
-    local mfd = viewport:register_view({
-        name = "MFD",
-        elements = {{object = mapper.captured_window({name = "G1000 MFD", window_title="AS1000_MFD"})}},
-        mappings = mfd_maps,
-    })
+end
 
-    local function toggle_view()
-        if viewport.current_view == pfd then
-            viewport:change_view(mfd)
-        else
-            viewport:change_view(pfd)
+local function start(config)
+    local scale = config.simhid_g1000_display_scale
+
+    g1000_context.device = common.open_simhid_g1000{config = config, modifiers = modifiers}
+    g1000_context.device2 = common.try_open_simhid_g1000_2{config = config, modifiers = modifiers}
+    local g1000 = g1000_context.device.events
+
+    if g1000_context.device2 then
+        -- Two-device mode: PFD fixed on device 1 / display 1, MFD fixed on device 2 / display 2.
+        local g1000_2 = g1000_context.device2.events
+        local display2 = common.get_simhid_g1000_2_display(config)
+
+        local vp_pfd = make_viewport("G1000 PFD", config.simhid_g1000_display, scale)
+        vp_pfd:register_view({
+            name = "PFD",
+            elements = {{object = mapper.captured_window({name = "G1000 PFD", window_title="AS1000_PFD"})}},
+            mappings = make_pfd_maps(g1000),
+        })
+
+        local vp_mfd = make_viewport("G1000 MFD", display2, scale)
+        vp_mfd:register_view({
+            name = "MFD",
+            elements = {{object = mapper.captured_window({name = "G1000 MFD", window_title="AS1000_MFD"})}},
+            mappings = make_mfd_maps(g1000_2),
+        })
+
+        return {
+            move_next_view = function() end,
+            move_previous_view = function() end,
+            global_mappings = {},
+            need_to_start_viewports = true,
+        }
+    else
+        -- Single-device mode: toggle between PFD and MFD on a single viewport.
+        local viewport = make_viewport("G1000 Viewport", config.simhid_g1000_display, scale)
+        local pfd = viewport:register_view({
+            name = "PFD",
+            elements = {{object = mapper.captured_window({name = "G1000 PFD", window_title="AS1000_PFD"})}},
+            mappings = make_pfd_maps(g1000),
+        })
+        local mfd = viewport:register_view({
+            name = "MFD",
+            elements = {{object = mapper.captured_window({name = "G1000 MFD", window_title="AS1000_MFD"})}},
+            mappings = make_mfd_maps(g1000),
+        })
+
+        local function toggle_view()
+            if viewport.current_view == pfd then
+                viewport:change_view(mfd)
+            else
+                viewport:change_view(pfd)
+            end
         end
+
+        viewport:set_mappings({
+            {event=g1000.AUX1D.down, action=toggle_view},
+            {event=g1000.AUX1U.down, action=toggle_view},
+            {event=g1000.AUX2D.down, action=toggle_view},
+            {event=g1000.AUX2U.down, action=toggle_view},
+        })
+
+        return {
+            move_next_view = toggle_view,
+            move_previous_view = toggle_view,
+            global_mappings = {},
+            need_to_start_viewports = true,
+        }
     end
-
-    viewport:set_mappings({
-        {event=g1000.AUX1D.down, action=toggle_view},
-        {event=g1000.AUX1U.down, action=toggle_view},
-        {event=g1000.AUX2D.down, action=toggle_view},
-        {event=g1000.AUX2U.down, action=toggle_view},
-    })
-
-    return {
-        move_next_view = toggle_view,
-        move_previous_view = toggle_view,
-        global_mappings = {},
-        need_to_start_viewports = true,
-    }
 end
 
 local function stop()
     g1000_context.device:close()
     g1000_context.device = nil
+    if g1000_context.device2 then
+        g1000_context.device2:close()
+        g1000_context.device2 = nil
+    end
 end
 
 return {
