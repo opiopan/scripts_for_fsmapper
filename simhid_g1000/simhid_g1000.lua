@@ -25,6 +25,7 @@ msfs_map["DA62"] = g1000lib
 msfs_map["DA 62"] = g1000lib
 msfs_map["Baron G58"] = g1000lib
 msfs_map["Bonanza G36"] = g1000lib
+msfs_map["Beechcraft Bonanza Private Charter"] = g1000lib
 msfs_map["Cessna Skyhawk G1000"] = g1000lib
 msfs_map["Cessna Skyhawk 172Sp G1000"] = g1000lib
 msfs_map["Cessna 208B Grand Caravan EX"] = g1000lib
