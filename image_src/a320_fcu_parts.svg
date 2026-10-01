@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="208" height="85" viewBox="0, 0, 208, 85">
+  <g id="レイヤー_1">
+    <g>
+      <text transform="matrix(1, 0, 0, 1, 20.514, 14.312)">
+        <tspan x="-20.514" y="6.688" font-family="Verdana" font-size="21.2" fill="#000000">ALT</tspan>
+      </text>
+      <text transform="matrix(1, 0, 0, 1, 129.335, 14.312)">
+        <tspan x="-45.68" y="6.688" font-family="Verdana" font-size="21.2" fill="#000000">LVL  CH</tspan>
+      </text>
+      <g>
+        <path d="M42.919,11.733 L73.969,11.733 L73.969,15.081 L42.919,15.081 L42.919,11.733 z" fill="#000000"/>
+        <path d="M46.268,11.733 L46.268,21.868 L42.919,21.868 L42.919,11.733 L46.268,11.733 z" fill="#000000"/>
+      </g>
+      <g>
+        <path d="M206.54,11.733 L175.491,11.733 L175.491,15.081 L206.54,15.081 L206.54,11.733 z" fill="#000000"/>
+        <path d="M203.191,11.733 L203.191,21.868 L206.54,21.868 L206.54,11.733 L203.191,11.733 z" fill="#000000"/>
+      </g>
+    </g>
+    <g>
+      <text transform="matrix(1, 0, 0, 1, 67.707, 70.979)">
+        <tspan x="-22.61" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">V  S</tspan>
+      </text>
+      <path d="M73.068,62.483 L62.876,79.021 L60.365,79.021 L70.557,62.483 L73.068,62.483 z" fill="#000000"/>
+    </g>
+    <text transform="matrix(1, 0, 0, 1, 136.693, 42.123)">
+      <tspan x="-24.693" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">HDG</tspan>
+    </text>
+    <text transform="matrix(1, 0, 0, 1, 20.415, 70.979)">
+      <tspan x="-20.415" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">LAT</tspan>
+    </text>
+    <text transform="matrix(1, 0, 0, 1, 185.943, 42.123)">
+      <tspan x="-21.943" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">TRK</tspan>
+    </text>
+    <text transform="matrix(1, 0, 0, 1, 22.548, 42.123)">
+      <tspan x="-22.548" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">SPD</tspan>
+    </text>
+    <text transform="matrix(1, 0, 0, 1, 78.572, 42.123)">
+      <tspan x="-31.572" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">MACH</tspan>
+    </text>
+    <text transform="matrix(1, 0, 0, 1, 115.017, 70.979)">
+      <tspan x="-20.002" y="7.5" font-family="Verdana" font-size="21.2" fill="#000000">FPA</tspan>
+    </text>
+    <path d="M152.708,79.479 C146.633,79.479 141.708,74.554 141.708,68.479 C141.708,62.404 146.633,57.479 152.708,57.479 C158.783,57.479 163.708,62.404 163.708,68.479 C163.708,74.554 158.783,79.479 152.708,79.479 z" fill="#000000"/>
+    <path d="M136.436,4.978 L126.244,21.516 L123.733,21.516 L133.925,4.978 L136.436,4.978 z" fill="#000000"/>
+  </g>
+</svg>

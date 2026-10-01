@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="512" height="512" viewBox="0, 0, 512, 512">
+  <g id="background">
+    <path d="M0,0 L512,0 L512,512 L0,512 L0,0 z" fill="#000000"/>
+  </g>
+  <g id="ENG1" display="none">
+    <text transform="matrix(1, 0, 0, 1, 256, 256)">
+      <tspan x="-220.562" y="-17.898" font-family="SFCompactRounded-Light" font-size="250" kerning="-4" fill="#FFFFFF">ENG</tspan>
+      <tspan x="-46.218" y="190.702" font-family="SFCompactRounded-Light" font-size="250" kerning="-4" fill="#FFFFFF">1</tspan>
+    </text>
+  </g>
+  <g id="ENG2">
+    <text transform="matrix(1, 0, 0, 1, 256, 256)">
+      <tspan x="-220.562" y="-17.898" font-family="SFCompactRounded-Light" font-size="250" kerning="-4" fill="#FFFFFF">ENG</tspan>
+      <tspan x="-64.956" y="190.702" font-family="SFCompactRounded-Light" font-size="250" kerning="-4" fill="#FFFFFF">2</tspan>
+    </text>
+  </g>
+</svg>
